@@ -4,7 +4,7 @@ import { Recognition } from "../activities/Recognition";
 import { buildPlacement, placementResult, type Answer } from "../lib/engine";
 
 /** 6 quick recognition questions (letters → words → phrase) to find the starting unit. */
-export function Placement({ onDone }: { onDone: (startUnit: number, items: Answer["items"]) => void }) {
+export function Placement({ onDone }: { onDone: (r: { startUnit: string; demonstrated: number }, items: Answer["items"]) => void }) {
   const qs = useMemo(buildPlacement, []);
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<boolean[]>([]);
@@ -22,7 +22,7 @@ export function Placement({ onDone }: { onDone: (startUnit: number, items: Answe
   };
 
   if (result) {
-    const unit = UNITS[result.startUnit];
+    const unit = UNITS.find((u) => u.id === result.startUnit)!;
     return (
       <div className="screen">
         <div className="card center">
@@ -30,7 +30,7 @@ export function Placement({ onDone }: { onDone: (startUnit: number, items: Answe
           <h1>¡Prueba completada!</h1>
           <p>Has acertado {answers.filter(Boolean).length} de {qs.length}.</p>
           <p>Empezarás en <b>{unit.icon} {unit.title}</b><br /><span className="muted">{LEVEL_NAMES[unit.level]}</span></p>
-          <button className="btn btn-primary btn-wide" onClick={() => onDone(result.startUnit, items)}>Ir a mi primera lección</button>
+          <button className="btn btn-primary btn-wide" onClick={() => onDone(result, items)}>Ir a mi primera lección</button>
         </div>
       </div>
     );

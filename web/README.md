@@ -30,6 +30,14 @@ Un único componente, `SignViewer` (`src/viewer/`), elige el renderizado según 
 
 Siempre hay botón de repetir, cámara lenta y, si el signo viene de un vídeo, **ver el vídeo real**.
 
+## Motor de aprendizaje
+
+- **Log de eventos inmutable** en IndexedDB (Dexie), con versión de esquema y migraciones (`src/data/`). Exportar o importar en JSON desde Ajustes.
+- **Perfil derivado del log** (`src/learning/profile.ts`): memoria FSRS (`ts-fsrs`) por signo **y por modalidad** (receptiva y productiva), errores, confusiones, tiempos, actividades completadas o abandonadas, racha y dificultad (objetivo: 80–85 % de aciertos).
+- **Orquestador** (`src/learning/orchestrator.ts`): al abrir la app propone la sesión de hoy (repasos vencidos, puntos débiles, signos nuevos graduales, variedad, juego y mini-examen) y explica cada decisión (botón ℹ en cada actividad; en Inicio, «¿Por qué este plan?»). Sin cámara, solo actividades receptivas.
+- **Catálogo común de actividades** (`src/learning/activityCatalog.ts` y `src/activities/registry.tsx`): requisitos, habilidad que entrenan y duración.
+- Puntos de extensión para LLMs (fase 3) en `src/learning/extensions.ts`.
+
 ## Contenido
 
 - `content/signs/<id>.json`: un JSON por signo, independiente del renderizador (fonología: configuración, orientación,

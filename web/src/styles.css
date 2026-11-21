@@ -243,3 +243,31 @@ code { background: #eee; padding: 0.1em 0.35em; border-radius: 6px; }
 .lab-grid h3 { font-size: 1rem; color: var(--muted); }
 .lab-ill { width: 160px; background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px; }
 .lab-meta { line-height: 1.6; }
+
+/* phase 2: today plan, games, topics */
+.today-head { display: flex; align-items: center; gap: 16px; }
+.ctx-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 14px 0 8px; }
+.ctx-row .seg, .settings .seg { display: flex; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; }
+.ctx-row .seg button { border: none; background: #fff; padding: 4px 10px; cursor: pointer; font-weight: 700; }
+.ctx-row .seg button.on { background: var(--blue-bg); color: var(--blue-dark); }
+.chip:disabled { opacity: 0.5; cursor: not-allowed; }
+.plan-strip { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.plan-dot { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 1.05rem; background: var(--blue-bg); border: 2px solid var(--blue); }
+.plan-intro { background: #f3e8ff; border-color: var(--purple); }
+.plan-game { background: #fff7d6; border-color: var(--yellow); }
+.plan-exam { background: #ffefd9; border-color: var(--orange); }
+.why-box { background: #fafafa; border: 2px solid var(--line); border-radius: 12px; padding: 8px 14px; font-size: 0.85rem; line-height: 1.5; margin-bottom: 8px; }
+.why-box ul { padding-left: 18px; margin: 4px 0 8px; color: var(--muted); }
+.why-box ol { padding-left: 20px; margin: 0; }
+.games { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.game-card { display: flex; gap: 10px; align-items: center; text-align: left; background: #fff; border: 2px solid var(--line); border-radius: var(--radius); padding: 12px; cursor: pointer; box-shadow: 0 4px 0 var(--line); flex-wrap: wrap; }
+.game-card:disabled { opacity: 0.55; cursor: not-allowed; }
+.game-icon { font-size: 1.8rem; }
+.game-tags { display: flex; gap: 6px; width: 100%; }
+.tag { display: inline-block; font-size: 0.7rem; font-weight: 800; border-radius: 999px; padding: 2px 8px; background: #eee; color: #555; }
+.tag-receptive { background: var(--blue-bg); color: var(--blue-dark); }
+.tag-productive { background: var(--green-bg); color: var(--green-dark); }
+.tag-now { background: var(--green); color: #fff; margin-left: 6px; vertical-align: middle; }
+.unit-bar-prod span { background: var(--orange); }
+.why-btn { color: var(--blue-dark); font-weight: 900; }
+.why { font-size: 0.85rem; padding: 10px 14px; margin-top: -6px; }

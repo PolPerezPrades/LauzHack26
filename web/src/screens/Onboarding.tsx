@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { Profile } from "../lib/storage";
+export interface OnboardingAnswers { selfLevel: 0 | 1 | 2 | 3; goalMin: 5 | 10 | 15; camera: boolean }
+type Profile = OnboardingAnswers;
 
 const LEVELS: { v: Profile["selfLevel"]; t: string; d: string; e: string }[] = [
   { v: 0, t: "Nunca he signado", d: "Empiezo desde cero", e: "🌱" },
@@ -13,7 +14,7 @@ const GOALS: { v: Profile["goalMin"]; t: string; d: string }[] = [
   { v: 15, t: "15 min / día", d: "Intenso" },
 ];
 
-export function Onboarding({ onDone }: { onDone: (p: Pick<Profile, "selfLevel" | "goalMin" | "camera">, takeTest: boolean) => void }) {
+export function Onboarding({ onDone }: { onDone: (p: OnboardingAnswers, takeTest: boolean) => void }) {
   const [step, setStep] = useState(0);
   const [level, setLevel] = useState<Profile["selfLevel"] | null>(null);
   const [goal, setGoal] = useState<Profile["goalMin"] | null>(null);

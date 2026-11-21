@@ -20,7 +20,7 @@ export function Recognition({ ex, onAnswer, locked }: { ex: Ex; onAnswer: (a: An
     if (locked || chosen) return;
     setChosen(id);
     const correct = id === target;
-    onAnswer({ correct, items: [{ id: target, correct }] });
+    onAnswer({ correct, items: [{ id: target, correct, confusedWith: correct ? undefined : id }] });
   };
 
   return (
