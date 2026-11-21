@@ -1,0 +1,20 @@
+/* Developer mode: plain and functional (SPEC §6). */
+.dev { max-width: 900px; }
+.dev-note { color: #5f6b75; margin-top: 0; }
+.dev-section h3 { margin-top: 0; }
+.dev-section select, .dev-section input[type="search"], .dev-section input[type="number"] { font: inherit; padding: 4px 8px; border-radius: 8px; border: 2px solid var(--line); background: #fff; }
+/* long option labels must not push a select out of its card on phones */
+.dev-section select { max-width: 100%; }
+.dev-muted { color: #5f6b75; font-size: 0.85rem; }
+.dev-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 8px 0; }
+.dev-row input[type="number"] { width: 90px; }
+.dev-radio { display: block; margin: 6px 0; }
+.dev-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.dev-play { display: block; width: 100%; margin: 0 0 16px; }
+.dev-filters { display: flex; flex-wrap: wrap; gap: 12px; }
+.dev-log-wrap { overflow-x: auto; }
+.dev-log { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+.dev-log td { border-top: 1px solid var(--line); padding: 4px 6px; vertical-align: top; }
+.dev-log code { background: none; padding: 0; word-break: break-all; }
+.dev-time { white-space: nowrap; color: #5f6b75; }
+.dev-type { white-space: nowrap; font-weight: 800; }

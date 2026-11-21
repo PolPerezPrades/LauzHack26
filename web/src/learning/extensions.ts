@@ -7,7 +7,7 @@
  * summary an LLM will receive (no free text from the learner, only learning events).
  */
 import { label } from "../content/curriculum";
-import type { LearningEvent } from "../data/events";
+import type { V1Event as LearningEvent } from "../data/eventsV1";
 import type { SessionPlan } from "./orchestrator";
 import { mastery, topConfusion, type Profile } from "./profile";
 

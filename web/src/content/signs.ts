@@ -20,7 +20,8 @@ export interface SignSpec {
   translations: { es: string; en: string };
   unit: string;
   phonology: Phonology | null;
-  description: { es: string } | null;
+  /** how to form the sign; English is optional (Spanish is the authored original) */
+  description: { es: string; en?: string } | null;
   render: { type: "hand" } | { type: "avatar"; motion: string } | { type: "video" };
   video: { src: string; crop?: [number, number, number, number] | null; source: { dataset: string; site: string; url: string } } | null;
   references: { label: string; url: string; image?: string }[];

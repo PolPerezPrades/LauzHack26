@@ -4,10 +4,12 @@
  *   render "avatar" → toon avatar replaying motion extracted from the real WLASL clip
  *   render "video"  → the real clip, framed on the signing space
  * Controls: replay, slow motion, reset view, and "real video" for anything derived from a clip.
+ * In the feed, drags are card swipes, so the 3D orbit is turned off there (`orbit={false}`).
  */
 import { Canvas } from "@react-three/fiber";
 import { useEffect, useMemo, useState } from "react";
 import { getSpec, type SignSpec } from "../content/signs";
+import { useT } from "../i18n";
 import { AvatarScene, avatarExtent, loadMotion, prepareMotion, type AvatarFrame } from "./AvatarScene";
 import { OutlineSync } from "./OutlineSync";
 import { CameraRig } from "./CameraRig";
@@ -29,11 +31,14 @@ export interface SignViewerProps {
   onSequenceEnd?: () => void;
   /** force the original video even when a 3D rendering exists */
   preferVideo?: boolean;
+  /** drag to rotate the 3D view (default true; off in the feed) */
+  orbit?: boolean;
 }
 
 type Mode = "3d" | "video";
 
-export function SignViewer({ ids, size = "lg", controls = true, credit = true, highlight, letterHoldMs = 1200, loop = true, onSequenceEnd, preferVideo }: SignViewerProps) {
+export function SignViewer({ ids, size = "lg", controls = true, credit = true, highlight, letterHoldMs = 1200, loop = true, onSequenceEnd, preferVideo, orbit = true }: SignViewerProps) {
+  const t = useT();
   const specs = useMemo(() => ids.map(getSpec).filter(Boolean) as SignSpec[], [ids.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps
   const [idx, setIdx] = useState(0);
   const [slow, setSlow] = useState(false);
@@ -68,7 +73,7 @@ export function SignViewer({ ids, size = "lg", controls = true, credit = true, h
     return null;
   }, [spec, specs, motion]);
 
-  if (!spec) return <div className={`sv sv-${size} sv-missing`}>Signo no disponible</div>;
+  if (!spec) return <div className={`sv sv-${size} sv-missing`}>{t.viewer.missing}</div>;
 
   const speed = slow ? 0.5 : 1;
   const seq = specs.length > 1;
@@ -95,7 +100,7 @@ export function SignViewer({ ids, size = "lg", controls = true, credit = true, h
             <ambientLight intensity={1.1} />
             <directionalLight position={[2, 3, 4]} intensity={2.2} />
             <OutlineSync />
-            <CameraRig points={extent} resetKey={viewKey} interactive={controls && size !== "sm"} pad={isHand ? 0.16 : 0.06} />
+            <CameraRig points={extent} resetKey={viewKey} interactive={orbit && controls && size !== "sm"} pad={isHand ? 0.16 : 0.06} />
             {isHand ? (
               <LetterScene
                 spec={spec}
@@ -111,26 +116,26 @@ export function SignViewer({ ids, size = "lg", controls = true, credit = true, h
             ) : null}
           </Canvas>
         ) : show3d && !extent ? (
-          <div className="sv-loading">Cargando…</div>
+          <div className="sv-loading">{t.viewer.loading}</div>
         ) : spec.video ? (
           <VideoView key={spec.id} src={spec.video.src} crop={spec.video.crop} speed={speed} playId={playId} loop={!seq && loop} onEnded={next} />
         ) : (
-          <div className="sv-loading">Sin vídeo</div>
+          <div className="sv-loading">{t.viewer.noVideo}</div>
         )}
         {seq && (
           <div className="sv-dots">{specs.map((_, i) => <span key={i} className={i === idx ? "on" : ""} />)}</div>
         )}
-        {show3d && controls && size !== "sm" && <div className="sv-hint">↔ arrastra para girar</div>}
+        {show3d && orbit && controls && size !== "sm" && <div className="sv-hint">{t.viewer.dragHint}</div>}
       </div>
 
       {controls && size !== "sm" && (
         <div className="sv-controls">
-          <button className="chip" onClick={() => { setIdx(0); setPlayId((p) => p + 1); }}>↻ Repetir</button>
-          <button className={`chip ${slow ? "chip-on" : ""}`} onClick={() => setSlow(!slow)}>🐢 Lento</button>
-          {show3d && <button className="chip" onClick={() => setViewKey((k) => k + 1)}>⟲ Vista</button>}
+          <button className="chip" onClick={() => { setIdx(0); setPlayId((p) => p + 1); }}>{t.viewer.replay}</button>
+          <button className={`chip ${slow ? "chip-on" : ""}`} onClick={() => setSlow(!slow)}>{t.viewer.slow}</button>
+          {show3d && orbit && <button className="chip" onClick={() => setViewKey((k) => k + 1)}>{t.viewer.resetView}</button>}
           {hasVideo && renderType !== "video" && (
             <button className={`chip ${mode === "video" ? "chip-on" : ""}`} onClick={() => setMode(mode === "video" ? "3d" : "video")}>
-              {mode === "video" ? (isHand ? "✋ Mano 3D" : "🧍 Avatar") : "🎥 Vídeo real"}
+              {mode === "video" ? (isHand ? t.viewer.hand3d : t.viewer.avatar) : t.viewer.realVideo}
             </button>
           )}
         </div>
@@ -141,12 +146,13 @@ export function SignViewer({ ids, size = "lg", controls = true, credit = true, h
 }
 
 function Credit({ specs, spec, mode }: { specs: SignSpec[]; spec: SignSpec; mode: Mode }) {
+  const t = useT();
   const src = spec.video?.source;
   return (
     <div className="credit sv-credit">
-      {specs.length > 1 && <span>Secuencia de signos de diccionario · </span>}
-      {mode === "3d" && spec.render.type === "hand" && <span>Mano 3D · pose contrastada con vídeo real y descripciones ASL · </span>}
-      {mode === "3d" && spec.render.type === "avatar" && <span>Avatar con el movimiento real del vídeo · </span>}
+      {specs.length > 1 && <span>{t.viewer.creditSequence} · </span>}
+      {mode === "3d" && spec.render.type === "hand" && <span>{t.viewer.creditHand} · </span>}
+      {mode === "3d" && spec.render.type === "avatar" && <span>{t.viewer.creditAvatar} · </span>}
       {src && <a href={src.url} target="_blank" rel="noreferrer">{src.dataset} · {src.site}</a>}
     </div>
   );

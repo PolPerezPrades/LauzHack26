@@ -1,64 +1,94 @@
 {
-  "schema": "curriculum/1",
+  "schema": "curriculum/2",
   "units": [
     {
       "id": "abc1",
       "level": 1,
-      "title": "Alfabeto A–I",
+      "title": {
+        "es": "Alfabeto A–I",
+        "en": "Alphabet A–I"
+      },
       "icon": "🔤"
     },
     {
       "id": "abc2",
       "level": 1,
-      "title": "Alfabeto J–R",
+      "title": {
+        "es": "Alfabeto J–R",
+        "en": "Alphabet J–R"
+      },
       "icon": "🔤"
     },
     {
       "id": "abc3",
       "level": 1,
-      "title": "Alfabeto S–Z",
+      "title": {
+        "es": "Alfabeto S–Z",
+        "en": "Alphabet S–Z"
+      },
       "icon": "🔤"
     },
     {
       "id": "numbers",
       "level": 1,
-      "title": "Números 1–10",
+      "title": {
+        "es": "Números 1–10",
+        "en": "Numbers 1–10"
+      },
       "icon": "🔢"
     },
     {
       "id": "greetings",
       "level": 2,
-      "title": "Saludos",
+      "title": {
+        "es": "Saludos",
+        "en": "Greetings"
+      },
       "icon": "👋"
     },
     {
       "id": "family",
       "level": 2,
-      "title": "Familia",
+      "title": {
+        "es": "Familia",
+        "en": "Family"
+      },
       "icon": "👪"
     },
     {
       "id": "colors",
       "level": 2,
-      "title": "Colores",
+      "title": {
+        "es": "Colores",
+        "en": "Colors"
+      },
       "icon": "🎨"
     },
     {
       "id": "food",
       "level": 2,
-      "title": "Comida",
+      "title": {
+        "es": "Comida",
+        "en": "Food"
+      },
       "icon": "🍎"
     },
     {
       "id": "core",
       "level": 3,
-      "title": "Palabras para frases",
+      "title": {
+        "es": "Palabras para frases",
+        "en": "Words for sentences"
+      },
       "icon": "🧩"
     },
     {
       "id": "phrases",
       "level": 3,
-      "title": "Frases cortas",
+      "title": {
+        "es": "Frases cortas",
+        "en": "Short sentences"
+      },
       "icon": "💬"
     }
   ],
@@ -73,7 +103,10 @@
       "en": "What is your name?",
       "es": "¿Cómo te llamas?",
       "nonManual": "wh",
-      "note": "Las preguntas con QUÉ/DÓNDE/POR QUÉ suelen ir al final, con las cejas fruncidas."
+      "note": {
+        "es": "Las preguntas con QUÉ/DÓNDE/POR QUÉ suelen ir al final, con las cejas fruncidas.",
+        "en": "WH-question signs (WHAT, WHERE, WHY) usually go at the end, with furrowed eyebrows."
+      }
     },
     {
       "id": "ph-deaf",
@@ -84,7 +117,10 @@
       "en": "Are you deaf?",
       "es": "¿Eres sordo/a?",
       "nonManual": "yn",
-      "note": "Pregunta de sí/no: cejas levantadas y cabeza ligeramente hacia delante. ASL no usa verbo «ser»."
+      "note": {
+        "es": "Pregunta de sí/no: cejas levantadas y cabeza ligeramente hacia delante. ASL no usa verbo «ser».",
+        "en": "Yes/no question: raised eyebrows and the head tilted slightly forward. ASL doesn’t use the verb “to be”."
+      }
     },
     {
       "id": "ph-pizza",
@@ -96,7 +132,10 @@
       "en": "I like pizza.",
       "es": "Me gusta la pizza.",
       "nonManual": "neutral",
-      "note": "Orden básico sujeto-verbo-objeto."
+      "note": {
+        "es": "Orden básico sujeto-verbo-objeto.",
+        "en": "Basic subject–verb–object order."
+      }
     },
     {
       "id": "ph-hungry",
@@ -107,7 +146,10 @@
       "en": "I am hungry.",
       "es": "Tengo hambre.",
       "nonManual": "neutral",
-      "note": "Sin verbo «estar/tener»: el adjetivo va directamente tras el sujeto."
+      "note": {
+        "es": "Sin verbo «estar/tener»: el adjetivo va directamente tras el sujeto.",
+        "en": "No verb “to be”: the adjective goes right after the subject."
+      }
     },
     {
       "id": "ph-school",
@@ -120,7 +162,10 @@
       "en": "Today I go to school.",
       "es": "Hoy voy a la escuela.",
       "nonManual": "neutral",
-      "note": "Las marcas de tiempo (HOY, MAÑANA) van al principio de la frase."
+      "note": {
+        "es": "Las marcas de tiempo (HOY, MAÑANA) van al principio de la frase.",
+        "en": "Time signs (TODAY, TOMORROW) go at the start of the sentence."
+      }
     },
     {
       "id": "ph-work",
@@ -132,7 +177,10 @@
       "en": "Tomorrow I work.",
       "es": "Mañana trabajo.",
       "nonManual": "neutral",
-      "note": "El tiempo se marca al inicio; el verbo no cambia."
+      "note": {
+        "es": "El tiempo se marca al inicio; el verbo no cambia.",
+        "en": "Time is marked at the start; the verb doesn’t change."
+      }
     },
     {
       "id": "ph-water",
@@ -144,7 +192,10 @@
       "en": "Do you want water?",
       "es": "¿Quieres agua?",
       "nonManual": "yn",
-      "note": "Pregunta de sí/no: cejas levantadas durante toda la frase."
+      "note": {
+        "es": "Pregunta de sí/no: cejas levantadas durante toda la frase.",
+        "en": "Yes/no question: eyebrows raised throughout the whole sentence."
+      }
     },
     {
       "id": "ph-sister",
@@ -156,7 +207,10 @@
       "en": "My sister is deaf.",
       "es": "Mi hermana es sorda.",
       "nonManual": "topic",
-      "note": "Tópico-comentario: MI HERMANA (cejas arriba) se presenta primero, luego el comentario."
+      "note": {
+        "es": "Tópico-comentario: MI HERMANA (cejas arriba) se presenta primero, luego el comentario.",
+        "en": "Topic–comment: MY SISTER (eyebrows raised) comes first, then the comment."
+      }
     },
     {
       "id": "ph-why",
@@ -169,7 +223,10 @@
       "en": "Why are you learning sign language?",
       "es": "¿Por qué aprendes lengua de signos?",
       "nonManual": "wh",
-      "note": "POR QUÉ al final con cejas fruncidas."
+      "note": {
+        "es": "POR QUÉ al final con cejas fruncidas.",
+        "en": "WHY at the end, with furrowed eyebrows."
+      }
     },
     {
       "id": "ph-understand",
@@ -181,7 +238,10 @@
       "en": "I don't understand.",
       "es": "No entiendo.",
       "nonManual": "neg",
-      "note": "La negación se acompaña de un movimiento de cabeza de lado a lado."
+      "note": {
+        "es": "La negación se acompaña de un movimiento de cabeza de lado a lado.",
+        "en": "The negation comes with a head shake from side to side."
+      }
     },
     {
       "id": "ph-coffee",
@@ -193,7 +253,10 @@
       "en": "Do you like coffee?",
       "es": "¿Te gusta el café?",
       "nonManual": "yn",
-      "note": "El objeto se topicaliza al principio (cejas arriba) y la pregunta mantiene las cejas levantadas."
+      "note": {
+        "es": "El objeto se topicaliza al principio (cejas arriba) y la pregunta mantiene las cejas levantadas.",
+        "en": "The object is topicalized at the start (eyebrows raised), and the question keeps the eyebrows raised."
+      }
     },
     {
       "id": "ph-ate",
@@ -205,7 +268,10 @@
       "en": "I already ate.",
       "es": "Ya he comido.",
       "nonManual": "neutral",
-      "note": "FINISH antes del verbo indica una acción ya completada."
+      "note": {
+        "es": "FINISH antes del verbo indica una acción ya completada.",
+        "en": "FINISH before the verb marks an action that is already completed."
+      }
     },
     {
       "id": "ph-where-work",
@@ -217,7 +283,10 @@
       "en": "Where do you work?",
       "es": "¿Dónde trabajas?",
       "nonManual": "wh",
-      "note": "DÓNDE al final con cejas fruncidas."
+      "note": {
+        "es": "DÓNDE al final con cejas fruncidas.",
+        "en": "WHERE at the end, with furrowed eyebrows."
+      }
     },
     {
       "id": "ph-family",
@@ -230,7 +299,10 @@
       "en": "I love my family.",
       "es": "Quiero a mi familia.",
       "nonManual": "topic",
-      "note": "Tópico-comentario: MI FAMILIA primero (cejas arriba), luego YO AMAR."
+      "note": {
+        "es": "Tópico-comentario: MI FAMILIA primero (cejas arriba), luego YO AMAR.",
+        "en": "Topic–comment: MY FAMILY first (eyebrows raised), then ME LOVE."
+      }
     }
   ]
 }

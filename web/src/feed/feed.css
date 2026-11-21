@@ -1,0 +1,232 @@
+/*
+ * Feed (SPEC §3.2, §1.4): full viewport, always a vertical column. Phones get the whole screen;
+ * anything wider (desktop, tablets, landscape) gets a centred phone-shaped column, 9:16 when the
+ * height allows. Animations use transform and opacity only. Text colours keep ≥ 4.5:1 contrast.
+ */
+:root {
+  --feed-backdrop: #e6edf2;
+  --feed-ink: #4b5560;
+  --ok-ink: #2b6a00;
+  --bad-ink: #a8201a;
+  --easy-ink: #1679b8;
+  --hard-ink: #a84f00;
+  --next-bg: #237a00;
+  --next-edge: #185600;
+}
+
+/* a swipe down must never pull-to-refresh, and the page itself never scrolls behind the feed */
+html, body { overscroll-behavior: none; }
+
+.feed {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--feed-backdrop);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overflow: hidden;
+}
+.feed-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+}
+@media (min-width: 560px) {
+  .feed-col {
+    width: min(480px, max(340px, calc(100vh * 9 / 16)));
+    width: min(480px, max(340px, calc(100dvh * 9 / 16)));
+    height: min(100%, calc(min(480px, max(340px, calc(100vh * 9 / 16))) * 16 / 9));
+    height: min(100%, calc(min(480px, max(340px, calc(100dvh * 9 / 16))) * 16 / 9));
+    border-radius: 28px;
+    box-shadow: 0 12px 40px rgba(30, 50, 70, 0.16);
+    overflow: hidden;
+  }
+}
+
+/* ---- overlay above the cards -------------------------------------------------------------- */
+.feed-top { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 8px 16px 4px; }
+.feed-stats {
+  flex: 0 0 auto; display: flex; gap: 12px; white-space: nowrap; font-weight: 900; font-size: 0.95rem; color: var(--text);
+  background: #fff; border: 2px solid var(--line); border-radius: 999px; padding: 4px 12px;
+}
+.feed-forced {
+  margin-left: auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  font: inherit; font-size: 0.75rem; font-weight: 800; color: #6a2f9e; cursor: pointer;
+  background: #f6ecff; border: 2px dashed #b57ae6; border-radius: 999px; padding: 4px 10px;
+}
+.feed-icon-btn {
+  margin-left: auto; width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer;
+  font-size: 1.2rem; background: #fff; border: 2px solid var(--line); border-radius: 50%; touch-action: manipulation;
+}
+/* order: stats … [forced badge] language switch, mute; the first of the right-hand group takes the free space */
+.feed-lang { margin-left: auto; }
+.feed-forced + .feed-lang, .feed-lang + .feed-icon-btn { margin-left: 0; }
+
+/* ---- card stack ----------------------------------------------------------------------------- */
+/* side margins keep swipes away from the screen edges, where browsers have navigation gestures */
+.feed-stack { position: relative; flex: 1 1 auto; min-height: 0; margin: 4px 16px 0; }
+.feed-card {
+  position: absolute;
+  inset: 0 0 14px 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 4px 0 var(--line), 0 10px 26px rgba(30, 50, 70, 0.08);
+  transform-origin: 50% 100%;
+  will-change: transform;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.feed-card.is-front { z-index: 2; }
+/* the next card peeks out below: smaller, lower, dimmed, inert */
+.feed-card.is-behind { z-index: 1; transform: translate3d(0, 10px, 0) scale(0.95); pointer-events: none; }
+.feed-card-dim { position: absolute; inset: 0; background: rgba(230, 237, 242, 0.65); opacity: 0; pointer-events: none; }
+.feed-card.is-behind .feed-card-dim { opacity: 1; }
+
+.feed-card-head { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; min-height: 46px; padding: 12px 14px 4px; }
+.fmt-chip {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.05em;
+  text-transform: uppercase; color: #5a646e; background: var(--bg); border-radius: 999px; padding: 5px 10px;
+}
+.cam-off {
+  margin-left: auto; max-width: 58%; font: inherit; font-size: 0.74rem; font-weight: 800; line-height: 1.2; text-align: left;
+  color: var(--bad-ink); background: var(--red-bg); border: none; border-radius: 12px; padding: 6px 10px; cursor: pointer;
+}
+/* content is designed to fit; if it ever doesn't, it is clipped here instead of covering the header */
+.feed-card-body { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding: 4px 14px 14px; }
+.feed-card-preview { align-items: center; justify-content: center; gap: 12px; text-align: center; }
+.feed-card-preview .task-prompt { text-align: center; }
+.preview-art { font-size: 4rem; opacity: 0.45; }
+
+.feed-empty {
+  position: absolute; inset: 0 0 14px 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 24px; text-align: center; background: #fff; border: 2px dashed var(--line); border-radius: 24px;
+}
+.feed-empty .btn-primary { background: var(--next-bg); box-shadow: 0 4px 0 var(--next-edge); }
+
+/* ---- stamps (drag feedback) ------------------------------------------------------------------ */
+.stamp {
+  position: absolute; top: 58px; z-index: 5; opacity: 0; pointer-events: none; white-space: nowrap;
+  padding: 6px 12px; border: 4px solid currentColor; border-radius: 12px; background: rgba(255, 255, 255, 0.9);
+  font-size: 1.3rem; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase;
+}
+/* a stamp sits on the side the card moves away from, so it stays in view */
+.stamp-left { right: 16px; color: var(--easy-ink); transform: rotate(10deg); }
+.stamp-right { left: 16px; color: var(--hard-ink); transform: rotate(-10deg); }
+.stamp-down { left: 50%; max-width: 80%; white-space: normal; text-align: center; font-size: 1rem; color: var(--bad-ink); transform: translateX(-50%); }
+
+/* ---- tasks inside a card ------------------------------------------------------------------- */
+.task { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+.task-prompt { margin: 0; font-size: 1.2rem; font-weight: 900; }
+.task-media { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+.feed-card .task-media .sv { flex: 1 1 auto; min-height: 0; margin: 0; gap: 4px; }
+/* the sign keeps a usable size; while feedback is showing it may shrink further */
+.feed-card .task-media .sv-stage { flex: 1 1 auto; min-height: 110px; aspect-ratio: auto; max-width: none; }
+.feed-card:has(.feedback) .task-media .sv-stage { min-height: 56px; }
+.feed-card .task-media .sv-controls { flex-wrap: nowrap; gap: 6px; }
+.feed-card .task-media .sv-controls .chip { padding: 3px 8px; font-size: 0.74rem; white-space: nowrap; }
+.feed-card .task-media .sv-credit { font-size: 0.66rem; color: #6b6b6b; }
+.feed-card .task-media .sv-credit a { color: #6b6b6b; }
+.task-note { margin: 0; font-size: 0.82rem; color: #5f6b75; text-align: center; overflow-wrap: anywhere; }
+.task-error { margin: auto; font-weight: 700; color: var(--bad-ink); text-align: center; }
+
+.choices { flex: 0 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.choices-letters.choices-n3 { grid-template-columns: repeat(3, 1fr); }
+.choices-letters.choices-n4 { grid-template-columns: repeat(4, 1fr); }
+.choices-phrase .opt-main { font-size: 0.95rem; }
+.feed-card .option { min-height: 52px; padding: 8px 6px; touch-action: manipulation; }
+.choices-letters .opt-main { font-size: 1.6rem; }
+.choices .opt-sub { color: #5f6b75; }
+
+.task-cam .cam { flex: 1 1 auto; min-width: 0; width: 100%; aspect-ratio: auto; border-radius: 16px; }
+.cam-idle { background: #111; }
+
+/* first-launch tutorial */
+.tutorial { justify-content: center; justify-content: safe center; }
+.tutorial-intro { margin: 0; color: var(--feed-ink); }
+.tutorial-rows { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.tutorial-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; font-size: 0.92rem; font-weight: 700; background: var(--bg); border-radius: 14px; }
+.tutorial-icon {
+  flex: 0 0 auto; width: 38px; height: 38px; display: grid; place-items: center; font-size: 1.3rem; font-weight: 900;
+  background: #fff; border: 2px solid var(--line); border-radius: 50%;
+}
+.tutorial-next .tutorial-icon { color: var(--next-bg); }
+.tutorial-too_easy .tutorial-icon { color: var(--easy-ink); }
+.tutorial-too_hard .tutorial-icon { color: var(--hard-ink); }
+.tutorial-dislike_format .tutorial-icon { color: var(--bad-ink); }
+.tutorial-note, .tutorial-try { margin: 0; font-size: 0.85rem; color: #5f6b75; }
+.tutorial-try { font-weight: 800; color: var(--text); }
+
+/* ---- feedback inside the card ------------------------------------------------------------------ */
+.feedback { position: relative; flex: 0 0 auto; overflow: hidden; padding: 12px 16px 14px; animation: feedback-in 160ms ease-out; }
+.feedback-ok { background: var(--green-bg); color: var(--ok-ink); }
+.feedback-bad { background: var(--red-bg); color: var(--bad-ink); }
+.feedback-title { font-size: 1.2rem; font-weight: 900; }
+.feedback-sub { font-weight: 800; }
+.feedback-note { margin-top: 4px; font-size: 0.85rem; line-height: 1.35; color: var(--text); }
+.feedback-hint { margin-top: 6px; font-size: 0.78rem; }
+.feedback-timer { position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: var(--ok-ink); transform-origin: left; animation: feedback-timer linear forwards; }
+@keyframes feedback-in { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes feedback-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+/* ---- action bar ------------------------------------------------------------------------------ */
+.action-bar { flex: 0 0 auto; display: grid; grid-template-columns: 1fr 1fr 1.4fr 1fr; gap: 8px; padding: 6px 16px 12px; }
+.act {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 56px; padding: 6px 4px; font: inherit; font-size: 0.72rem; font-weight: 800; color: var(--feed-ink);
+  background: #fff; border: 2px solid var(--line); border-radius: 16px; box-shadow: 0 3px 0 var(--line);
+  cursor: pointer; touch-action: manipulation;
+}
+.act:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+.act:disabled { opacity: 0.45; cursor: not-allowed; }
+.act:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.act-icon { font-size: 1.3rem; line-height: 1; }
+.act-too_easy { color: var(--easy-ink); }
+.act-too_hard { color: var(--hard-ink); }
+.act-dislike_format { color: var(--bad-ink); }
+.act-next:not(:disabled) { color: #fff; background: var(--next-bg); border-color: var(--next-edge); box-shadow: 0 3px 0 var(--next-edge); }
+/* tutorial: the real buttons are highlighted with a pulsing ring */
+.action-bar-highlight .act::after {
+  content: ""; position: absolute; inset: -5px; border: 3px solid var(--blue); border-radius: 20px;
+  opacity: 0; pointer-events: none; animation: act-ring 1.6s ease-out infinite;
+}
+@keyframes act-ring { from { opacity: 0.9; transform: scale(0.94); } to { opacity: 0; transform: scale(1.08); } }
+
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* short screens (small phones, landscape windows): tighter cards so nothing has to scroll */
+@media (max-height: 700px) {
+  /* keep the source link of the credit, drop its long description */
+  .feed-card .sv-credit span { display: none; }
+  .task { gap: 8px; }
+  .task-prompt { font-size: 1.05rem; }
+  .feedback { padding: 8px 14px 10px; }
+  .feedback-title { font-size: 1.05rem; }
+  .feedback-note { font-size: 0.78rem; }
+  .feedback-hint { display: none; }
+  .tutorial-intro, .tutorial-note, .tutorial-try { font-size: 0.8rem; }
+  .tutorial-row { padding: 6px 10px; gap: 10px; font-size: 0.82rem; }
+  .tutorial-icon { width: 30px; height: 30px; font-size: 1.1rem; }
+  .tutorial-rows { gap: 6px; }
+}
+@media (max-height: 600px) {
+  .feed-card:has(.feedback) .sv-controls, .feed-card:has(.feedback) .sv-credit { display: none; }
+  .tutorial-note { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback { animation: none; }
+  .feedback-timer { display: none; }
+  .action-bar-highlight .act::after { animation: none; opacity: 1; transform: none; }
+}
+
+.app-loading { position: fixed; inset: 0; display: grid; place-items: center; color: #5f6b75; background: var(--bg); }

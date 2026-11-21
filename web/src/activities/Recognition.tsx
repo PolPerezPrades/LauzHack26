@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { NON_MANUAL_LABEL, PHRASES, getSign, label } from "../content/curriculum";
+import { PHRASES, getSign, label } from "../content/curriculum";
+import { es } from "../i18n/es";
 import type { Answer, Exercise } from "../lib/engine";
 import { SignViewer } from "../viewer/SignViewer";
 
@@ -43,8 +44,8 @@ export function Recognition({ ex, onAnswer, locked }: { ex: Ex; onAnswer: (a: An
       {phrase && chosen && (
         <div className="grammar">
           <div className="grammar-gloss">{phrase.signs.map((x) => getSign(x)?.en.toUpperCase()).join(" · ")}</div>
-          <div><b>{NON_MANUAL_LABEL[phrase.nonManual] ?? phrase.nonManual}</b></div>
-          <div>{phrase.note}</div>
+          <div><b>{es.content.nonManual[phrase.nonManual] ?? phrase.nonManual}</b></div>
+          <div>{phrase.note.es}</div>
         </div>
       )}
     </div>

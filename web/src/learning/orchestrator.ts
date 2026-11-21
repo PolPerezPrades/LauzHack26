@@ -13,7 +13,7 @@
  */
 import { CAMERA_LETTERS, PHRASES, SIGNS, UNITS, getSign, label, type Unit } from "../content/curriculum";
 import { DIALOGUES, PASSAGES, scenarioSigns } from "../content/scenarios";
-import type { Modality, SessionContext } from "../data/events";
+import type { Modality, SessionContext } from "../data/eventsV1";
 import { ACTIVITY, availableIn, estimateSeconds, type ItemKind } from "./activityCatalog";
 import { isDue, isWeak, mastery, retrievability, topConfusion, TARGET_ACCURACY, type Profile } from "./profile";
 
@@ -99,7 +99,7 @@ export function planSession(p: Profile, ctx: SessionContext, req: PlanRequest = 
 
   const unit = req.mode === "topic" && req.unitId ? UNITS.find((u) => u.id === req.unitId)! : frontierUnit(p, now);
   const inScope = (id: string) => req.mode !== "topic" || unit.items.includes(id);
-  log.push(req.mode === "topic" ? `Tema elegido: ${unit.title}.` : `Tema en curso: ${unit.title}.`);
+  log.push(req.mode === "topic" ? `Tema elegido: ${unit.title.es}.` : `Tema en curso: ${unit.title.es}.`);
 
   // 1. due reviews (receptive), most forgotten first
   const all = Object.keys(p.items).filter((id) => (SIGNS.has(id) || PHRASES.has(id)) && inScope(id));
@@ -120,7 +120,7 @@ export function planSession(p: Profile, ctx: SessionContext, req: PlanRequest = 
   if (ctx.minutes <= 5) newCount = Math.min(newCount, 2);
   if (p.answers === 0) newCount = Math.max(newCount, 3);
   const newItems = fresh.slice(0, Math.max(0, newCount));
-  log.push(`Nuevos: ${newItems.length} de ${unit.title}${dueR.length > 10 ? " (pocos: hay muchos repasos pendientes)" : ""}.`);
+  log.push(`Nuevos: ${newItems.length} de ${unit.title.es}${dueR.length > 10 ? " (pocos: hay muchos repasos pendientes)" : ""}.`);
 
   // phrases in level-3 units: receptive phrase practice
   const phrasePool = unit.id === "phrases" || unit.id === "core"
@@ -137,7 +137,7 @@ export function planSession(p: Profile, ctx: SessionContext, req: PlanRequest = 
     practiced.add(dueR[0]);
   }
   for (const id of newItems) {
-    push("intro", [id], [`signo nuevo de «${unit.title}»`, "introducción gradual"]);
+    push("intro", [id], [`signo nuevo de «${unit.title.es}»`, "introducción gradual"]);
     flush();
     queue.push({ activity: recognizeFor(id), items: [id], modality: "receptive", why: ["practicar el signo recién presentado (recuperación activa)"] });
     practiced.add(id);
@@ -194,7 +194,7 @@ export function planSession(p: Profile, ctx: SessionContext, req: PlanRequest = 
   const extraNew = fresh.slice(newItems.length, newItems.length + 3);
   for (const id of extraNew) {
     if (seconds > budget * 0.6 || p.difficulty < -0.25 || req.mode === "game") break;
-    push("intro", [id], [`signo nuevo de «${unit.title}»`, "hay tiempo y vas bien"]);
+    push("intro", [id], [`signo nuevo de «${unit.title.es}»`, "hay tiempo y vas bien"]);
     queue.push({ activity: recognizeFor(id), items: [id], modality: "receptive", why: ["practicar el signo recién presentado (recuperación activa)"] });
     flush();
     newItems.push(id);

@@ -1,0 +1,181 @@
+/**
+ * Every user-facing string of the UI, in Spanish. Typed as `Messages` (the English reference shape
+ * in en.ts): a missing or extra key fails the build.
+ */
+import type { Messages } from "./en";
+
+export const es: Messages = {
+  app: {
+    title: "Signa · Aprende ASL",
+    loading: "Cargando…",
+  },
+
+  lang: {
+    label: "Idioma",
+    names: { en: "English", es: "Español" },
+    short: { en: "EN", es: "ES" },
+  },
+
+  feed: {
+    exits: {
+      next: "Continuar",
+      too_easy: "Muy fácil",
+      too_hard: "Muy difícil",
+      dislike_format: "No me gusta este formato",
+      camera_off: "Sin cámara",
+    },
+    actionsLabel: "Acciones de la tarjeta",
+    actions: {
+      too_easy: { label: "Muy fácil", aria: "Muy fácil (flecha izquierda)" },
+      dislike_format: { label: "No me gusta", aria: "No me gusta este formato (flecha abajo)" },
+      next: { label: "Continuar", aria: "Continuar (flecha arriba, Intro o espacio)", locked: "Termina la tarea para continuar" },
+      too_hard: { label: "Muy difícil", aria: "Muy difícil (flecha derecha)" },
+    },
+    praise: ["¡Correcto!", "¡Genial!", "¡Muy bien!", "¡Eso es!", "¡Perfecto!"],
+    incorrect: "Casi…",
+    answer: (a: string) => `Respuesta: ${a}`,
+    xp: (n: number) => `+${n} XP`,
+    afterWrong: "Desliza o pulsa Continuar cuando lo hayas visto",
+    statsLabel: (streak: number, xp: number) => `Racha de ${streak} ${streak === 1 ? "día" : "días"} y ${xp} XP`,
+    mute: "Silenciar sonidos",
+    unmute: "Activar sonidos",
+    empty: "No hay tareas disponibles ahora mismo.",
+    retry: "Reintentar",
+    taskError: "Esta tarea ha fallado. Puedes quitarla deslizando o con los botones.",
+    announceCorrect: "Respuesta correcta",
+    announceWrong: (answer?: string) => (answer ? `Respuesta incorrecta. Respuesta: ${answer}` : "Respuesta incorrecta"),
+    forced: (format: string) => `Forzado: ${format}`,
+    backToDev: "Volver al modo desarrollador",
+  },
+
+  camera: {
+    offButton: "No puedo usar la cámara ahora",
+    offShort: "Sin cámara",
+    privacy: "El vídeo se procesa en tu dispositivo. No se graba ni se sube nada.",
+    starting: "Iniciando cámara y detector de manos…",
+    denied: "Permiso de cámara denegado. Puedes seguir sin cámara.",
+    notFound: "No se encontró ninguna cámara.",
+    failed: (detail: string) => `No se pudo iniciar la cámara (${detail}).`,
+    detectorFailed: "No se pudo cargar el detector de manos (modelo de MediaPipe).",
+    offThisSession: "La cámara está desactivada en esta sesión.",
+    camera: (n: number) => `Cámara ${n}`,
+    facing: { user: "frontal", environment: "trasera", unknown: "sin indicar" },
+    trackInfo: (label: string, facing: string, w: number, h: number) => `${label} · ${facing} · ${w}×${h}`,
+  },
+
+  formats: {
+    "system-tutorial": { title: "Cómo funciona", rules: "Aprende a mover las tarjetas." },
+    "quiz-choice": { title: "Elige el significado", rules: "Mira el signo y elige qué significa." },
+    "dev-camera-probe": { title: "Prueba de cámara", rules: "Muestra una mano a la cámara durante un segundo." },
+  },
+
+  tutorial: {
+    title: "Así funciona Signa",
+    intro: "Cada tarjeta es una tarea corta. Detrás espera la siguiente.",
+    rows: [
+      { exit: "next", icon: "↑", text: "Arriba: tarea hecha, a por la siguiente." },
+      { exit: "too_easy", icon: "←", text: "Izquierda: demasiado fácil para mí." },
+      { exit: "too_hard", icon: "→", text: "Derecha: demasiado difícil." },
+      { exit: "dislike_format", icon: "↓", text: "Abajo: no me gusta este tipo de tarea." },
+    ],
+    buttons: "También puedes usar los botones de abajo o las flechas del teclado.",
+    tryIt: "Pruébalo: quita esta tarjeta como quieras.",
+  },
+
+  quiz: {
+    letter: "¿Qué letra es?",
+    number: "¿Qué número es?",
+    word: "¿Qué significa este signo?",
+    phrase: "¿Qué significa esta frase?",
+    sign: "¿Qué significa?",
+  },
+
+  probe: {
+    title: "Prueba de cámara",
+    instructions: "Muestra una mano a la cámara y mantenla quieta un segundo.",
+    noHand: "Muestra tu mano a la cámara",
+    holding: "¡Te veo! Mantén la mano…",
+    detected: "Mano detectada: la cámara funciona.",
+  },
+
+  content: {
+    nonManual: {
+      neutral: "Expresión neutra",
+      yn: "Pregunta sí/no · cejas levantadas",
+      wh: "Pregunta abierta · cejas fruncidas",
+      neg: "Negación · mover la cabeza de lado a lado",
+      topic: "Tópico · cejas levantadas en la primera parte",
+    },
+  },
+
+  viewer: {
+    missing: "Signo no disponible",
+    loading: "Cargando…",
+    noVideo: "Sin vídeo",
+    dragHint: "↔ arrastra para girar",
+    replay: "↻ Repetir",
+    slow: "🐢 Lento",
+    resetView: "⟲ Vista",
+    hand3d: "✋ Mano 3D",
+    avatar: "🧍 Avatar",
+    realVideo: "🎥 Vídeo real",
+    creditSequence: "Secuencia de signos de diccionario",
+    creditHand: "Mano 3D · pose contrastada con vídeo real y descripciones ASL",
+    creditAvatar: "Avatar con el movimiento real del vídeo",
+  },
+
+  lab: {
+    title: "Laboratorio de signos",
+    back: "Volver",
+    render: "render",
+    review: "revisión",
+    handshape: "configuración",
+    palm: "palma",
+    fingers: "dedos",
+    movement: "movimiento",
+    hand3d: "Mano 3D",
+    avatar: "Avatar",
+    video: "Vídeo",
+    realHand: "Mano real (MediaPipe)",
+    noRealRef: "Sin referencia real",
+    reference: "Referencia",
+    illustration: "ilustración",
+  },
+
+  dev: {
+    title: "Modo desarrollador",
+    sandboxNote: "Todo lo que juegues aquí se guarda en la base de datos de pruebas «signa-dev». Tu progreso real no cambia.",
+    backToFeed: "Ir al feed",
+    format: "Formato",
+    devOnly: "solo dev",
+    formatInfo: (family: string, camera: string, trains: string) => `familia ${family} · cámara ${camera} · entrena ${trains || "—"}`,
+    content: "Contenido",
+    unit: "Unidad",
+    allUnits: "Todo el currículo",
+    itemsHint: "Elige ítems concretos o deja ninguno para recorrer la unidad en orden.",
+    noContent: "Este formato no usa contenido.",
+    clearItems: "Quitar selección",
+    params: "Parámetros",
+    challenge: "Nivel de reto (ce)",
+    auto: "auto",
+    resulting: "Parámetros resultantes",
+    camera: "Cámara",
+    cameraOn: "Activada",
+    cameraOff: "Desactivada (como «No puedo usar la cámara ahora»)",
+    cameraState: (state: string) => `Estado en esta sesión: ${state}`,
+    play: "▶ Jugar en modo forzado",
+    sandbox: "Sandbox",
+    sandboxCount: (n: number) => `${n} ${n === 1 ? "evento" : "eventos"} en «signa-dev»`,
+    reset: "Reiniciar sandbox",
+    resetConfirm: "¿Borrar todos los eventos del sandbox?",
+    log: "Registro de eventos",
+    logSource: "Base de datos",
+    logSandbox: "sandbox (signa-dev)",
+    logReal: "real (signa, solo lectura)",
+    logType: "Tipo",
+    logAll: "todos",
+    logFilter: "Filtrar texto",
+    logShowing: (shown: number, total: number) => `Mostrando ${shown} de ${total} (los 100 más recientes que coinciden)`,
+    logEmpty: "Sin eventos.",
+  },
+};

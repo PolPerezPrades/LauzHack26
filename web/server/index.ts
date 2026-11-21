@@ -14,7 +14,7 @@ const PORT = Number(process.env.PORT ?? 8787);
 const TYPES: Record<string, string> = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".json": "application/json",
   ".svg": "image/svg+xml", ".png": "image/png", ".mp4": "video/mp4", ".wasm": "application/wasm",
-  ".task": "application/octet-stream",
+  ".task": "application/octet-stream", ".webmanifest": "application/manifest+json",
 };
 
 createServer(async (req, res) => {

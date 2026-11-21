@@ -1,0 +1,187 @@
+/**
+ * Every user-facing string of the UI, in English: the default language and the reference shape.
+ * Every other language (es.ts) is typed as `Messages`, so a missing or extra key fails the build.
+ * Components never hard-code text: they read it through `useT()` (i18n/index.ts).
+ */
+import type { ExitKind } from "../core/types";
+import type { Lang } from "./langs";
+
+export const en = {
+  app: {
+    title: "Signa · Learn ASL",
+    loading: "Loading…",
+  },
+
+  lang: {
+    label: "Language",
+    /** each language names itself, so the switch reads the same in every UI language */
+    names: { en: "English", es: "Español" } as Record<Lang, string>,
+    short: { en: "EN", es: "ES" } as Record<Lang, string>,
+  },
+
+  feed: {
+    exits: {
+      next: "Next",
+      too_easy: "Too easy",
+      too_hard: "Too hard",
+      dislike_format: "Not for me",
+      camera_off: "No camera",
+    } satisfies Record<ExitKind, string>,
+    actionsLabel: "Card actions",
+    actions: {
+      too_easy: { label: "Too easy", aria: "Too easy (left arrow)" },
+      dislike_format: { label: "Not for me", aria: "I don't like this kind of task (down arrow)" },
+      next: { label: "Next", aria: "Next (up arrow, Enter or Space)", locked: "Finish the task to continue" },
+      too_hard: { label: "Too hard", aria: "Too hard (right arrow)" },
+    },
+    praise: ["Correct!", "Great!", "Well done!", "That's it!", "Perfect!"],
+    incorrect: "Not quite…",
+    answer: (a: string) => `Answer: ${a}`,
+    xp: (n: number) => `+${n} XP`,
+    afterWrong: "Swipe or tap Next when you're ready",
+    statsLabel: (streak: number, xp: number) => `${streak}-day streak and ${xp} XP`,
+    mute: "Mute sounds",
+    unmute: "Turn sounds on",
+    empty: "No tasks available right now.",
+    retry: "Try again",
+    taskError: "This task failed. You can remove it with a swipe or the buttons.",
+    announceCorrect: "Correct answer",
+    announceWrong: (answer?: string) => (answer ? `Wrong answer. Answer: ${answer}` : "Wrong answer"),
+    forced: (format: string) => `Forced: ${format}`,
+    backToDev: "Back to developer mode",
+  },
+
+  camera: {
+    offButton: "I can't use the camera now",
+    offShort: "No camera",
+    privacy: "Video is processed on your device. Nothing is recorded or uploaded.",
+    starting: "Starting the camera and hand detector…",
+    denied: "Camera permission denied. You can keep going without the camera.",
+    notFound: "No camera found.",
+    failed: (detail: string) => `Couldn't start the camera (${detail}).`,
+    detectorFailed: "Couldn't load the hand detector (MediaPipe model).",
+    offThisSession: "The camera is off for this session.",
+    camera: (n: number) => `Camera ${n}`,
+    facing: { user: "front", environment: "rear", unknown: "unspecified" } as Record<string, string>,
+    trackInfo: (label: string, facing: string, w: number, h: number) => `${label} · ${facing} · ${w}×${h}`,
+  },
+
+  formats: {
+    "system-tutorial": { title: "How it works", rules: "Learn to move the cards." },
+    "quiz-choice": { title: "Pick the meaning", rules: "Watch the sign and choose what it means." },
+    "dev-camera-probe": { title: "Camera test", rules: "Show a hand to the camera for one second." },
+  } as Record<string, { title: string; rules: string }>,
+
+  tutorial: {
+    title: "How Signa works",
+    intro: "Each card is a short task. The next one waits behind it.",
+    rows: [
+      { exit: "next", icon: "↑", text: "Up: task done, on to the next one." },
+      { exit: "too_easy", icon: "←", text: "Left: too easy for me." },
+      { exit: "too_hard", icon: "→", text: "Right: too hard." },
+      { exit: "dislike_format", icon: "↓", text: "Down: I don't like this kind of task." },
+    ] as { exit: ExitKind; icon: string; text: string }[],
+    buttons: "You can also use the buttons below or the arrow keys.",
+    tryIt: "Try it: send this card away however you like.",
+  },
+
+  quiz: {
+    letter: "Which letter is this?",
+    number: "Which number is this?",
+    word: "What does this sign mean?",
+    phrase: "What does this sentence mean?",
+    sign: "What does it mean?",
+  },
+
+  probe: {
+    title: "Camera test",
+    instructions: "Show a hand to the camera and hold it still for a second.",
+    noHand: "Show your hand to the camera",
+    holding: "I can see it! Keep your hand there…",
+    detected: "Hand detected: the camera works.",
+  },
+
+  /** Labels for content codes (the content files hold ids and codes, not UI text). */
+  content: {
+    nonManual: {
+      neutral: "Neutral expression",
+      yn: "Yes/no question · raised eyebrows",
+      wh: "Open question · furrowed eyebrows",
+      neg: "Negation · shake the head from side to side",
+      topic: "Topic · raised eyebrows on the first part",
+    } as Record<string, string>,
+  },
+
+  viewer: {
+    missing: "Sign not available",
+    loading: "Loading…",
+    noVideo: "No video",
+    dragHint: "↔ drag to rotate",
+    replay: "↻ Replay",
+    slow: "🐢 Slow",
+    resetView: "⟲ View",
+    hand3d: "✋ 3D hand",
+    avatar: "🧍 Avatar",
+    realVideo: "🎥 Real video",
+    creditSequence: "Sequence of dictionary signs",
+    creditHand: "3D hand · pose checked against real video and ASL descriptions",
+    creditAvatar: "Avatar replaying the real motion from the video",
+  },
+
+  lab: {
+    title: "Sign lab",
+    back: "Back",
+    render: "render",
+    review: "review",
+    handshape: "handshape",
+    palm: "palm",
+    fingers: "fingers",
+    movement: "movement",
+    hand3d: "3D hand",
+    avatar: "Avatar",
+    video: "Video",
+    realHand: "Real hand (MediaPipe)",
+    noRealRef: "No real reference",
+    reference: "Reference",
+    illustration: "illustration",
+  },
+
+  dev: {
+    title: "Developer mode",
+    sandboxNote: "Everything you play here is saved to the test database “signa-dev”. Your real progress doesn't change.",
+    backToFeed: "Go to the feed",
+    format: "Format",
+    devOnly: "dev only",
+    formatInfo: (family: string, camera: string, trains: string) => `family ${family} · camera ${camera} · trains ${trains || "—"}`,
+    content: "Content",
+    unit: "Unit",
+    allUnits: "Whole curriculum",
+    itemsHint: "Pick specific items, or none to walk the unit in order.",
+    noContent: "This format doesn't use content.",
+    clearItems: "Clear selection",
+    params: "Parameters",
+    challenge: "Challenge level (ce)",
+    auto: "auto",
+    resulting: "Resulting parameters",
+    camera: "Camera",
+    cameraOn: "On",
+    cameraOff: "Off (as with “I can't use the camera now”)",
+    cameraState: (state: string) => `State in this session: ${state}`,
+    play: "▶ Play in forced mode",
+    sandbox: "Sandbox",
+    sandboxCount: (n: number) => `${n} ${n === 1 ? "event" : "events"} in “signa-dev”`,
+    reset: "Reset sandbox",
+    resetConfirm: "Delete every event in the sandbox?",
+    log: "Event log",
+    logSource: "Database",
+    logSandbox: "sandbox (signa-dev)",
+    logReal: "real (signa, read-only)",
+    logType: "Type",
+    logAll: "all",
+    logFilter: "Filter text",
+    logShowing: (shown: number, total: number) => `Showing ${shown} of ${total} (the 100 most recent matches)`,
+    logEmpty: "No events.",
+  },
+};
+
+export type Messages = typeof en;

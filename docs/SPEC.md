@@ -32,7 +32,7 @@
 
 ### 1.1 Vision
 
-Signa teaches **American Sign Language (ASL)** to Spanish speakers. The redesign turns it into a **vertical, swipeable feed of short tasks**, in the spirit of TikTok (endless vertical feed), Tinder (a card stack you swipe away) and Duolingo (short exercises, gentle gamification).
+Signa teaches **American Sign Language (ASL)** to English and Spanish speakers (English UI by default, Spanish from the language switch; §8.6). The redesign turns it into a **vertical, swipeable feed of short tasks**, in the spirit of TikTok (endless vertical feed), Tinder (a card stack you swipe away) and Duolingo (short exercises, gentle gamification).
 
 There is no home screen and no lesson menu. **Opening the app shows a task.** Every task is a card. When the card leaves the screen, the next card is already waiting behind it. What comes next is chosen by a small recommender that learns from three things: what the learner knows, how they swipe, and how they perform.
 
@@ -208,7 +208,7 @@ Requirements:
 - Every format declares: required capabilities (camera), item kinds it accepts, the skill it trains (`receptive` = understand a sign, `productive` = produce it), its check mode (§4.2), typical duration, and how the challenge level maps to its parameters.
 - Every format MUST be playable from developer mode with chosen content (§6).
 - Every format MUST work, or be marked ineligible, without a camera.
-- UI text is Spanish and comes from the i18n module (§8.6).
+- UI text comes from the i18n module, in both UI languages (English and Spanish, §8.6), and content is shown in its translation for the current language.
 
 ### 4.2 Check modes: how an answer is verified
 
@@ -231,7 +231,7 @@ Requirements:
 
 Teaches one **new** sign (letter, number or word).
 
-1. **Watch:** `SignViewer` (3D hand / avatar / video), the Spanish meaning and the gloss, replay and slow-motion buttons, the "real video" toggle when a clip exists, and the content's `description` when it exists. Never invent a description.
+1. **Watch:** `SignViewer` (3D hand / avatar / video), the meaning in the UI language and the gloss, replay and slow-motion buttons, the "real video" toggle when a clip exists, and the content's `description` when it exists. Never invent a description.
 2. **Try it:** "Now you." With the camera: `camera` mode (live per-finger feedback as in today's `Imitate.tsx`, with "that looks like an N" confusions) or `mirror` mode. Without the camera: `self` mode ("Do it now", then "I did it" / "Show it again").
 3. **Result:** an `exposure` evidence for the receptive skill, plus a productive `retrieval` evidence from the try (strength depends on the mode). Then the card completes.
 
@@ -244,7 +244,7 @@ Like a lesson but **without showing how to do it first**. Only for items the lea
 | Variant | Prompt | Check |
 |---|---|---|
 | `sign-term` | "Signa: *gracias*" (or a letter or number) | `camera` / `mirror` / `self`, then the reference is shown |
-| `sign-sentence` | a Spanish sentence from `curriculum.json` phrases; the learner signs it **in ASL order** | `mirror` / `self`; then the avatar sentence, the gloss and the grammar note are shown |
+| `sign-sentence` | a sentence from `curriculum.json` phrases, in the UI language; the learner signs it **in ASL order** | `mirror` / `self`; then the avatar sentence, the gloss and the grammar note are shown |
 | `spell-word` | "Deletrea: *CASA*" (fingerspelling) | `camera` letter by letter, as in today's `SignSprint.tsx` (J and Z are confirmed by the learner); `self` without camera |
 
 Productive evidence per item. For `spell-word`: one evidence per distinct letter.
@@ -262,8 +262,8 @@ The avatar (or video, or 3D hand) signs something, and the learner picks its mea
 
 Duolingo-style word bank. The avatar signs a **phrase**, and the learner rebuilds it by tapping tiles **in order**.
 
-- Default tiles: the Spanish glosses of the signs, in the signed (ASL) order, plus distractor tiles (*(default)* 2–4, depending on the challenge level). Tapping a placed tile removes it. "Comprobar" checks the order.
-- Optional "translation" mode (MAY): tiles are the words of a natural Spanish translation, when a phrase has an authored token list (`es_tokens`, new optional field in `curriculum.json`).
+- Default tiles: the meanings of the signs in the UI language, in the signed (ASL) order, plus distractor tiles (*(default)* 2–4, depending on the challenge level). Tapping a placed tile removes it. "Comprobar" checks the order.
+- Optional "translation" mode (MAY): tiles are the words of a natural translation in the UI language, when a phrase has an authored token list for that language (`tokens: { es, en }`, new optional field in `curriculum.json`).
 - Feedback: the correct order, the gloss line (e.g. `YO GUSTAR PIZZA`), the non-manual marker and the grammar note. If the signs are right but the order isn't, say so (as `scriptedDialogue` does today).
 - Evidence: receptive, one per sign of the phrase, plus one for the phrase id.
 - Eligibility: a phrase is eligible when the learner knows ≥ 70 % of its signs (receptive) and has met all of them (§7.7).
@@ -520,7 +520,7 @@ Then pick by softmax over the top 5 scores (temperature *(default)* 0.05) with a
 
 ### 7.9 Explanations
 
-Every candidate carries machine-readable reasons (e.g. `{ code: "due_review", item: "w-hello", r: 0.72 }`, `{ code: "format_pref", alpha: 3, beta: 1 }`) and its feature breakdown. Reasons are rendered in Spanish by the i18n module for the ℹ button ("Repaso: hace días que no ves *hola*"), and shown raw in dev mode. `card.shown` logs the reasons and the score.
+Every candidate carries machine-readable reasons (e.g. `{ code: "due_review", item: "w-hello", r: 0.72 }`, `{ code: "format_pref", alpha: 3, beta: 1 }`) and its feature breakdown. Reasons are rendered in the UI language by the i18n module for the ℹ button ("Repaso: hace días que no ves *hola*"), and shown raw in dev mode. `card.shown` logs the reasons and the score.
 
 ### 7.10 Speed and correctness: decision
 
@@ -573,7 +573,7 @@ recommender/  candidates.ts, features.ts, select.ts, explain.ts, config.ts, inde
 camera/       cameraSession.ts (state store + opt-out), checkMode.ts
 sound/        Web Audio engine: synthesised effects, unlock on first gesture, mute/volume, optional haptics
 dev/          DevScreen and inspectors
-i18n/         es.ts (all user-facing strings)
+i18n/         en.ts (reference shape) + es.ts: all user-facing strings; the language store (useT) and the switch
 ```
 
 ### 8.3 Contracts (sketch, refine in Part A)
@@ -659,7 +659,7 @@ Upcasting v1 logs, best effort: v1 `answer` → `evidence` (`check` derived from
 - **Performance:** swipe tracking at 60 fps on a mid-range phone (transform-only animations). At most 2 cards mounted. At most ~6 live WebGL contexts at a time (multi-viewer games share or reuse canvases, or use video thumbnails). The next card's media (motion JSON, video) is prefetched. Heavy modules (three.js, MediaPipe) load lazily.
 - **Offline (Part F):** after the first load, the app shell and content JSON work offline (service worker). Large media MAY stay network-only.
 - **Targets and browsers:** the three targets in §1.4, in current Chrome/Edge, Firefox and Safari (iOS ≥ 17) on mobile and desktop, in standalone PWA mode, and in an embedded WebView (Android WebView, iOS WKWebView). The camera and the sound engine need HTTPS or localhost. To test on a phone during development, use the Vite dev server with `--host` over HTTPS (e.g. a local certificate or a tunnel).
-- **i18n:** user-facing strings live in `src/i18n/es.ts` (Spanish is the only UI language now). Code, comments and agent docs are in English.
+- **i18n:** two UI languages, English (the default) and Spanish, chosen with the EN | ES switch in the feed overlay, dev mode and the lab. The choice is a device preference kept in localStorage, not learner state, so it is not logged. User-facing strings live in `src/i18n/en.ts` (the reference shape) and `src/i18n/es.ts` (typed against it, so a missing string fails the build); components read them with `useT()`. Content keys its translations by language code (`translations`, unit `title`, phrase `note`: `{ es, en }`); text that exists only in Spanish (letter descriptions, curator notes) is shown as is, marked `lang="es"`. Spanish examples in this spec (prompts, tiles, reason strings) stand for the text in the current UI language. Code, comments and agent docs are in English.
 - **Accessibility:** §3.3; contrast ≥ 4.5:1 for text; every icon button has an accessible name.
 - **Quality gates for every part:** `npm run typecheck`, `npm test`, `npm run build` pass; no new console errors in the dev server; the part's manual checks pass.
 
@@ -692,7 +692,7 @@ Scope:
 7. **Interim card source** `simplePicker`: alternates eligible non-dev formats, walks the curriculum order for content, and skips camera formats when the camera isn't usable. Part D replaces it.
 8. **Dev mode v1** (`#dev`, §6): format picker, content picker, params, camera on/off simulation, forced-mode play, sandbox database `signa-dev` with reset, and the event-log inspector.
 9. **Routing and cleanup:** the feed is the default route; `#lab` still works; `#dev` opens dev mode. Delete the five old screens (`Home`, `Session`, `Onboarding`, `Placement`, `Results`). Keep `learning/`, `activities/`, `lib/` and `server/` even if some of their exports become unused: later parts port or remove them.
-10. **i18n:** create `src/i18n/es.ts` and use it for all new UI text.
+10. **i18n:** create `src/i18n/` and use it for all new UI text. (Follow-up after Part A: English default plus Spanish, with a language switch; D-038.)
 11. **Sound engine** (`src/sound/`, §3.7): synthesised effects for the threshold tick, the four exits, spring-back, card settle, and correct/wrong; unlock on first gesture; a mute toggle in the feed overlay (persisted with `settings.set`); optional haptics.
 12. **Targets** (§1.4): the vertical layout works on desktop (mouse, keyboard), in mobile browsers (touch) and in standalone display mode. A minimal web manifest is fine here; the full PWA is Part F.
 
@@ -761,7 +761,7 @@ Scope:
 
 1. `src/recommender/`: candidates, features, scoring, hard constraints, seeded softmax selection, explanations, config.
 2. `CardSource` implementation backed by the recommender, with queue invalidation (§7.8.6); `card.shown` logs reasons and score.
-3. The ℹ "why this card" button, with Spanish reason strings.
+3. The ℹ "why this card" button, with reason strings in both UI languages.
 4. Simulation harness (`recommender/sim/`): ground-truth learner model, personas (novice, fluent, struggling, format hater, no camera, random swiper), and a script `npm run simulate` printing the §7.12 metrics; the metrics also run as Vitest tests.
 5. Dev inspector: top candidates with the feature breakdown, force-next, seed control, and "simulate N cards with persona X".
 6. Remove `learning/orchestrator.ts` and the simple picker from the default route (the picker MAY stay for dev).

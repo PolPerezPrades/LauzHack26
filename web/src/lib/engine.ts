@@ -1,6 +1,6 @@
 /** Exercise building blocks: shared answer type, distractors, spelling words and the placement test. */
 import { PHRASES, SIGNS, UNITS, getSign, letterId, unitIndex } from "../content/curriculum";
-import type { Modality } from "../data/events";
+import type { Modality } from "../data/eventsV1";
 import type { Profile } from "../learning/profile";
 
 export type Exercise =

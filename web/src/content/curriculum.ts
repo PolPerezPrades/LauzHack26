@@ -4,6 +4,8 @@
  * only needs ids, translations, kinds and units.
  */
 import curriculum from "../../content/curriculum.json";
+import type { ItemKind } from "../core/types";
+import type { Lang } from "../i18n/langs";
 import { SIGN_SPECS, type SignSpec } from "./signs";
 
 export type Kind = "letter" | "number" | "word";
@@ -18,36 +20,27 @@ export interface Sign {
   level: number;
   spec: SignSpec;
 }
+/** A text in every UI language: content files key their translations by language code. */
+export type Localized = Record<Lang, string>;
+
 export interface Phrase {
   id: string;
   signs: string[];
   en: string;
   es: string;
+  /** non-manual marker code; its label comes from i18n `content.nonManual` */
   nonManual: NonManual | string;
-  note: string;
+  /** grammar note shown with the answer */
+  note: Localized;
   ai?: boolean;
 }
 export interface Unit {
   id: string;
   level: number;
-  title: string;
+  title: Localized;
   icon: string;
   items: string[]; // sign ids, or phrase ids for the "phrases" unit
 }
-
-export const LEVEL_NAMES: Record<number, string> = {
-  1: "Nivel 1 · Dactilología y números",
-  2: "Nivel 2 · Vocabulario básico",
-  3: "Nivel 3 · Frases y gramática",
-};
-
-export const NON_MANUAL_LABEL: Record<string, string> = {
-  neutral: "Expresión neutra",
-  yn: "Pregunta sí/no · cejas levantadas",
-  wh: "Pregunta abierta · cejas fruncidas",
-  neg: "Negación · mover la cabeza de lado a lado",
-  topic: "Tópico · cejas levantadas en la primera parte",
-};
 
 /** Letters with movement (J, Z) can't be checked from a single hand pose. */
 export const CAMERA_LETTERS = "ABCDEFGHIKLMNOPQRSTUVWXY".split("");
@@ -89,12 +82,35 @@ export function letterId(L: string) {
 export function getSign(id: string) {
   return SIGNS.get(id);
 }
-export function label(id: string) {
+/** What an item means in a UI language: letters read the same; numbers, words and phrases are translated. */
+export function itemLabel(id: string, lang: Lang): string {
   const s = SIGNS.get(id);
-  if (s) return s.kind === "letter" ? s.en : s.es;
-  return PHRASES.get(id)?.es ?? id;
+  if (s) return s.kind === "letter" ? s.en : s[lang];
+  return PHRASES.get(id)?.[lang] ?? id;
+}
+/** Spanish label, kept for the old modules (learning/, activities/). New code uses itemLabel(id, lang). */
+export function label(id: string) {
+  return itemLabel(id, "es");
 }
 export function unitIndex(id: string) {
   return UNITS.findIndex((u) => u.id === id);
 }
 export const hasMedia = SIGNS.size > 0;
+
+/** Kind of a learnable item: a sign (letter, number, word) or a phrase; undefined if unknown. */
+export function itemKindOf(id: string): ItemKind | undefined {
+  return SIGNS.get(id)?.kind ?? (PHRASES.has(id) ? "phrase" : undefined);
+}
+
+const numberValue = (id: string) => Number(id.replace(/^num-/, ""));
+
+/** Items of one unit in teaching order (numbers by value, not by file name). */
+export function unitOrder(unitId: string): string[] {
+  const items = UNITS.find((u) => u.id === unitId)?.items ?? [];
+  return unitId === "numbers" ? [...items].sort((a, b) => numberValue(a) - numberValue(b)) : [...items];
+}
+
+/** Every item in curriculum order: units in order, items in unit order. */
+export function curriculumOrder(): string[] {
+  return UNITS.flatMap((u) => unitOrder(u.id));
+}

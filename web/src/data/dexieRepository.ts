@@ -1,16 +1,22 @@
-/** IndexedDB implementation of the learning repository (Dexie, versioned schema with migrations). */
+/**
+ * IndexedDB implementation of the learning repository (Dexie, versioned DB schema with migrations).
+ * One database per log: "signa" holds the learner's real log, "signa-dev" the dev-mode sandbox.
+ * Event schema v2 needed no change to the DB schema: rows are upcast when read.
+ */
 import Dexie, { type EntityTable } from "dexie";
-import type { LearningEvent } from "./events";
-import { upcast } from "./events";
-import { MemoryRepository, type LearningRepository } from "./repository";
+import { upcastEvents, type LearningEvent, type StoredEvent } from "./events";
+import { MemoryRepository, withoutSeq, type LearningRepository } from "./repository";
+
+export const REAL_DB = "signa";
+export const SANDBOX_DB = "signa-dev";
 
 interface MetaRow { key: string; value: unknown }
 
 class SignaDB extends Dexie {
   events!: EntityTable<LearningEvent, "seq">;
   meta!: EntityTable<MetaRow, "key">;
-  constructor() {
-    super("signa");
+  constructor(name: string) {
+    super(name);
     // v1: append-only event log (auto-increment seq) + small key/value metadata table.
     // Future schema changes: add db.version(2).stores({...}).upgrade(tx => ...) below.
     this.version(1).stores({
@@ -21,21 +27,23 @@ class SignaDB extends Dexie {
 }
 
 export class DexieRepository implements LearningRepository {
-  private db = new SignaDB();
+  private db: SignaDB;
+  constructor(name = REAL_DB) {
+    this.db = new SignaDB(name);
+  }
 
   async append(e: LearningEvent) {
-    const { seq: _ignored, ...rest } = e;
-    void _ignored;
-    const seq = await this.db.events.add(rest as LearningEvent);
+    const seq = await this.db.events.add(withoutSeq(e));
     return { ...e, seq: seq as number };
   }
   async all() {
-    return (await this.db.events.orderBy("seq").toArray()).map(upcast);
+    // rows may predate schema v2
+    return upcastEvents((await this.db.events.orderBy("seq").toArray()) as StoredEvent[]);
   }
   async replaceAll(events: LearningEvent[]) {
     await this.db.transaction("rw", this.db.events, async () => {
       await this.db.events.clear();
-      await this.db.events.bulkAdd(events.map(({ seq: _s, ...rest }) => { void _s; return rest as LearningEvent; }));
+      await this.db.events.bulkAdd(events.map(withoutSeq));
     });
   }
   async getMeta<T>(key: string) {
@@ -47,9 +55,9 @@ export class DexieRepository implements LearningRepository {
 }
 
 /** IndexedDB when available; in-memory otherwise (e.g. some private-browsing modes). */
-export async function openRepository(): Promise<{ repo: LearningRepository; persistent: boolean }> {
+export async function openRepository(name = REAL_DB): Promise<{ repo: LearningRepository; persistent: boolean }> {
   try {
-    const repo = new DexieRepository();
+    const repo = new DexieRepository(name);
     await repo.getMeta("probe");
     return { repo, persistent: true };
   } catch {

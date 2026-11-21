@@ -1,6 +1,6 @@
 # AGENTS.md — working on Signa
 
-Signa is a web app that teaches **American Sign Language (ASL)** to Spanish speakers. It is being redesigned into a **vertical, swipeable feed of short tasks** (TikTok / Tinder / Duolingo-like): lessons, questions, quizzes and minigames, chosen by a small per-learner recommender, with sound effects on every swipe and result. Several camera tasks check the learner's handshapes in the browser with MediaPipe. One build serves three targets, always in a vertical layout: a desktop website (webcam), a mobile website (front camera), and an installed or embedded mobile web app (front camera). See SPEC §1.4.
+Signa is a web app that teaches **American Sign Language (ASL)** to English and Spanish speakers (English UI by default, Spanish from the language switch). It is being redesigned into a **vertical, swipeable feed of short tasks** (TikTok / Tinder / Duolingo-like): lessons, questions, quizzes and minigames, chosen by a small per-learner recommender, with sound effects on every swipe and result. Several camera tasks check the learner's handshapes in the browser with MediaPipe. One build serves three targets, always in a vertical layout: a desktop website (webcam), a mobile website (front camera), and an installed or embedded mobile web app (front camera). See SPEC §1.4.
 
 ## Key documents
 
@@ -41,7 +41,7 @@ Signa is a web app that teaches **American Sign Language (ASL)** to Spanish spea
 6. **Camera privacy:** frames are processed on the device, nothing is uploaded, mirror clips live only in memory. Respect the camera opt-out (SPEC §5) everywhere.
 7. **Dependencies:** avoid new ones. If you need one, use an exact version released before the `before=` date in `web/.npmrc`, and record the reason in `PROJECT_STATE.md` §4. Python follows the same rule via `exclude-newer` in `pyproject.toml`.
 8. **Every gesture has a button and a keyboard alternative.** Respect `prefers-reduced-motion`.
-9. **UI text is Spanish, from `web/src/i18n/es.ts`** (once Part A creates it). Code, comments and agent docs are in English.
+9. **UI text comes from `web/src/i18n/`, in English (default) and Spanish.** Every new string goes in both `en.ts` and `es.ts` (the build fails if one is missing), and content is shown in its translation for the current language (SPEC §8.6). Code, comments and agent docs are in English.
 10. **Don't touch unrelated code:** the Python perception prototype at the root (`perception/`, `camctl.py`, `view_cam.sh`, `pyproject.toml`, `uv.lock`) and untracked folders (`cuberec/`, `.cuberec/`, `recordings/`, `models/`). Keep `#lab` (sign lab) working.
 
 ## Repository map

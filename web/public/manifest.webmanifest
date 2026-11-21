@@ -1,0 +1,11 @@
+{
+  "name": "Signa · Learn ASL",
+  "short_name": "Signa",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f7f7",
+  "theme_color": "#f7f7f7"
+}

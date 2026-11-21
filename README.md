@@ -2,7 +2,7 @@
 
 Learn **American Sign Language (ASL)** a few seconds at a time.
 
-Signa is a web app for Spanish speakers. Open it, and a task is already waiting: learn a new letter or word, sign something in front of your camera, guess what the avatar is signing, or play a quick minigame. Then swipe to the next card:
+Signa is a web app in English and Spanish. Open it, and a task is already waiting: learn a new letter or word, sign something in front of your camera, guess what the avatar is signing, or play a quick minigame. Then swipe to the next card:
 
 | Swipe | Meaning |
 |---|---|

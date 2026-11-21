@@ -6,7 +6,7 @@
  */
 import { useState, type ComponentType } from "react";
 import { getSign, letterId } from "../content/curriculum";
-import type { SessionContext } from "../data/events";
+import type { SessionContext } from "../data/eventsV1";
 import type { PlanStep } from "../learning/orchestrator";
 import type { Profile } from "../learning/profile";
 import { phraseOptions, signOptions, spellWord, type Answer } from "../lib/engine";

@@ -9,7 +9,7 @@
  *  - Difficulty controller: keeps recent accuracy in the 80–85 % band (zone of proximal development).
  */
 import { createEmptyCard, fsrs, Rating, State, type Card, type Grade } from "ts-fsrs";
-import type { LearningEvent, Modality } from "../data/events";
+import type { V1Event as LearningEvent, Modality } from "../data/eventsV1";
 
 export const scheduler = fsrs({ request_retention: 0.9, enable_fuzz: false, enable_short_term: true });
 

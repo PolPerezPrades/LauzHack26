@@ -1,0 +1,13 @@
+/* Language switch (EN | ES), used in the feed overlay, dev mode and the lab. */
+.lang-switch {
+  flex: 0 0 auto; display: inline-flex; gap: 2px; height: 44px; padding: 3px;
+  background: #fff; border: 2px solid var(--line); border-radius: 999px;
+}
+.lang-switch button {
+  min-width: 40px; padding: 0 8px; border: 0; border-radius: 999px; cursor: pointer; touch-action: manipulation;
+  font: inherit; font-size: 0.8rem; font-weight: 900; letter-spacing: 0.02em;
+  color: var(--feed-ink, #4b5560); background: transparent;
+}
+.lang-switch button.on { color: #fff; background: var(--text); }
+.lang-switch button:not(.on):hover { background: var(--bg); }
+.lang-switch button:focus-visible { outline: 3px solid var(--blue); outline-offset: 1px; }

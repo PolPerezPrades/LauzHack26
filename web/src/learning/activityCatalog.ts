@@ -4,7 +4,7 @@
  * productive) and how long it takes. UI components are bound in src/activities/registry.tsx.
  * Adding an activity = one entry here + one component there.
  */
-import type { Modality } from "../data/events";
+import type { Modality } from "../data/eventsV1";
 
 export type ItemKind = "letter" | "number" | "word" | "phrase";
 export type ActivityKind = "intro" | "practice" | "game" | "exam";
