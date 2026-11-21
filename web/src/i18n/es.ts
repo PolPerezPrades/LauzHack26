@@ -3,6 +3,11 @@
  * in en.ts): a missing or extra key fails the build.
  */
 import type { Messages } from "./en";
+import { games } from "./parts/games";
+import { learner } from "./parts/learner";
+import { learning } from "./parts/learning";
+import { recommender } from "./parts/recommender";
+import { settings } from "./parts/settings";
 
 export const es: Messages = {
   app: {
@@ -67,6 +72,8 @@ export const es: Messages = {
     "system-tutorial": { title: "Cómo funciona", rules: "Aprende a mover las tarjetas." },
     "quiz-choice": { title: "Elige el significado", rules: "Mira el signo y elige qué significa." },
     "dev-camera-probe": { title: "Prueba de cámara", rules: "Muestra una mano a la cámara durante un segundo." },
+    ...learning.formats.es,
+    ...games.formats.es,
   },
 
   tutorial: {
@@ -178,4 +185,12 @@ export const es: Messages = {
     logShowing: (shown: number, total: number) => `Mostrando ${shown} de ${total} (los 100 más recientes que coinciden)`,
     logEmpty: "Sin eventos.",
   },
+
+  // Strings added by later parts live in their own modules (i18n/parts/, SPEC §9.0), so parts
+  // built in parallel never edit this file for their own strings.
+  learning: learning.es,
+  learner: learner.es,
+  recommender: recommender.es,
+  games: games.es,
+  settings: settings.es,
 };

@@ -5,6 +5,12 @@
  */
 import type { ExitKind } from "../core/types";
 import type { Lang } from "./langs";
+import type { FormatTexts } from "./parts/types";
+import { games } from "./parts/games";
+import { learner } from "./parts/learner";
+import { learning } from "./parts/learning";
+import { recommender } from "./parts/recommender";
+import { settings } from "./parts/settings";
 
 export const en = {
   app: {
@@ -70,7 +76,9 @@ export const en = {
     "system-tutorial": { title: "How it works", rules: "Learn to move the cards." },
     "quiz-choice": { title: "Pick the meaning", rules: "Watch the sign and choose what it means." },
     "dev-camera-probe": { title: "Camera test", rules: "Show a hand to the camera for one second." },
-  } as Record<string, { title: string; rules: string }>,
+    ...learning.formats.en,
+    ...games.formats.en,
+  } as FormatTexts,
 
   tutorial: {
     title: "How Signa works",
@@ -182,6 +190,14 @@ export const en = {
     logShowing: (shown: number, total: number) => `Showing ${shown} of ${total} (the 100 most recent matches)`,
     logEmpty: "No events.",
   },
+
+  // Strings added by later parts live in their own modules (i18n/parts/, SPEC §9.0), so parts
+  // built in parallel never edit this file for their own strings.
+  learning: learning.en,
+  learner: learner.en,
+  recommender: recommender.en,
+  games: games.en,
+  settings: settings.en,
 };
 
 export type Messages = typeof en;

@@ -9,7 +9,7 @@ import { createSimplePicker } from "./simplePicker";
 
 let n = 0;
 const ids = () => `card-${++n}`;
-const ctx = (history: CardRef[], cameraUsable = true): FeedContext => ({ history, cameraUsable, rng: createRng(1) });
+const ctx = (history: CardRef[], cameraUsable = true): FeedContext => ({ history, events: [], cameraUsable, rng: createRng(1) });
 const exited = (format: string, items: string[] = []): CardRef => ({ cardId: ids(), format, items, exit: "next" });
 
 /** A non-dev format that needs the camera (none exists in Part A, so the test brings its own). */

@@ -1,0 +1,17 @@
+# Same line endings on every machine (Linux, macOS, Windows): text is LF in the repository and in
+# the working tree, so files edited on Windows don't show every line as changed.
+* text=auto eol=lf
+
+# binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.mp4 binary
+*.webm binary
+*.wasm binary
+*.task binary
+*.glb binary
+*.onnx binary

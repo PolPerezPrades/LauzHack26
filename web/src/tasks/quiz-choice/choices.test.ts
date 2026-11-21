@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PHRASES, getSign, itemLabel } from "../../content/curriculum";
 import { createRng } from "../../core/rng";
-import type { LearnerQueries } from "../../core/types";
+import { fakeQueries } from "../../learner/testing";
 import { LANGS } from "../../i18n/langs";
 import { buildChoices } from "./choices";
 import { optionsFor, quizChoice } from "./spec";
@@ -39,7 +39,7 @@ describe("quiz-choice options", () => {
   });
 
   it("generates a plan for the next item with its options", () => {
-    const q: LearnerQueries = { nextItems: () => ["w-thank-you"] };
+    const q = fakeQueries({ nextItems: () => ["w-thank-you"] });
     const [draft] = quizChoice.generate(q, { rng: createRng(1), ce: 0, cameraUsable: false });
     expect(draft.items).toEqual(["w-thank-you"]);
     expect(draft.params.options).toBe(4);

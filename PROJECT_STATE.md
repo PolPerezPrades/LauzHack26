@@ -38,6 +38,14 @@ You are continuing a multi-session project. **This file is the project's memory.
 3. Add one entry at the **top** of §7 Session log.
 4. Tell the user what you did, what's left, and anything they must decide or test by hand.
 
+**Parallel parts (SPEC §9.0)** — since 2026-11-22, parts are built by three streams on different machines at the same time, and an integrator merges them. If you are doing one of those parts (A2, A3, B, C, D, E, F1, F2, H):
+
+- your state file is **`docs/parts/<part>.md`**: tick its checklist, record decisions, questions and risks there with your part's prefix (`D-B01`, `Q-B01`, `R-B01`), add a log entry at the top of its log, and write the handoff for the integrator;
+- read this file for context (§2, §4, §5, §6), but **don't edit it**: the integrator folds your part file in when it merges your branch. Ignore the end-of-session steps below that write here; your part file's status and handoff replace them;
+- edit only the files your part owns (SPEC §9.0.3) and keep contracts additive (SPEC §9.0.4).
+
+Only the integrator (Pablo's laptop, SPEC §9.0.5) edits this file, `docs/SPEC.md`, `AGENTS.md` and the READMEs.
+
 **Style rules**
 
 - Be brief and factual. Use absolute dates (`YYYY-MM-DD`), file paths and commit hashes (when the user has committed), never "today" or "recently".
@@ -50,30 +58,33 @@ You are continuing a multi-session project. **This file is the project's memory.
 
 ## 2. Snapshot
 
-- **Last updated:** 2026-11-21
-- **Active part:** Part A — Feed foundation, **implemented**, plus a follow-up at the user's request: the UI is now **English by default, with Spanish from an EN | ES switch** (D-038). Every automated acceptance check passes. The checks on real devices (phone, installed app, desktop webcam) are still open (§3 Part A, R-016).
-- **Branch:** `gesture_learning`. The last commit is `487b451` ("spec"). Part A is **not committed**: it is in the working tree for the user to review and commit.
-- **What works now:** `/` opens the vertical feed. The first launch shows the gesture tutorial, then quiz-choice cards that walk the curriculum in order. The four exits work by swipe (touch, mouse), by the action-bar buttons and by the arrow keys; Next only works after completion. All exits share one animation; short drags spring back; stamps show the drag direction; reduced motion gets fades. Feedback appears inside the card: a correct answer auto-advances after 1.2 s, a wrong one waits. Sounds are synthesised, with a mute toggle. Event log v2 records `app.open`, `card.shown`, `evidence`, `card.result`, `card.exit`, `camera.off` and `settings.set`. `#dev` is dev mode v1 (forced play into `signa-dev`, camera on/off, params, event-log inspector); `#dev/play` is the forced feed; `#lab` works as before. The EN | ES switch sits in the feed overlay, dev mode and the lab; the choice is saved per device and applies at once, without logging anything or changing the current card.
-- **Quality gates (2026-11-21):**
-  - `npm run typecheck` ✓; `npm test` ✓ (11 files, 78 tests); `npm run build` ✓ (one chunk-size warning, R-015); `npm start` ✓ on Node 22.23.5.
-  - 166 browser checks pass in headless Chromium (Playwright, run from the session scratchpad, not kept in the repo): desktop mouse and keyboard, phone touch emulation, a fake camera, a real hand clip through MediaPipe, reduced motion, 4 screen sizes, and the language switch (50 checks: default English, live switch, persistence, keyboard, word and phrase labels, dev mode, lab, top bar at 320 px). The whole suite was rerun in English after the switch was added.
-  - No console errors. The only warnings come from libraries (R-014).
-- **Toolchain:** this machine has no Node.js (R-013). The session used a temporary Node 22.23.5 with npm 11.21.2 (D-036, Q-007).
+- **Last updated:** 2026-11-22
+- **Phase:** parallel delivery (SPEC §9.0, D-041). Part A is done (real-device checks still open, R-016). **Part 0, the parallel scaffolding, is done**: the learner-query contract and its stub, per-part registries, i18n modules and dev panels, `.gitattributes`, the part files and the plan. **Wave 1 is ready to start**: C (S1, Ashlie), B (S2, Pol), A2 then H (S3, Max), and A3 (the integrator, on this laptop).
+- **Branch:** `gesture_learning`. Part A is `5d99806`; Part 0 is the commit after it ("Part 0: parallel plan and scaffolding"). Each part is built on its own branch (`part-<id>`, SPEC §9.0.1) and merged here by the integrator.
+- **What works now:** as after Part A. `/` opens the vertical feed: the gesture tutorial on first launch, then quiz-choice cards that walk the curriculum in order. The four exits work by swipe (touch, mouse), by the action-bar buttons and by the arrow keys; Next only works after completion. Feedback appears inside the card: a correct answer auto-advances after 1.2 s, a wrong one waits (Part A2 changes both). Sounds are synthesised, with a mute toggle. Event log v2. `#dev` is dev mode v1, `#dev/play` the forced feed, `#lab` the sign lab. EN | ES switch. New in Part 0, with no visible change: card sources get the log in `FeedContext.events` and build learner queries with `createLearnerQueries()` (a stub until Part C).
+- **Quality gates (2026-11-22, after Part 0):** `npm run typecheck` ✓; `npm test` ✓ (12 files, 84 tests); `npm run build` ✓ (the R-015 chunk-size warning). Real-time headless Chrome 157 check over the DevTools protocol against `npm run dev`: the tutorial first, the quiz card after ←, dev mode renders, no console errors.
+- **Toolchain:** four machines (SPEC §9.0.6). This laptop (the spec machine, integrator) has Node 22.23.5 and npm 10.9.9 in `~/.local/bin`, the MX Brio and the Android phone. Pol's laptop may have no Node (R-013); Max's Mac and Ashlie's Windows PC install Node 22.18 or newer. Every machine installs with `npm ci` (D-050).
 - **Next step:**
-  1. The user tests Part A by hand (see the open items of §3 Part A), including the language switch, and commits.
-  2. Then implement **Part B — Learning task formats** ([`docs/SPEC.md` §9](docs/SPEC.md#part-b--learning-task-formats)). Start with the shared task UI in `src/tasks/ui/` and `checkModeFor()` in `src/camera/checkMode.ts`, both on top of the contracts in `src/core/types.ts`.
+  1. Start wave 1 on the three machines: setup steps and the prompt for each agent are in [`docs/parts/README.md`](docs/parts/README.md).
+  2. The integrator does **Part A3** on this laptop (it needs the MX Brio) and the Part A manual checks (R-016), then merges the wave-1 branches as they arrive (SPEC §9.0.5).
+  3. Wave 2 (D, E, F1) starts per stream once the parts it needs are merged.
 
-| Part | Title | Status |
-|---|---|---|
-| A | Feed foundation | done with known gaps (see §6: R-016, real-device checks) |
-| B | Learning task formats | not started |
-| C | Learner model v2 | not started |
-| D | Recommender | not started |
-| E | Minigames | not started |
-| F | Product polish and cleanup | not started |
-| G | Optional extensions | not planned |
+| Part | Title | Wave | Stream · machine | Branch | Status | State file |
+|---|---|---|---|---|---|---|
+| A | Feed foundation | — | — | `gesture_learning` | done with known gaps (R-016) | §3 below |
+| 0 | Parallel scaffolding | 0 | integrator | `gesture_learning` | done | §7 (2026-11-22) |
+| A2 | Feed feedback follow-ups | 1 | S3 · Max (macOS) | `part-a2` | not started | [`docs/parts/A2.md`](docs/parts/A2.md) |
+| A3 | MX Brio defaults | 1 | integrator · Pablo | `part-a3` | not started | [`docs/parts/A3.md`](docs/parts/A3.md) |
+| B | Learning task formats | 1 | S2 · Pol (Ubuntu) | `part-b` | not started | [`docs/parts/B.md`](docs/parts/B.md) |
+| C | Learner model v2 | 1 | S1 · Ashlie (Windows) | `part-c` | not started | [`docs/parts/C.md`](docs/parts/C.md) |
+| H | Hand and avatar quality | 1 (after A2) | S3 · Max (macOS) | `part-h` | not started | [`docs/parts/H.md`](docs/parts/H.md) |
+| D | Recommender | 2 | S1 · Ashlie (Windows) | `part-d` | not started (needs C) | [`docs/parts/D.md`](docs/parts/D.md) |
+| E | Minigames | 2 | S2 · Pol (Ubuntu) | `part-e` | not started (needs B) | [`docs/parts/E.md`](docs/parts/E.md) |
+| F1 | Settings sheet and PWA | 2 | S3 · Max (macOS) | `part-f1` | not started (needs C, A2) | [`docs/parts/F1.md`](docs/parts/F1.md) |
+| F2 | Final polish and cleanup | 3 | integrator + free streams | `part-f2` | not started (needs all) | [`docs/parts/F2.md`](docs/parts/F2.md) |
+| G | Optional extensions | later | — | — | not planned | §3 below |
 
-Status values: `not started` · `in progress` · `done` · `done with known gaps (see §6)` · `blocked (see §5)`.
+Status values: `not started` · `in progress` · `done` (merged) · `done with known gaps (see §6)` · `blocked (see §5)`. A part counts as done once it is merged into `gesture_learning`.
 
 ---
 
@@ -110,65 +121,9 @@ Tick items only when they are implemented **and** verified. The acceptance crite
   - [x] typecheck, test and build; the automated acceptance checks in Chromium (2026-11-21)
   - [ ] manual checks on a real phone (front camera, touch feel, sounds) and on the desktop webcam (camera indicator light, MX Brio)
 
-### Part B — Learning task formats
+### Parts built in parallel (A2, A3, B, C, D, E, F1, F2, H)
 
-- [ ] Shared UI: TaskFrame, ChoiceGrid, TileBank, SelfCheck, MirrorCompare
-- [ ] `checkModeFor()` + tests
-- [ ] `lesson` (camera / mirror / self, relearn variant)
-- [ ] `question`: sign-term, sign-sentence, spell-word (all modes)
-- [ ] `quiz-choice` polish (all content kinds, distractor rules, params)
-- [ ] `quiz-build` (gloss mode; translation mode optional)
-- [ ] Generators with a stub query adapter
-- [ ] Evidence mapping tests
-- [ ] English for the content Part B shows: letter descriptions (`description.en`) and the handshape hints of `lib/handshapes.ts` (R-020)
-- [ ] Gates green; manual checks with camera on and off
-
-### Part C — Learner model v2
-
-- [ ] `learner/params.ts` with every constant from SPEC §7.11
-- [ ] BKT update + tests (all check modes)
-- [ ] FSRS grade-at-exit + tests (incl. missing `card.exit`)
-- [ ] Swipe rules (every row of SPEC §7.5) + tests
-- [ ] Evidence ladder, `verified`, statuses with hysteresis + tests
-- [ ] Tracks, unlocking, frontier, pacing, test-out + tests
-- [ ] Queries for the recommender
-- [ ] v1 upcast folding; export → import equality test; incremental fold
-- [ ] Generators switched to real queries; `learning/profile.ts` removed if unused
-- [ ] Dev learner-state inspector
-- [ ] Gates green
-
-### Part D — Recommender
-
-- [ ] Candidates, features, score, hard constraints, seeded softmax selection
-- [ ] Explanations + ℹ button with Spanish reasons
-- [ ] Recommender `CardSource` + queue invalidation
-- [ ] Simulation harness + personas + `npm run simulate`
-- [ ] All 10 metrics of SPEC §7.12 pass as tests
-- [ ] Dev recommender inspector (breakdown, force next, seed, simulate)
-- [ ] `learning/orchestrator.ts` removed
-- [ ] Gates green; manual feel check
-
-### Part E — Minigames
-
-- [ ] GameFrame (intro, countdown, HUD, end screen, personal best) + game sounds
-- [ ] Ported: rain, memory, match, spell-read, spell-sprint, story, dialogue
-- [ ] English for `comprehension.json` and `dialogues.json` before story and dialogue are ported (R-020)
-- [ ] Number handshape rules (1–9) + documented limits
-- [ ] New: count-up, abc-run
-- [ ] At least two backlog games
-- [ ] Old `activities/` and `activityCatalog.ts` removed
-- [ ] Gates green; every game playable from dev mode
-
-### Part F — Product polish and cleanup
-
-- [ ] Settings and progress sheet (unmute, camera re-enable and picker, sound/haptics, data, about, dev entry)
-- [ ] PWA (manifest, icons, standalone, offline shell and content)
-- [ ] Real-device check of the three targets (desktop webcam, phone browser front camera, installed app) + `docs/embedding.md`
-- [ ] Performance pass (WebGL budget, prefetch, lazy chunks, 60 fps check)
-- [ ] Accessibility pass
-- [ ] Dead code and CSS removed; `web/README.md` and `README.md` updated
-- [ ] (optional) Playwright smoke tests
-- [ ] Gates green
+Their checklists live in their part files, ticked by the agent doing the part (SPEC §9.0.4): [A2](docs/parts/A2.md) · [A3](docs/parts/A3.md) · [B](docs/parts/B.md) · [C](docs/parts/C.md) · [D](docs/parts/D.md) · [E](docs/parts/E.md) · [F1](docs/parts/F1.md) · [F2](docs/parts/F2.md) · [H](docs/parts/H.md). The B–F checklists that were here moved there on 2026-11-22 (Part F's items are split between F1 and F2).
 
 ### Part G — Optional extensions
 
@@ -200,7 +155,7 @@ Format: `D-NNN · date · decision` — *why* — status. Newest at the bottom. 
 - **D-016 · 2026-11-21 · New dependencies need a reason here, an exact version, and a release older than `before=` in `web/.npmrc`.** — *Existing supply-chain rule of the repo.* — active
 - **D-017 · 2026-11-21 · A format is muted after ≥ 3 dislikes and more dislikes than 2 × completions; only the learner can unmute it.** Preferences otherwise decay back towards neutral. — *Respect the explicit "don't like this format" signal without over-reacting to one swipe.* — active
 - **D-018 · 2026-11-21 · Light gamification:** XP, streak, daily goal in cards; no leaderboards. — *Phase-2 research: leaderboards help habit more than learning and can distract.* — active
-- **D-019 · 2026-11-21 · Part order A → B → C → D → E → F; G optional.** C may go before B on request. — *Each part leaves a working app.* — active
+- **D-019 · 2026-11-21 · Part order A → B → C → D → E → F; G optional.** C may go before B on request. — *Each part leaves a working app.* — superseded by D-041
 - **D-020 · 2026-11-21 · One build, three targets: desktop website, mobile website, mobile web app (installed PWA or embedded WebView); always a vertical layout** (SPEC §1.4). — *User requirement.* — active
 - **D-021 · 2026-11-21 · Sound effects for swipes, animations and results, synthesised with the Web Audio API** (no audio files, no dependency), unlocked on the first gesture, with a mute toggle; optional haptics (SPEC §3.7). — *User requirement (engagement); synthesis avoids licensing and download size.* — active
 - **D-022 · 2026-11-21 · Camera choice: the front camera (`facingMode: "user"`) on phones and tablets; the webcam on desktop** (saved choice → MX Brio → default); mirrored preview (SPEC §5.6). — *User requirement.* — active
@@ -226,7 +181,7 @@ Format: `D-NNN · date · decision` — *why* — status. Newest at the bottom. 
   - The optional second "camera privacy" card is not shown; the privacy sentence is on camera cards instead.
   - The feedback panel sits in the card's layout under the task, not on top of it, so the options and the sign stay visible.
   - "Continuar" exists once, in the action bar.
-  - Starting a drag cancels the auto-advance, and it does not restart. — active
+  - Starting a drag cancels the auto-advance, and it does not restart. — active, except the last two points: superseded by D-045 (no Next button; a spring-back restarts the countdown)
 - **D-030 · 2026-11-21 · quiz-choice builds its options in `generate()`** and logs them in `card.shown.params.choices`.
   - `optionsFor(ce)`: 4 options when ce > −0.2, 3 down to −0.6, else 2.
   - XP: 10 for a sign, 12 for a phrase.
@@ -276,6 +231,36 @@ Format: `D-NNN · date · decision` — *why* — status. Newest at the bottom. 
   - Feedback already on screen keeps the language it was given in until the card leaves.
   - Camera errors are kept as data and rendered in the current language. — active
 
+- **D-041 · 2026-11-22 · Parallel delivery** (SPEC §9.0): three streams, one per machine, plus an integrator.
+  - S1 "learner brain" C → D, S2 "tasks" B → E, S3 "look and feel" A2 → H → F1; the integrator does A3, the merges and the device checks; F2 in wave 3.
+  - One branch per part (`part-<id>`), started from `gesture_learning` once the parts it needs are merged, and merged back with `--no-ff` by the integrator.
+  - *Why:* the user wants three people working at once, with merges that stay easy. The streams follow the dependency chains (C → D, B → E) and keep each area on one machine. — active (supersedes D-019)
+- **D-042 · 2026-11-22 · Part 0 froze the learner-query contract.**
+  - `LearnerQueries` lists (`frontier`, `practice`, `relearn`, `probes`, `pool`, `eligiblePhrases`, `confusions`, `status`, `pKnown`; `nextItems` kept for Part A) and `ItemStatus` in `core/types.ts`; `FeedContext.events`.
+  - `learner/queries.ts`: `createLearnerQueries(events, opts)`, a stub fold of the v2 log until Part C replaces its internals; `withContent()` answers every list with the content chosen in dev forced mode; `learner/testing.ts` has `fakeQueries()` for generator tests.
+  - The simple picker keeps Part A's curriculum walk for `nextItems`, so the feed behaves as before.
+  - Generators choose items only through the lists, never by filtering statuses themselves, so forced mode can feed them any content.
+  - *Why:* B and E write generators while C writes the learner model; one shared provider makes the swap a change inside `learner/`. — active
+- **D-043 · 2026-11-22 · Files that several parts would edit are split per part.**
+  - Format registry: `tasks/learningFormats.ts` + `learningViews.tsx` (B) and `tasks/gameFormats.ts` + `gameViews.tsx` (E), composed by `registry.ts` and `views.tsx`.
+  - Strings: one module per later part in `i18n/parts/` (`learning`, `learner`, `recommender`, `games`, `settings`), with English and Spanish side by side and typed against each other (`definePart`), mounted as `t.<name>`, with format titles merged into `t.formats`.
+  - Dev inspectors go into the `dev/panels.ts` slot.
+  - `.gitattributes` makes text LF on every OS.
+  - *Why:* without the split, every pair of parallel parts would conflict at the end of the same lists and objects. — active
+- **D-044 · 2026-11-22 · Parallel parts keep their state in `docs/parts/<part>.md`,** with prefixed ids (`D-B01`, `Q-C02`, `R-H01`). Only the integrator edits this file, the spec, `AGENTS.md` and the READMEs; at merge it adds an index line to §4 and folds questions, risks and the log in. Part-file decisions are as binding as the ones here. — *Why:* three agents rewriting §2 and appending to §4 and §7 would conflict at every merge, and would also collide on decision numbers. — active
+- **D-045 · 2026-11-22 · Part A2: every result auto-advances, and the Next button goes.** The user asked for it after testing Part A.
+  - Wrong answers show the banner (what was wrong, the answer) with a countdown, like correct ones.
+  - Correct answers wait 0.6 s instead of 1.2 s ("twice as fast"). The 280 ms exit animation stays shared by every exit (Q-009).
+  - The wrong-answer wait follows the length of the correction: `clamp(2000 + 30 × characters, 2500, 5000)` ms.
+  - Press and hold pauses the countdown, and a spring-back restarts it, so a card can't get stuck without a button.
+  - ↑, Enter and Space skip the wait; the tutorial still accepts any exit.
+  - *Why:* user request; a button that is pressed after every card adds nothing once cards leave on their own. — active
+- **D-046 · 2026-11-22 · Part A3: the MX Brio is reset to its default zoom, pan and tilt when the app opens it,** through the PTZ constraints, requested only for the Brio. Other cameras are untouched. — *Why:* the user saw the Brio zoomed in. The setting lives in the device (the Python prototype can leave it changed), and `view_cam.sh` already resets it the same way. Only the spec machine has a Brio, so the integrator does this part. — active
+- **D-047 · 2026-11-22 · New Part H, "Hand and avatar quality",** in wave 1. It changes the inside of `src/viewer/`, the motion pipeline and the `render` blocks of sign files; the `SignViewer` props only change additively. It is accepted by the user's look at a fixed review set, plus measured smoothness. — *Why:* the user finds the hand and the avatar poor; the work is independent of the feed and the learner model. — active
+- **D-048 · 2026-11-22 · Part F is split into F1 (settings sheet, PWA, lazy libraries; wave 2) and F2 (performance with the games, accessibility, deleting the old app, READMEs, device checks; wave 3).** Every deletion of old modules (`activities/`, `activityCatalog`, `orchestrator`, `profile`) moves to F2. — *Why:* the old modules import each other, so a parallel part deleting one would break another part's build. F1 doesn't need the games, so it can run in wave 2. — active
+- **D-049 · 2026-11-22 · Machines:** S1 on Ashlie's Windows 11 PC (pure TypeScript, so nothing OS-specific), S2 on Pol's Ubuntu laptop (camera work in the same browser as the integrator's), S3 on Max's Mac (visual work, Safari checks, Python for motion), the integrator on Pablo's Ubuntu laptop (the MX Brio and the Android phone). — *Why:* each part's hardware and OS needs (SPEC §9.0.6). — active
+- **D-050 · 2026-11-22 · Every machine installs with `npm ci`, never `npm install`.** Node 22.18 or newer, so that `npm start` can strip types; npm 10 or 11. — *Why:* `npm ci` leaves the lockfile alone whatever the npm version (Q-007), and lockfile changes would conflict between branches. It refines D-036. — active
+
 ---
 
 ## 5. Open questions for the user
@@ -289,7 +274,10 @@ Each question has the default that agents use until the user answers. When answe
 - **Q-005** Swipe up before completing a task (a neutral "skip"): allowed? — *Default: no; only the four exits from the brief, plus camera off.*
 - **Q-006** Keep progress from old (v1) logs? — *Default: best effort (D-003); no one depends on it.*
 - **Q-008** Should a first visit follow the browser language (a Spanish browser opens in Spanish)? — *Default: no. Every first visit opens in English until the switch is used (D-038), because you asked for English. It is a one-line change in `src/i18n/index.ts`.*
-- **Q-007** Which npm do you use? AGENTS.md says npm 10, but `package-lock.json` has fields written by npm 11 or later, and npm 10 removes them on every install. — *Default: npm 11.21.2 (D-036). If you use npm 10, expect a lockfile diff of removed `libc` lines.*
+- **Q-007** Which npm do you use? AGENTS.md says npm 10, but `package-lock.json` has fields written by npm 11 or later, and npm 10 removes them on every install. — *Default: npm 11.21.2 (D-036). If you use npm 10, expect a lockfile diff of removed `libc` lines.* *On the spec machine (npm 10.9.9), `npm ci` installs from the lockfile without rewriting it (checked 2026-11-21).*
+
+- **Q-009** "Twice as fast" for a correct answer: Part A2 halves the wait before the card leaves (1.2 s → 0.6 s) and keeps the 280 ms fly-out animation that every exit shares. Did you also mean the fly-out itself? — *Default: only the wait (D-045). Both are constants in `feed/config.ts`.*
+- **Q-010** Should Pablo's laptop also run a fourth stream (for example F1, or a share of E's games) instead of only integrating? — *Default: no. The integrator does A3, the merges, the device checks and its share of F2 (SPEC §9.0).*
 
 ---
 
@@ -304,10 +292,10 @@ Each question has the default that agents use until the user answers. When answe
 - **R-007** WLASL clips are licensed for academic, non-commercial use only.
 - **R-008** Recommender constants are untuned first guesses; the simulations are only as good as the simulated learners.
 - **R-009** TypeScript 7.0.2 (native compiler) with Vitest is untested in this repo. — *Resolved 2026-11-21: Vitest transpiles through Vite, and `tsc` 7.0.2 runs separately; both work.*
-- **R-010** Local Node is v22.23.5; `npm start` runs `server/index.ts` directly through Node's type stripping. Check it on this version. — *Resolved 2026-11-21: `npm start` serves the build and `/api` on Node 22.23.5. But see R-013: this machine has no Node at all.*
-- **R-011** Camera and Web Audio need a secure context: testing on a real phone needs HTTPS (local certificate or tunnel), and embedded WebViews need host-side permission and inline-media settings (SPEC §1.4, Part F).
+- **R-010** Local Node is v22.23.5; `npm start` runs `server/index.ts` directly through Node's type stripping. Check it on this version. — *Resolved 2026-11-21: `npm start` serves the build and `/api` on Node 22.23.5. But see R-013: the Part A machine has no Node at all.*
+- **R-011** Camera and Web Audio need a secure context: testing on a real phone needs HTTPS (local certificate or tunnel), and embedded WebViews need host-side permission and inline-media settings (SPEC §1.4, Part F). — *An Android phone on USB needs no HTTPS: with USB debugging on, `adb reverse tcp:5173 tcp:5173` lets the phone open `http://localhost:5173`, which is a secure context (port 8787 for `npm start`). `chrome://inspect/#devices` on the desktop shows the phone tab's console. A plain-HTTP LAN address has no `getUserMedia`, and `vite --host` would expose the dev server to the whole network; note that `npm start` already listens on every interface. iPhones still need HTTPS.*
 - **R-012** Browser autoplay policies: sounds only play after the first user gesture; iOS may also silence Web Audio when the hardware mute switch is on.
-- **R-013** This machine (the user's Linux desktop) has **no Node.js installed**, although AGENTS.md mentions v22.23.5. The 2026-11-21 session ran Node 22.23.5 and npm 11.21.2 from a temporary scratch folder. Install Node 22 or later to run `npm run dev`.
+- **R-013** The machine used for Part A has **no Node.js installed**, although AGENTS.md mentions v22.23.5. The Part A sessions ran Node 22.23.5 and npm 11.21.2 from a temporary scratch folder. Install Node 22 or later there to run `npm run dev`. The spec machine has Node (§2 Toolchain).
 - **R-014** The browser console shows warnings from libraries, not errors, and they also appear without the new code:
   - a `THREE.Clock` deprecation notice from @react-three/fiber on every 3D canvas mount;
   - MediaPipe WASM logs ("OpenGL error checking is disabled", "NORM_RECT without IMAGE_DIMENSIONS") while the hand landmarker runs.
@@ -334,11 +322,30 @@ Each question has the default that agents use until the user answers. When answe
   - the `/api` prompts in `server/api.ts` (coach, phrase generation): not used by the feed yet. AI phrases need a `note` in both languages before `registerPhrases` uses them again.
 - **R-021** Two UI languages double the string work. The build checks that every string exists in both files, not that it reads well. Wording should get a review by a native speaker of each language.
 
+- **R-022** Parallel parts build against a stub and frozen contracts. When Part C's real learner queries replace the stub, Part B's generators may find other content, or none, for some formats. Mitigation: generators only use the query lists (D-042) and are tested with `fakeQueries()`; each part lists its integration checks, which the integrator runs after the merge.
+- **R-023** Machine differences: macOS and Windows file systems ignore case, so a wrong-case import passes there and fails the Linux build; Windows editors may write CRLF; Pol's laptop may lack Node (R-013). Mitigation: `.gitattributes` (LF), SPEC §9.0.4 rule 7, `npm ci` everywhere, and the integrator's gates on Linux after every merge.
+- **R-024** MX Brio reset (Part A3): Chrome asks a second permission ("use and move your camera") for pan-tilt-zoom; Firefox and Safari expose no PTZ, so the reset can't happen there; the Brio's field-of-view setting (65°/78°/90°) isn't reachable from a web page at all. Manual reset: `./view_cam.sh`, or `python3 camctl.py <device> zoom_absolute=100 pan_absolute=0 tilt_absolute=0`.
+- **R-025** Part H is open-ended and judged by eye. Mitigation: a fixed review set and a measured smoothness target (SPEC Part H); timebox it and let the user approve the before/after set.
+- **R-026** Conflicts can still happen on the few lines that two parts of the same wave may touch: `app/App.tsx`, the `<FeedTop …/>` line in `FeedScreen.tsx` (D and F1), additive changes to `core/types.ts`. Each part lists its cross-part edits; the integrator resolves them.
+
 ---
 
 ## 7. Session log
 
 Newest first. One entry per session: date · part · what was done · verification · next step.
+
+- **2026-11-22 · Part 0 — parallel plan and scaffolding** (integrator, at the user's request)
+  - *Plan (docs):* SPEC §9.0, the parallel plan: three streams plus an integrator, waves, branches, file ownership, rules for parallel parts, the integrator protocol and the four machines. New parts A2 (feed feedback follow-ups), A3 (MX Brio defaults) and H (hand and avatar quality); Part F split into F1 and F2; parts B, C, D and E adjusted for parallel work. The user's requests after testing Part A are in SPEC §3.3–§3.5 (every result auto-advances, no Next button, correct answers twice as fast) and §5.6 (the Brio reset). §8.2 and §8.3 describe the new layout and contracts. `AGENTS.md` covers parallel work. One state file per part in `docs/parts/` (the B–F checklists moved there), plus `docs/parts/README.md` with the setup steps and the agent prompts.
+  - *Code (behaviour-neutral):* the learner-query contract in `core/types.ts`, its stub `learner/queries.ts` (with `withContent()` for forced mode and tests) and `learner/testing.ts` (`fakeQueries()`); `FeedContext.events`; the simple picker and the forced source build their queries there. Per-part registries (`tasks/learningFormats.ts`, `gameFormats.ts`, `learningViews.tsx`, `gameViews.tsx`, `viewTypes.ts`), per-part i18n modules (`i18n/parts/`), the `dev/panels.ts` slot, and `.gitattributes`.
+  - *Recorded:* D-041–D-050 (D-019 superseded, D-029 partly superseded), Q-009, Q-010, R-022–R-026.
+  - *Verification:* typecheck, test (12 files, 84 tests) and build green. Real-time headless Chrome 157 check over the DevTools protocol against `npm run dev`: the tutorial first, the quiz card after ←, dev mode renders, no console errors.
+  - *Git:* committed and pushed to `origin/gesture_learning` because the user asked for it explicitly this time (AGENTS.md rule 1 otherwise holds).
+  - *Next:* wave 1 on the three machines; the integrator does Part A3 and the Part A manual checks, then merges the branches as they arrive.
+
+- **2026-11-21 · Part A manual-test setup on the spec machine (no part)**
+  - *Done:* no code changes. On the spec machine: `npm ci` (npm 10.9.9; the lockfile is unchanged) and `npm run setup:media` (98/98 clips, the MediaPipe runtime and the hand model). Gave the user the steps for the manual Part A checks on the desktop (MX Brio) and on the Android phone over USB (R-011). Corrected §2 and R-013: Part A is committed (`5d99806`), and only the Part A machine lacks Node.
+  - *Verification:* typecheck, test (11 files, 78 tests) and build green. Headless Chrome 157 over the DevTools protocol against `npm run dev`: the first launch shows the tutorial with a quiz-choice preview behind; ← brings the quiz card forward with a new preview behind; no console errors (only the R-014 `THREE.Clock` warning, plus WebGL software-rendering notices because headless Chrome has no GPU). The real camera was not opened.
+  - *Next:* unchanged: the user's manual checks, then Part B.
 
 - **2026-11-21 · Part A follow-up — English UI and language switch** (asked by the user before the manual tests)
   - *Done:*

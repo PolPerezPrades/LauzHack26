@@ -2,6 +2,7 @@
  * Core contracts of the feed (SPEC §8.3). Formats, card sources, the feed and the event log all
  * speak these shapes. Pure types: nothing here imports React or touches the DOM at runtime.
  */
+import type { LearningEvent } from "../data/events";
 import type { Messages } from "../i18n/en";
 
 export type Skill = "receptive" | "productive";
@@ -98,13 +99,38 @@ export interface Rng {
   next(): number;
 }
 
+/** Learner status of an item for one skill (SPEC §7.3). */
+export type ItemStatus = "new" | "learning" | "known" | "due";
+
 /**
- * What a format may ask about the learner when it proposes cards. Part A only needs a curriculum
- * walker; Part B adds a richer stub and Part C replaces it with the real learner queries.
+ * What a format may ask about the learner when it proposes cards (SPEC §7.8.1). Frozen in Part 0 so
+ * that parts B–E can be built in parallel: `learner/queries.ts` implements it, first as a stub, then
+ * with the real learner model (Part C). Changes are additive only (SPEC §9.0).
+ *
+ * Every list is in priority order, has at most `n` entries and leaves out the items the card source
+ * wants to avoid. Generators choose items only through these lists, never by filtering statuses
+ * themselves: dev forced mode answers every list with the content the developer picked.
  */
 export interface LearnerQueries {
-  /** Up to `n` items of the given kinds, in the order this source wants them practised. */
+  /** Part A's list: the simple picker's curriculum walk. New generators use the lists below. */
   nextItems(kinds: readonly ItemKind[], n: number): string[];
+  /** new items to introduce next: the frontier of the open units, in curriculum order (lessons) */
+  frontier(kinds: readonly ItemKind[], n: number): string[];
+  /** met items worth practising for a skill, most urgent first: relearn, due, learning, known */
+  practice(skill: Skill, kinds: readonly ItemKind[], n: number): string[];
+  /** items failed (or swiped "too hard") recently, most recent first (relearn lessons) */
+  relearn(kinds: readonly ItemKind[], n: number): string[];
+  /** items claimed "too easy" that wait for a verification probe (SPEC §7.7) */
+  probes(kinds: readonly ItemKind[], n: number): string[];
+  /** met items with pKnown ≥ minPKnown (default 0) for the skill, weakest first (game pools) */
+  pool(skill: Skill, kinds: readonly ItemKind[], n: number, minPKnown?: number): string[];
+  /** phrases eligible for quiz-build and sign-sentence (SPEC §4.6, §7.7) */
+  eligiblePhrases(n: number): string[];
+  /** items this one was confused with, most frequent first (distractors, minimal pairs) */
+  confusions(itemId: string): string[];
+  status(itemId: string, skill: Skill): ItemStatus;
+  /** estimated probability that the item is learned for the skill, in [0, 1]; 0 if never met */
+  pKnown(itemId: string, skill: Skill): number;
 }
 
 export interface GenContext {
@@ -184,6 +210,8 @@ export interface CardRef {
 
 export interface FeedContext {
   history: readonly CardRef[];
+  /** the whole log (v2): sources fold it into learner queries or state (learner/queries.ts) */
+  events: readonly LearningEvent[];
   cameraUsable: boolean;
   rng: Rng;
 }

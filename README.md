@@ -15,20 +15,20 @@ It works on your computer (with the webcam) and on your phone (with the front ca
 
 Signa learns from your answers and your swipes. It brings back what you're about to forget, moves faster when things are easy, and shows less of the formats you don't enjoy. Your progress stays in your browser, and the camera video never leaves your device.
 
-> **Status:** being redesigned into this swipeable feed. Progress is tracked in [`PROJECT_STATE.md`](PROJECT_STATE.md). The current code still contains the previous version (daily sessions with a home screen), described in [`web/README.md`](web/README.md).
+> **Status:** being redesigned into this swipeable feed. The feed, its gestures and sounds, the camera opt-out and one quiz format work today; the other formats, the learner model, the recommender and a better hand and avatar are being built in parallel by three people (plan: [`docs/SPEC.md` §9.0](docs/SPEC.md#90-parallel-plan); progress: [`PROJECT_STATE.md`](PROJECT_STATE.md) and [`docs/parts/`](docs/parts/)). [`web/README.md`](web/README.md) still describes the previous version.
 
 ## Run it
 
-You need Node.js 22 or newer.
+You need Node.js 22.18 or newer.
 
 ```bash
 cd web
-npm install
+npm ci                # installs the exact versions in package-lock.json
 npm run setup:media   # downloads the sign videos and the hand-tracking model (once)
 npm run dev           # open http://localhost:5173
 ```
 
-- `http://localhost:5173/#dev`: developer mode (play any task or minigame on demand, once the redesign's first part is done).
+- `http://localhost:5173/#dev`: developer mode (play any task format on demand, with chosen content, into a separate test database).
 - `http://localhost:5173/#lab`: sign lab (compare each 3D sign with the real video).
 
 ## How it's built

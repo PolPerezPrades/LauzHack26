@@ -92,7 +92,8 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
 
   const pick = useCallback((queued: (CardPlan | null)[], avoid?: CardAvoid): CardPlan | null => {
     try {
-      return source.next({ history: cardHistory(log.getEvents(), queued), cameraUsable: cameraSession.usable, rng }, avoid);
+      const events = log.getEvents();
+      return source.next({ history: cardHistory(events, queued), events, cameraUsable: cameraSession.usable, rng }, avoid);
     } catch (err) {
       console.error("[feed] card source failed", err);
       return null;

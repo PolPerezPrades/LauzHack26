@@ -4,7 +4,7 @@ import { createRng } from "../core/rng";
 import type { CardRef, CardSource, FeedContext } from "../core/types";
 import { createForcedSource } from "./forcedSource";
 
-const ctx = (history: CardRef[], cameraUsable = true): FeedContext => ({ history, cameraUsable, rng: createRng(9) });
+const ctx = (history: CardRef[], cameraUsable = true): FeedContext => ({ history, events: [], cameraUsable, rng: createRng(9) });
 
 /** Plays `count` cards in a row, each one exited before the next is asked for. */
 function play(source: CardSource, count: number, cameraUsable = true) {

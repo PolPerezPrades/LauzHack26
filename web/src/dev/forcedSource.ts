@@ -6,7 +6,8 @@
 import { curriculumOrder, unitOrder } from "../content/curriculum";
 import { newId } from "../core/ids";
 import type { CardSource, FormatId, TaskSpec } from "../core/types";
-import { curriculumWalker, settledCards, toPlan } from "../feed/simplePicker";
+import { settledCards, toPlan } from "../feed/simplePicker";
+import { createLearnerQueries, withContent } from "../learner/queries";
 import { FORMATS, needsCamera } from "../tasks/registry";
 
 export interface ForcedConfig {
@@ -33,7 +34,7 @@ export function createForcedSource(cfg: ForcedConfig, opts: { formats?: readonly
       const played = settledCards(ctx.history).filter((c) => c.format === spec.id).length;
       const gen = { rng: ctx.rng, ce: cfg.ce, cameraUsable: ctx.cameraUsable };
       const params = { ...spec.params(cfg.ce, gen), ...cfg.overrides };
-      const draft = spec.generate(curriculumWalker(content, played), gen, params)[0];
+      const draft = spec.generate(withContent(createLearnerQueries(ctx.events), content, played), gen, params)[0];
       return draft ? toPlan(draft, makeId(), { code: "dev_forced" }) : null;
     },
   };

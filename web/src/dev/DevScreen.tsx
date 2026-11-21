@@ -20,6 +20,7 @@ import { FORMATS, getFormat } from "../tasks/registry";
 import { loadDevConfig, saveDevConfig } from "./devConfig";
 import { EventLog } from "./EventLog";
 import type { ForcedConfig } from "./forcedSource";
+import { DEV_PANELS } from "./panels";
 import "./dev.css";
 
 type Update = (patch: Partial<ForcedConfig>) => void;
@@ -92,6 +93,8 @@ export function DevScreen() {
           {t.dev.reset}
         </button>
       </section>
+
+      {DEV_PANELS.map(({ id, Component }) => <Component key={id} sandbox={sandbox} real={real} />)}
 
       <EventLog sandbox={sandbox} real={real} />
     </div>

@@ -1,7 +1,7 @@
 # Signa redesign — requirements specification
 
-> **Audience:** coding agents working on this repository. **Status:** approved plan, implemented part by part.
-> **Companion files:** [`../AGENTS.md`](../AGENTS.md) (how to work here) and [`../PROJECT_STATE.md`](../PROJECT_STATE.md) (progress, decisions, handoff).
+> **Audience:** coding agents working on this repository. **Status:** approved plan, implemented part by part, several parts in parallel (§9.0).
+> **Companion files:** [`../AGENTS.md`](../AGENTS.md) (how to work here), [`../PROJECT_STATE.md`](../PROJECT_STATE.md) (progress, decisions, handoff) and [`parts/`](parts/) (one state file per part built in parallel).
 
 ## Contents
 
@@ -14,7 +14,7 @@
 6. [Developer mode](#6-developer-mode)
 7. [Learner model and recommender](#7-learner-model-and-recommender)
 8. [Architecture](#8-architecture)
-9. [Delivery plan: parts A–G](#9-delivery-plan-parts-ag)
+9. [Delivery plan: parts and parallel streams](#9-delivery-plan-parts-and-parallel-streams)
 10. [Glossary](#10-glossary)
 11. [Sources](#11-sources)
 
@@ -22,8 +22,8 @@
 
 ## 0. How to use this document
 
-- The work is split into **parts A–G** (§9). An agent implements **one part per session**, only when asked, and never starts the next part on its own.
-- Before coding a part, read §1–§2, the sections that part references, and its entry in §9. Read [`PROJECT_STATE.md`](../PROJECT_STATE.md) first: it may record decisions that override this document.
+- The work is split into **parts** (§9): A (done), 0 (done), A2, A3, B, C, H, D, E, F1, F2, and the optional G. Several parts are built **at the same time, on different machines**, by parallel streams (§9.0). An agent implements **one part per session**, only when asked, and never starts the next part on its own.
+- Before coding a part, read §1–§2, §9.0 (the parallel plan and who owns which files), the sections that part references, and its entry in §9. Read [`PROJECT_STATE.md`](../PROJECT_STATE.md) and the part's own file in [`docs/parts/`](parts/) first: they may record decisions that override this document.
 - Words: **MUST** = required for the part to be accepted. **SHOULD** = expected unless there is a recorded reason not to. **MAY** = optional.
 - Numbers marked *(default)* are starting values. They live in one config module and may be tuned. Record every tuning that changes behaviour as a decision in `PROJECT_STATE.md`.
 - If the spec is wrong, ambiguous or impossible, don't silently diverge. Pick the most reasonable option, implement it, and record it under **Decisions** (or **Open questions** if the user must choose) in `PROJECT_STATE.md`.
@@ -41,14 +41,15 @@ There is no home screen and no lesson menu. **Opening the app shows a task.** Ev
 | # | Goal | Measured by |
 |---|---|---|
 | G1 | Zero-friction start: a task on screen right after the app loads, on first launch and every later launch. | Part A acceptance |
-| G2 | Four card exits with one shared animation style: **completed** (card flows up), **too easy** (left), **too hard** (right), **don't like this format** (down). The next card is visible behind the current one. | Part A acceptance |
+| G2 | Four card exits with one shared animation style: **completed** (card flows up, on its own after the result), **too easy** (left), **too hard** (right), **don't like this format** (down). The next card is visible behind the current one. | Parts A and A2 |
 | G3 | Task families: quick lesson, short question, quiz (choose / build), minigames. | Parts B and E |
 | G4 | Camera tasks have a "can't use the camera now" button; after it, no camera use until the next app session. | Parts A and B |
 | G5 | Learner knowledge is stored durably (local event log) and drives the choice of tasks, together with the swipe signals and performance. | Parts C and D |
 | G6 | The recommender works for **one learner, from the first card**: no population data, no heavy models. | Part D simulations |
 | G7 | A developer mode lets the developer play any task format with chosen content and inspect the learner model and recommender. | Parts A, C, D |
-| G8 | One website, three ways to open it (§1.4), always in a vertical layout. | Parts A and F |
+| G8 | One website, three ways to open it (§1.4), always in a vertical layout. | Parts A, F1 and F2 |
 | G9 | Sounds for swipes, animations and results make the feed feel alive (§3.7). | Parts A and E |
+| G10 | Signs are shown by a clear, natural-looking 3D hand (letters) and avatar (words), faithful to the real clips. | Part H |
 
 ### 1.3 Non-goals
 
@@ -56,7 +57,7 @@ There is no home screen and no lesson menu. **Opening the app shows a task.** Ev
 - No new sign media made by generative AI, and no invented signs or sign descriptions (see §8.5).
 - No other sign language than ASL in this redesign.
 - No automatic camera recognition of signs with movement (words, sentences) in the core parts. Part G may explore it as an experiment.
-- No native app. It stays a web app (PWA in Part F).
+- No native app. It stays a web app (PWA in Part F1).
 
 ### 1.4 Delivery targets
 
@@ -70,7 +71,7 @@ The same build MUST work in all three:
 
 - The layout is **always vertical**. On desktop and in landscape, the app shows the same phone-shaped column, centred (§3.2). There is no landscape or desktop-specific layout.
 - Feature detection, not user-agent sniffing, decides behaviour (`pointer: coarse`, `display-mode: standalone`, `mediaDevices`), with a user-agent hint only as a fallback for the camera choice.
-- **Embedded WebViews:** the app must not rely on browser chrome (no back-button navigation inside the feed, no reliance on new tabs or pop-ups). It must degrade gracefully when the host blocks the camera or audio (§5.3). Host-side requirements are documented in Part F: camera permission, inline media playback, and HTTPS or localhost for `getUserMedia`.
+- **Embedded WebViews:** the app must not rely on browser chrome (no back-button navigation inside the feed, no reliance on new tabs or pop-ups). It must degrade gracefully when the host blocks the camera or audio (§5.3). Host-side requirements are documented in Part F1: camera permission, inline media playback, and HTTPS or localhost for `getUserMedia`.
 
 ## 2. Baseline: what exists today
 
@@ -92,14 +93,14 @@ Media (WLASL clips, MediaPipe WASM and hand model) are **not in git**. `npm run 
 
 | Module | Today | In the redesign |
 |---|---|---|
-| `src/viewer/*` (`SignViewer`, 3D hand, avatar, video) | Shows any sign or sign sequence. | **Reuse.** Add what the feed needs (no orbit in the feed, an inactive/paused mode, preloading). |
+| `src/viewer/*` (`SignViewer`, 3D hand, avatar, video) | Shows any sign or sign sequence. | **Reuse.** Add what the feed needs (no orbit in the feed, an inactive/paused mode, preloading). Part H improves the look of the hand and the avatar; the `SignViewer` props stay backward compatible. |
 | `src/lib/camera.ts`, `src/components/CameraView.tsx` | Shared webcam stream + MediaPipe Hand Landmarker. | **Reuse**, behind the camera session gate (§5). |
 | `src/lib/handshapes.ts` | Rule-based checker for 24 static letters (not J, Z), per-finger hints, `matchingLetters` for confusions. | **Reuse.** Part E adds static number handshapes. |
 | `src/content/*` | Loaders and validation for signs, curriculum, scenarios. | **Reuse.** Part C adds tracks and unlock rules on top. |
 | `src/data/*` | Append-only event log in IndexedDB (Dexie), versioned events, upcaster, export/import. | **Reuse and extend** to event schema v2 (§8.4). |
-| `src/learning/profile.ts` | Profile = pure fold over the log; FSRS card per item and modality; accuracy EMA. | **Replace** with the learner model v2 (§7), keeping the "pure fold over the log" principle. |
-| `src/learning/orchestrator.ts` | Builds a fixed multi-step session plan with explanations. | **Replace** with the next-card recommender (§7.8). Its scoring ideas (due reviews, weak points, scenario readiness, game choice by behaviour) are inputs to §7. |
-| `src/learning/activityCatalog.ts`, `src/activities/*` | 13 activities with a common metadata format. | **Port** to the task contract (§8.3): `recognize`/`quiz` → quiz-choice; `intro` + `imitate` → lesson; `conversation` tile bank → quiz-build and dialogue game; games → minigames (§4.7). Delete the old files once ported (Part F). |
+| `src/learning/profile.ts` | Profile = pure fold over the log; FSRS card per item and modality; accuracy EMA. | **Replace** with the learner model v2 (§7), keeping the "pure fold over the log" principle. Deleted in Part F2 (the old activities import it until then). |
+| `src/learning/orchestrator.ts` | Builds a fixed multi-step session plan with explanations. | **Replace** with the next-card recommender (§7.8). Its scoring ideas (due reviews, weak points, scenario readiness, game choice by behaviour) are inputs to §7. Deleted in Part F2. |
+| `src/learning/activityCatalog.ts`, `src/activities/*` | 13 activities with a common metadata format. | **Port** to the task contract (§8.3): `recognize`/`quiz` → quiz-choice; `intro` + `imitate` → lesson; `conversation` tile bank → quiz-build and dialogue game; games → minigames (§4.7). The old files stay as read-only references until every port is merged; Part F2 deletes them. |
 | `src/screens/Home, Session, Onboarding, Placement, Results` | Home with daily plan, session runner, onboarding, placement test, results. | **Remove** (Part A). The feed replaces them; swipe-based self-placement replaces the placement test (§7.7). |
 | `src/screens/Lab.tsx` (`#lab`) | Side-by-side sign verification lab. | **Keep** working. |
 | `src/learning/extensions.ts`, `server/api.ts` | LLM extension points; `/api/coach`, `/api/phrases` with Claude. | **Keep untouched** in core parts. Part G may use them. |
@@ -127,7 +128,7 @@ Media (WLASL clips, MediaPipe WASM and hand model) are **not in git**. `npm run 
 
 | Exit | Gesture | Also by | Allowed when | Meaning (model effects in §7.5) | Animation |
 |---|---|---|---|---|---|
-| **Next** | swipe up | "Continuar" button, Enter/Space, ↑ | only after the task is completed | Completed, no extra opinion | card flies up |
+| **Next** | automatic when the result's countdown ends (§3.4); a swipe up skips the wait | ↑, Enter/Space skip the wait; **no button** since Part A2 | only after the task is completed | Completed, no extra opinion | card flies up |
 | **Too easy** | swipe left | ⟵ button, ← | always (before or after completing) | The **content** is too easy for me | card flies left |
 | **Too hard** | swipe right | ⟶ button, → | always | The **content** is too hard for me | card flies right |
 | **Not this format** | swipe down | ⤓ button, ↓ | always | I don't like this **format** (this game, quiz type…) | card flies down |
@@ -141,26 +142,28 @@ Requirements:
 - **Swipes after completion are allowed.** Between the result and the exit, a left/right/down swipe adds the learner's opinion to the completed task ("I got it right, and it was too easy"). §7.4 uses this to grade memory like Anki's Again/Hard/Good/Easy.
 - **Taps vs drags:** inside a card, all task interactions are taps (choices, tiles, buttons). A pointer movement under ~8 px is a tap. A longer drag anywhere on the card is a swipe, unless it starts inside an element marked `data-noswipe` (text inputs, scroll areas, sliders). The 3D viewer's orbit control is **disabled in the feed** (it stays in `#lab` and dev mode).
 - **Mobile browser guards:** cards use `touch-action: none`. The page uses `overscroll-behavior: none` so a swipe down never triggers pull-to-refresh. Keep side margins so edge-swipe navigation gestures are less likely to fire.
-- **Accessibility:** every gesture has a visible button (a compact action bar) and a keyboard shortcut. Keyboard shortcuts are ignored while focus is in a text input. With `prefers-reduced-motion`, exits become a short fade plus a small translate in the same direction. Results are announced in an ARIA live region.
+- **Accessibility:** every gesture has a visible button (a compact action bar) and a keyboard shortcut. Since Part A2 the action bar has three buttons (too easy, not this format, too hard): Next needs none, because it happens on its own after every result (§3.4). Keyboard shortcuts are ignored while focus is in a text input. With `prefers-reduced-motion`, exits become a short fade plus a small translate in the same direction. Results are announced in an ARIA live region.
 - The next card MUST be ready when the current one exits. No loading gap. Media for the next card is prefetched (§8.6).
 
 ### 3.4 Card lifecycle
 
 1. **Queued:** the recommender (or, before Part D, a simple picker) chooses the next card, which renders as a preview behind the current one.
 2. **Active:** the card becomes current; `card.shown` is logged; the task mounts. Timers start only after the enter animation.
-3. **Result:** the task reports a `TaskResult` (§8.3). Evidence and `card.result` are logged. A feedback overlay shows inside the card: correct or incorrect, the correct answer, XP.
-   - Correct: auto-advance (exit **Next**) after *(default)* 1.2 s, unless the learner swipes first.
-   - Incorrect: no auto-advance. The learner reads the correction, then taps "Continuar" or swipes.
+3. **Result:** the task reports a `TaskResult` (§8.3). Evidence and `card.result` are logged. A feedback banner shows inside the card, with a countdown bar: correct or incorrect, what was wrong and the correct answer, the note, XP. **Every result auto-advances** (exit **Next**, the usual animation and sound) when the countdown ends, unless the learner exits first (Part A2):
+   - Correct: after *(default)* 0.6 s, twice as fast as Part A's 1.2 s. The shared exit animation itself keeps its 280 ms (one style for every exit, §3.3).
+   - Incorrect: after a reading time for the correction, *(default)* `clamp(2000 + 30 × (characters of the answer and the note), 2500, 5000)` ms.
    - Game end screens: show score and best, auto-advance after *(default)* 2.5 s.
+   - A result without feedback (formats SHOULD always send feedback): after the correct-answer delay, with no banner.
+   - Press and hold on the card pauses the countdown (to keep reading); a drag keeps it paused, and a spring-back starts it again from the beginning, so a card never gets stuck. ↑, Enter and Space skip the wait. A left, right or down swipe during the countdown adds the learner's opinion (§3.3). With reduced motion the bar doesn't animate; the timing is the same.
 4. **Exit:** one of the exits in §3.3. `card.exit` is logged. If the exit invalidates the queued card, it is replaced before it is revealed (§7.8.6).
 
 ### 3.5 First launch and session start
 
-- **First launch:** the first card is a **gesture tutorial card**: what the four exits mean, with the action buttons highlighted. Any exit dismisses it, and it is never scored. An optional second card explains that camera tasks process video on the device only. Then real tasks start.
+- **First launch:** the first card is a **gesture tutorial card**: what the four exits mean, with the action buttons highlighted. It says that finished cards fly up on their own (Part A2). Any exit dismisses it (any of the three buttons, any swipe, or ↑), and it is never scored. An optional second card explains that camera tasks process video on the device only. Then real tasks start.
 - **Every launch:** a new app session starts (`app.open` event), and the feed shows a task immediately. No onboarding questions and no placement test. The learner's level is found by self-placement (§7.7): "too easy" swipes skip ahead fast.
 - Camera permission is requested only when the first camera task becomes active, never up front.
 
-### 3.6 Settings and progress sheet (Part F)
+### 3.6 Settings and progress sheet (Part F1)
 
 A bottom sheet opened from the overlay button:
 
@@ -194,7 +197,7 @@ Requirements:
 
 - **No audio files and no dependencies by default:** a small sound engine (`src/sound/`) synthesises every effect with the Web Audio API (oscillators, noise, envelopes). This avoids licensing and download size. Recorded assets MAY be added later only with a clear licence (CC0) and a recorded decision.
 - **Autoplay rules:** the `AudioContext` is created or resumed on the first user gesture (tap, key or drag). Before that, effects are silently skipped. No errors.
-- **Control:** a mute toggle in the feed overlay (Part A) and sound settings in the sheet (Part F). Default: on, volume ~60 %. The preference is kept in the log via `settings.set`.
+- **Control:** a mute toggle in the feed overlay (Part A) and sound settings in the sheet (Part F1). Default: on, volume ~60 %. The preference is kept in the log via `settings.set`.
 - Respect `prefers-reduced-motion` with quieter, shorter effects (not silence). Sounds are **never the only feedback**: every sound has a visual counterpart.
 - Effects must be fire-and-forget (no blocking or awaiting in gesture handlers), must not overlap into noise on fast swiping (limit to one exit sound at a time), and must stop when the page is hidden.
 - **Haptics (MAY):** short vibration patterns on exits and on wrong answers where `navigator.vibrate` exists (Android). Muting sound doesn't disable haptics; settings has a separate toggle.
@@ -317,13 +320,14 @@ Shared shell (Part E): an intro overlay with one-line rules, a 3-2-1 countdown, 
 6. **Which camera** (`src/lib/camera.ts`, behind the camera session):
    - **Phone or tablet** (mobile website or installed/embedded web app; detected by `pointer: coarse` plus a touch-capable device, with a user-agent hint as a fallback): request the **front (selfie) camera** with `facingMode: "user"` as an ideal constraint. If that fails, fall back to any camera.
    - **Desktop/laptop:** use the **webcam**. Keep today's logic: the camera saved by the learner first, then a Logitech MX Brio if present, then the browser default.
+   - **Logitech MX Brio defaults** (Part A3): when the opened camera is an MX Brio (its track label), reset its zoom, pan and tilt to the device defaults right after opening it: zoom at its minimum (1×), pan and tilt 0, the reset `view_cam.sh` does through V4L2. The Brio keeps these settings in the device across apps, and the Python prototype can leave it zoomed in. Use the Media Capture pan-tilt-zoom constraints, asking for PTZ access only when opening the Brio, then `applyConstraints`. Other cameras (laptop webcams, phone front cameras) are never sent PTZ requests and keep their settings. Where the browser exposes no PTZ control (e.g. Firefox), skip the reset without an error.
    - The preview is **mirrored** for front cameras and webcams (as today). Hand features already work for either hand.
    - A camera switcher stays available when there are several cameras (as in today's `CameraView`). A manual choice is remembered per device (`localStorage`, as today).
    - Use resolution constraints suited to the device: ideal 1280×720 on desktop, ideal 640×480 to 1280×720 on phones (battery and heat). Always use `playsInline` and muted video (iOS).
 
 ## 6. Developer mode
 
-Reached at `#dev` (and from the settings sheet, Part F). It is a tool for the developer; it can be plain-looking.
+Reached at `#dev` (and from the settings sheet, Part F1). It is a tool for the developer; it can be plain-looking.
 
 - **Play a format:** pick any registered format (including dev-only ones), optionally pick the content (items, phrase, passage, dialogue, unit) and the parameters (challenge level, options count, timers…), and choose camera on/off. "Play" opens the feed in **forced mode**: every card comes from that format, again and again, so a minigame can be tested repeatedly. Exits and results work exactly as in the real feed.
 - **Sandbox by default:** dev mode writes to a separate event log (IndexedDB database `signa-dev`), so testing never pollutes the real learner model. A switch "use my real profile" is off by default. Buttons: reset sandbox, copy the real log into the sandbox, export or import the sandbox log, and load preset personas (empty, knows the alphabet, intermediate) built from synthetic events.
@@ -553,7 +557,7 @@ A simulation harness (Part D) runs the real `recommend()` and the real state fol
 ### 8.1 Stack and constraints
 
 - Keep the stack in `web/`: React 19, Vite 8, TypeScript (strict), Dexie (IndexedDB), ts-fsrs, MediaPipe tasks-vision, three.js / react-three-fiber.
-- **Dependencies:** prefer none. Any new package needs a reason in `PROJECT_STATE.md`, an **exact** version, and a release older than the `before=` date in `web/.npmrc` (supply-chain rule; Python has the same rule via `exclude-newer` in `pyproject.toml`). Expected additions: Vitest (Part A); Playwright MAY come in Part F.
+- **Dependencies:** prefer none. Any new package needs a reason in `PROJECT_STATE.md`, an **exact** version, and a release older than the `before=` date in `web/.npmrc` (supply-chain rule; Python has the same rule via `exclude-newer` in `pyproject.toml`). Expected additions: Vitest (Part A); Playwright MAY come in Part F2.
 - Gestures and animations use Pointer Events + CSS transforms / Web Animations API. No gesture or animation library unless a recorded decision justifies it.
 - **Pure logic stays pure:** learner model, recommender, swipe decisions, evidence mapping and format generators import no React or DOM, so they run in Node tests.
 
@@ -565,18 +569,25 @@ Existing folders (`viewer/`, `content/`, `data/`, `lib/`, `components/`) stay wh
 app/          App shell, routing (#dev, #lab, feed), providers (repository, learner state, camera session)
 feed/         FeedScreen, CardStack, swipe.ts (pure decision), useSwipe hook, ActionBar, FeedbackOverlay, CardPreview
 core/         contracts: types.ts (TaskSpec, CardPlan, TaskResult, Evidence, Exit…), rng.ts (seeded), ids
-tasks/        registry.ts (pure metadata), views.tsx (format → component), ui/ (TaskFrame, ChoiceGrid, TileBank,
-              SelfCheck, MirrorCompare, GameFrame), one folder per format: <format>/spec.ts + View.tsx
-learner/      state.ts (fold), bkt.ts, schedule.ts (FSRS wrapper), swipes.ts, curriculum.ts (tracks, frontier),
-              queries.ts, params.ts
+tasks/        registry.ts (pure metadata) and views.tsx (format → component) compose the per-part lists:
+              learningFormats.ts + learningViews.tsx (Part B), gameFormats.ts + gameViews.tsx (Part E);
+              ui/ (TaskFrame, ChoiceGrid, TileBank, SelfCheck, MirrorCompare, GameFrame), one folder per
+              format: <format>/spec.ts + View.tsx
+learner/      queries.ts (the LearnerQueries contract: Part 0 stub, then Part C), testing.ts (fakeQueries for
+              tests), state.ts (fold), bkt.ts, schedule.ts (FSRS wrapper), swipes.ts, curriculum.ts (tracks,
+              frontier), params.ts
 recommender/  candidates.ts, features.ts, select.ts, explain.ts, config.ts, index.ts (recommend), sim/ (personas, harness)
 camera/       cameraSession.ts (state store + opt-out), checkMode.ts
 sound/        Web Audio engine: synthesised effects, unlock on first gesture, mute/volume, optional haptics
-dev/          DevScreen and inspectors
-i18n/         en.ts (reference shape) + es.ts: all user-facing strings; the language store (useT) and the switch
+dev/          DevScreen, panels.ts (the inspector slot: learner state from Part C, recommender from Part D), inspectors
+i18n/         en.ts (reference shape) + es.ts: core strings; parts/<part>.ts: the strings of each later part,
+              English and Spanish side by side; the language store (useT) and the switch
+settings/     (Part F1) the settings and progress sheet
 ```
 
-### 8.3 Contracts (sketch, refine in Part A)
+### 8.3 Contracts (refined in Part A, frozen for the parallel parts in Part 0)
+
+The source of truth is `web/src/core/types.ts`; the sketch below shows the shapes. Parallel parts only change contracts additively (§9.0.4).
 
 ```ts
 type Skill = "receptive" | "productive";
@@ -627,6 +638,26 @@ interface EvidenceDraft {
 
 /** The feed asks a CardSource for cards: a simple picker in Part A, the recommender from Part D, forced mode in dev. */
 interface CardSource { next(ctx: FeedContext, avoid?: { formats?: FormatId[]; items?: string[] }): CardPlan | null }
+interface FeedContext { history: CardRef[]; events: LearningEvent[]; cameraUsable: boolean; rng: Rng }
+
+/**
+ * What generators may ask about the learner (Part 0). Sources build it with
+ * createLearnerQueries(ctx.events) (learner/queries.ts: a stub until Part C); dev forced mode wraps
+ * it with withContent(). Every list is in priority order and capped at n. Generators choose items
+ * only through these lists, never by filtering statuses themselves.
+ */
+interface LearnerQueries {
+  frontier(kinds: ItemKind[], n: number): string[];                // new items to introduce (lessons)
+  practice(skill: Skill, kinds: ItemKind[], n: number): string[];  // met items: relearn, due, learning, known
+  relearn(kinds: ItemKind[], n: number): string[];                 // failed or "too hard" recently
+  probes(kinds: ItemKind[], n: number): string[];                  // claimed items to verify (§7.7)
+  pool(skill: Skill, kinds: ItemKind[], n: number, minPKnown?: number): string[]; // game pools, weakest first
+  eligiblePhrases(n: number): string[];                            // quiz-build, sign-sentence
+  confusions(itemId: string): string[];                            // distractors, minimal pairs
+  status(itemId: string, skill: Skill): "new" | "learning" | "known" | "due";
+  pKnown(itemId: string, skill: Skill): number;
+  nextItems(kinds: ItemKind[], n: number): string[];               // Part A's curriculum walk (simple picker only)
+}
 ```
 
 ### 8.4 Event log v2
@@ -657,22 +688,130 @@ Upcasting v1 logs, best effort: v1 `answer` → `evidence` (`check` derived from
 ### 8.6 Non-functional requirements
 
 - **Performance:** swipe tracking at 60 fps on a mid-range phone (transform-only animations). At most 2 cards mounted. At most ~6 live WebGL contexts at a time (multi-viewer games share or reuse canvases, or use video thumbnails). The next card's media (motion JSON, video) is prefetched. Heavy modules (three.js, MediaPipe) load lazily.
-- **Offline (Part F):** after the first load, the app shell and content JSON work offline (service worker). Large media MAY stay network-only.
+- **Offline (Part F1):** after the first load, the app shell and content JSON work offline (service worker). Large media MAY stay network-only.
 - **Targets and browsers:** the three targets in §1.4, in current Chrome/Edge, Firefox and Safari (iOS ≥ 17) on mobile and desktop, in standalone PWA mode, and in an embedded WebView (Android WebView, iOS WKWebView). The camera and the sound engine need HTTPS or localhost. To test on a phone during development, use the Vite dev server with `--host` over HTTPS (e.g. a local certificate or a tunnel).
 - **i18n:** two UI languages, English (the default) and Spanish, chosen with the EN | ES switch in the feed overlay, dev mode and the lab. The choice is a device preference kept in localStorage, not learner state, so it is not logged. User-facing strings live in `src/i18n/en.ts` (the reference shape) and `src/i18n/es.ts` (typed against it, so a missing string fails the build); components read them with `useT()`. Content keys its translations by language code (`translations`, unit `title`, phrase `note`: `{ es, en }`); text that exists only in Spanish (letter descriptions, curator notes) is shown as is, marked `lang="es"`. Spanish examples in this spec (prompts, tiles, reason strings) stand for the text in the current UI language. Code, comments and agent docs are in English.
 - **Accessibility:** §3.3; contrast ≥ 4.5:1 for text; every icon button has an accessible name.
 - **Quality gates for every part:** `npm run typecheck`, `npm test`, `npm run build` pass; no new console errors in the dev server; the part's manual checks pass.
 
-## 9. Delivery plan: parts A–G
+## 9. Delivery plan: parts and parallel streams
 
 Rules for every part:
 
 - Do **only** the requested part. Leave later parts' features out, even small ones. Stubs that later parts will replace are fine.
 - The app MUST build and run at the end of every part (no half-migrated state).
-- Tick the part's checklist in `PROJECT_STATE.md`, record decisions and deviations, and write the handoff note.
+- Tick the part's checklist in its part file (`docs/parts/<part>.md`), record decisions and deviations there, and write the handoff for the integrator (§9.0.4).
 - Acceptance = every MUST item of the part works, plus the quality gates in §8.6.
 
-Dependency order: **A → B → C → D → E → F**, with G optional. B and C both depend only on A. If the user asks, C may be done before B.
+### 9.0 Parallel plan
+
+Part A is done. The remaining parts are built by **three parallel streams**, one per machine, while an **integrator** merges finished parts and does the checks that need special hardware. Part 0 (done with this plan) froze the contracts the parts share and split the files that several parts would otherwise edit, so parallel parts rarely touch the same lines.
+
+#### 9.0.1 Parts, dependencies and assignment
+
+| Part | Title | Needs merged first | Better after | Wave | Stream · machine | Branch |
+|---|---|---|---|---|---|---|
+| 0 | Parallel scaffolding | A | — | 0 | integrator (done 2026-11-22) | `gesture_learning` |
+| A2 | Feed feedback follow-ups | 0 | — | 1 | S3 · Max (macOS) | `part-a2` |
+| A3 | MX Brio defaults | 0 | — | 1 | integrator · Pablo (Ubuntu, MX Brio) | `part-a3` |
+| B | Learning task formats | 0 | A2 | 1 | S2 · Pol (Ubuntu) | `part-b` |
+| C | Learner model v2 | 0 | — | 1 | S1 · Ashlie (Windows) | `part-c` |
+| H | Hand and avatar quality | 0 | — | 1, after A2 | S3 · Max (macOS) | `part-h` |
+| D | Recommender | C | B | 2 | S1 · Ashlie (Windows) | `part-d` |
+| E | Minigames | B | C | 2 | S2 · Pol (Ubuntu) | `part-e` |
+| F1 | Settings sheet and PWA | C, A2 | H | 2 | S3 · Max (macOS) | `part-f1` |
+| F2 | Final polish and cleanup | every part above | — | 3 | integrator + the streams that are free | `part-f2` (or one branch per area) |
+| G | Optional extensions | F2 | — | later | only when asked | — |
+
+- **Needs merged first:** the part's branch starts from a `gesture_learning` that contains these parts. **Better after:** the part can start without it; the checks that need it are listed in the part file under "Integration checks".
+- Each stream keeps its area across waves: **S1 "learner brain"** (C → D), **S2 "tasks"** (B → E), **S3 "look and feel"** (A2 → H → F1). Wave 2 continues work the stream already knows instead of handing it over.
+
+```text
+wave 0     wave 1                           wave 2                wave 3
+  0 ──┬──► C  (S1) ───────────────────────► D  (S1) ────────┐
+      ├──► B  (S2) ───────────────────────► E  (S2) ────────┼──► F2 (integrator + free streams) ──► G (if asked)
+      ├──► A2 (S3) ──► H (S3) ────────────► F1 (S3) ────────┘
+      └──► A3 (integrator)
+```
+
+#### 9.0.2 Waves and sync points
+
+1. **Wave 1** starts from the Part 0 commit on `gesture_learning`: C, B, A2 (then H) and A3, all at once.
+2. When a part is finished (gates green, part file up to date), the human of that machine commits it on the part's branch and pushes. The integrator merges it into `gesture_learning` (§9.0.5).
+3. **Wave 2:** a part starts from `gesture_learning` once the parts it needs are merged. A stream that is ready before that merge MAY start on top of its own finished branch (e.g. `part-d` from `part-c`) and merge `gesture_learning` in later. Pushed branches are never rebased.
+4. **Wave 3:** F2 starts when every other part is merged. Its items are split by area (F2 says who can take what).
+
+#### 9.0.3 File ownership
+
+A part edits only the files it owns, plus new files in its own folders. Everything else is read-only for parallel parts. If a part really needs a change elsewhere, it keeps it minimal and lists it under "Cross-part edits" in its part file, so the integrator can expect the conflict. Paths are under `web/` unless noted.
+
+| Files | Wave 1 owner | Wave 2 owner |
+|---|---|---|
+| `src/feed/FeedScreen.tsx`, `ActionBar.tsx`, `CardParts.tsx`, `CardStack.tsx`, `useSwipe.ts`, `swipe.ts`, `config.ts`, `animations.ts`, `feed.css`, `src/tasks/system-tutorial/` | A2 | D (queue, invalidation, ℹ in `CardHeader`); F1 only the `<FeedTop …/>` line |
+| `src/feed/FeedTop.tsx` | A2 | F1 |
+| `src/feed/derived.ts`, `src/feed/simplePicker.ts`, `src/dev/forcedSource.ts`, `src/dev/devConfig.ts` | C | D (picker, `derived.ts`); E (forced content for passages and dialogues) |
+| `src/learner/**` | C | D (more queries, if needed) |
+| `src/recommender/**` | — | D |
+| `src/app/**` | — | D (the card source); F1 (providers, if needed) |
+| `src/dev/panels.ts` and new inspector files | C | D |
+| `src/dev/DevScreen.tsx`, `EventLog.tsx` | — | E (content picker) |
+| `src/tasks/learningFormats.ts`, `learningViews.tsx`, `src/tasks/ui/**` except `GameFrame*`, `src/tasks/{lesson,question,quiz-choice,quiz-build}/`, `src/camera/checkMode.ts` (new) | B | E may extend `checkMode.ts` (numbers) and reuse `ui/` |
+| `src/tasks/gameFormats.ts`, `gameViews.tsx`, `src/tasks/game-*/`, `src/tasks/ui/GameFrame*` | — | E |
+| `src/lib/handshapes.ts`, `src/lib/engine.ts`, `src/components/CameraView.tsx`, `src/camera/cameraSession.ts` | B | E (handshapes, engine, CameraView); F1 (`cameraSession.ts`) |
+| `src/lib/camera.ts`, `src/lib/env.ts` | A3 | F1 (lazy MediaPipe, camera picker) |
+| `src/viewer/**`, `src/screens/Lab.tsx`, `scripts/extract_motion.py`, `scripts/fit-letters.ts`, `scripts/verify-letters.ts`, `public/motion/**`, the `render` block of `content/signs/*.json`, `content/reference/` | H | F1 (lazy three.js inside `SignViewer` only) |
+| `content/signs/*.json` (`description`, `translations`), `content/curriculum.json`, `src/content/curriculum.ts` | B | — |
+| `content/comprehension.json`, `content/dialogues.json`, `src/content/scenarios.ts` | — | E |
+| `src/sound/effects.ts` | — | E |
+| `src/sound/engine.ts` | — | F1 |
+| `src/data/**` | C | F1 (new settings fields) |
+| `src/core/types.ts` | any part, additive only, listed in its part file | same |
+| `src/i18n/en.ts`, `es.ts` (core strings) | A2 (`feed`, `tutorial`), H (`viewer`, `lab`), B (`quiz`) | — |
+| `src/i18n/parts/<name>.ts` | `learning` → B, `learner` → C | `recommender` → D, `games` → E, `settings` → F1 |
+| `index.html`, `public/manifest.webmanifest`, new files in `public/` (icons, service worker), `vite.config.ts`, `src/main.tsx` | — | F1 |
+| `package.json` | — | D (the `simulate` script only) |
+| `package-lock.json` | nobody: no new dependency without the integrator (§8.1) | same |
+| `src/tasks/registry.ts`, `views.tsx`, `src/i18n/index.ts`, `src/styles.css`, `server/` | read-only | read-only |
+| `src/activities/`, `src/learning/`, `src/screens/` (old app) | read-only (references for the ports) | read-only; F2 deletes |
+| `PROJECT_STATE.md`, `docs/SPEC.md`, `AGENTS.md`, `README.md`, `web/README.md` (repo root paths) | integrator | integrator (F2 rewrites the READMEs) |
+| `docs/parts/<part>.md` (repo root path) | its part | its part |
+
+The Python prototype at the repo root (`perception/`, `camctl.py`, `view_cam.sh`, `pyproject.toml`, `uv.lock`) stays out of scope for every part (AGENTS.md rule 10).
+
+#### 9.0.4 Rules for parallel parts
+
+1. **Ownership:** §9.0.3. Read-only files are still meant to be read: the old `activities/` are the references for the ports.
+2. **Contracts change additively only:** `src/core/types.ts`; the `LearnerQueries` lists, `createLearnerQueries(events, opts)` and `withContent()` in `learner/queries.ts`; the `SignViewer` props; `cardHistory`, `feedStats` and `soundMuted` in `feed/derived.ts`; the `DEV_PANELS` slot. A new query method also gets a default in `learner/testing.ts`. List every contract change in the part file; the integrator checks the other branches against it.
+3. **State:** a parallel part writes only its own file `docs/parts/<part>.md`: checklist, decisions `D-<part>NN`, open questions `Q-<part>NN`, risks `R-<part>NN`, session log, and the handoff for the integrator. It does not edit `PROJECT_STATE.md`, this spec, `AGENTS.md` or the READMEs. A deviation from the spec is a decision in the part file.
+4. **Strings:** in the part's own module `src/i18n/parts/<name>.ts` (English and Spanish side by side, typed against each other), plus the core sections the part owns (§9.0.3).
+5. **CSS:** in new files next to the part's components. Never append to `styles.css` or to another part's CSS file.
+6. **Dependencies:** none (§8.1) unless the integrator agrees. Install with `npm ci`, never `npm install`, and leave `package-lock.json` unchanged.
+7. **Portability:** LF line endings everywhere (`.gitattributes`). Import paths match the file names' case exactly: macOS and Windows file systems don't notice a wrong case, but the Linux build fails. npm scripts and tools are Node scripts, not shell scripts.
+8. **Tests:** new colocated files. Generator tests use `fakeQueries()` from `learner/testing.ts`, not the stub's behaviour, so they keep passing when Part C replaces the stub.
+9. **Git:** agents don't commit, push or create branches (AGENTS.md rule 1). The human of each machine works on the part's branch (§9.0.1) and commits and pushes it when the part is done.
+
+#### 9.0.5 Integrator protocol
+
+On Pablo's laptop, for each finished part, in the order they arrive:
+
+1. Fetch the branch and read its part file: contract changes, cross-part edits, integration checks.
+2. Merge it into `gesture_learning` with `--no-ff`. Resolve conflicts by keeping both sides' intent; never drop another part's lines.
+3. Run the gates on Linux (`npm ci`, typecheck, test, build) and a browser smoke check (desktop Chrome and phone emulation): the feed opens on a task, every exit works, dev mode plays the part's formats, no console errors.
+4. Do the part's checks that need this machine: the MX Brio, the Android phone over USB (`adb reverse`, R-011), the real-device feel.
+5. Fold the part into `PROJECT_STATE.md`: the status table (§2), an index line for its decisions (§4), open questions (§5), risks (§6) and a log entry (§7). Mark the part file "merged in `<commit>`".
+6. Commit and push when the user asks, and tell the other streams about contract changes that affect them.
+7. When the parts a wave-2 part needs are merged, tell its stream to start from the new `gesture_learning`.
+
+#### 9.0.6 Machines
+
+| Machine | OS | Role | Notes |
+|---|---|---|---|
+| Pablo's laptop (the spec machine) | Ubuntu 26.04 | integrator; A3; device checks | Node 22.23.5 and npm 10.9.9 in `~/.local/bin`. Logitech MX Brio and the integrated webcam. Android moto g86 over USB (`adb reverse`, R-011). Chrome 157, Firefox 158. |
+| Pol's laptop | Ubuntu 26.04 | S2: B → E | May have no Node: install Node 22.23.5 in user space from the official tarball (no sudo). Camera tasks need a webcam, or Chrome's fake camera fed with a hand clip, as in Part A's tests. |
+| Max's Mac | macOS | S3: A2 → H → F1 | Safari (WebKit) checks for the viewer and the PWA. Python through `uv` to re-extract motion (Part H). Case-insensitive file system (rule 7). |
+| Ashlie's PC | Windows 11 | S1: C → D | Pure TypeScript work, nothing OS-specific. Use a fresh clone made after Part 0 (LF endings). Git Bash and PowerShell both work; `npm run setup:media` uses Windows' own `curl.exe` for the optional illustrations. |
+
+No part needs a particular OS, except: A3 needs the MX Brio; real-phone checks need the Android phone (or an iPhone over HTTPS); Safari checks need the Mac. Python (`uv`) is only needed to re-extract motion in Part H, and works on all three systems (`mediapipe` publishes wheels for Linux, macOS and Windows).
 
 ### Part A — Feed foundation
 
@@ -694,14 +833,14 @@ Scope:
 9. **Routing and cleanup:** the feed is the default route; `#lab` still works; `#dev` opens dev mode. Delete the five old screens (`Home`, `Session`, `Onboarding`, `Placement`, `Results`). Keep `learning/`, `activities/`, `lib/` and `server/` even if some of their exports become unused: later parts port or remove them.
 10. **i18n:** create `src/i18n/` and use it for all new UI text. (Follow-up after Part A: English default plus Spanish, with a language switch; D-038.)
 11. **Sound engine** (`src/sound/`, §3.7): synthesised effects for the threshold tick, the four exits, spring-back, card settle, and correct/wrong; unlock on first gesture; a mute toggle in the feed overlay (persisted with `settings.set`); optional haptics.
-12. **Targets** (§1.4): the vertical layout works on desktop (mouse, keyboard), in mobile browsers (touch) and in standalone display mode. A minimal web manifest is fine here; the full PWA is Part F.
+12. **Targets** (§1.4): the vertical layout works on desktop (mouse, keyboard), in mobile browsers (touch) and in standalone display mode. A minimal web manifest is fine here; the full PWA is Part F1.
 
 Acceptance (MUST):
 
 - [ ] Loading `/` shows the tutorial card on first launch, then a quiz-choice card. Every later launch shows a task immediately. No home, onboarding or placement screen.
 - [ ] The next card's preview is visible behind the current card at all times.
 - [ ] Left, right and down swipes work with touch (mobile emulation), mouse drag, the action-bar buttons and the keyboard. Up/Next works only after completion. All exits share the same animation; below-threshold drags spring back.
-- [ ] A correct quiz answer shows feedback and auto-advances upward; a wrong one waits for "Continuar" or a swipe; swiping after completion is possible.
+- [ ] A correct quiz answer shows feedback and auto-advances upward; a wrong one waits for "Continuar" or a swipe (changed by Part A2: it auto-advances too); swiping after completion is possible.
 - [ ] Every card writes `card.shown`, and every exit writes `card.exit`; completions write `evidence` and `card.result` (checked in the dev log inspector).
 - [ ] In `dev-camera-probe`, "no camera now" stops the camera (the browser's camera indicator turns off), logs `camera.off`, exits the card, and no camera card appears again until a new tab; a reload of the same tab keeps it off.
 - [ ] Dev mode can force any format with chosen content, plays it repeatedly, and writes only to `signa-dev`.
@@ -711,6 +850,54 @@ Acceptance (MUST):
 - [ ] Unit tests: swipe decision, event upcast, picker camera filtering. `typecheck`, `test` and `build` pass.
 
 Out of scope: the other formats, the learner model v2, the recommender, the settings sheet, the PWA.
+
+### Part 0 — Parallel scaffolding (done 2026-11-22)
+
+**Goal:** let parts B, C, H, A2 and A3 (then D, E, F1) be built at the same time with few merge conflicts. Behaviour-neutral: the feed works exactly as after Part A.
+
+Done:
+
+1. **Learner query contract** (§8.3): the `LearnerQueries` lists and `ItemStatus` in `core/types.ts`; `FeedContext.events`; `learner/queries.ts` with a stub `createLearnerQueries(events, opts)` (a rough fold of the v2 log) and `withContent()` for dev forced mode; `learner/testing.ts` with `fakeQueries()`. The simple picker and the forced source build their queries there; the picker keeps Part A's curriculum walk for `nextItems`.
+2. **Split shared files:** the format registry composes `tasks/learningFormats.ts` (B) and `tasks/gameFormats.ts` (E), and the views `tasks/learningViews.tsx` and `tasks/gameViews.tsx`; strings of later parts go to `i18n/parts/<name>.ts`, mounted in `en.ts`/`es.ts`; dev inspectors go to the `dev/panels.ts` slot.
+3. `.gitattributes` (LF everywhere), the part files in `docs/parts/`, and this plan.
+
+### Part A2 — Feed feedback follow-ups
+
+**Goal:** after the Part A tests, every result leaves on its own with a banner that says what was right or wrong, the Next button disappears, and correct answers move on twice as fast (§3.3–§3.5).
+
+Scope:
+
+1. **Auto-advance after every result** (§3.4). The banner with its countdown bar now also shows for wrong answers ("not quite", what was wrong, the correct answer, the note), then the card leaves with the Next exit, the same animation and sound as today.
+   - Delays live in `feed/config.ts`: correct 600 ms (was 1200 ms); wrong `clamp(2000 + 30 × characters, 2500, 5000)` ms; game end 2500 ms; a result without feedback 600 ms. A pure `autoAdvanceMs(result)` decides, with tests.
+   - "Twice as fast" is the wait before the card leaves. The exit animation (280 ms) stays shared by every exit (§3.3).
+   - Press and hold on the card pauses the countdown; a drag keeps it paused; a spring-back restarts it from the beginning. This replaces D-029's "a drag cancels the auto-advance and it does not restart". Left, right and down swipes during the countdown still add an opinion (D-011). ↑, Enter and Space skip the wait.
+   - Update the `TaskResult.feedback` comment in `core/types.ts`: a missing feedback no longer means "no auto-advance".
+2. **No Next button:** the action bar keeps three buttons (← too easy, ↓ not for me, → too hard). Remove the Next button, its "finish the task to continue" lock and the "tap Next when you're ready" hint, in both languages. Swipe up after completion and the keys keep working.
+3. **Tutorial:** it explains that finished cards fly up on their own. Any of the three buttons, any swipe, or ↑ dismisses it, and it stays unscored (D-029). The i18n test about the tutorial rows follows the new wording.
+4. The live region still announces correct or wrong (with the answer) before the card leaves.
+
+Acceptance (MUST):
+
+- [ ] A wrong quiz answer shows the red banner with the correct answer and a countdown, then the card flies up by itself, with no button press.
+- [ ] A correct answer starts flying up about 0.6 s after the banner appears.
+- [ ] The action bar has three buttons; no "Next"/"Continuar" button text is left in either language.
+- [ ] Holding the card pauses the countdown; a spring-back restarts it; a left, right or down swipe during the countdown exits with that opinion (`card.exit` with `completed: true`).
+- [ ] The tutorial still opens the first launch and is dismissed by any button, swipe or ↑.
+- [ ] Unit tests for `autoAdvanceMs`; the rest of Part A's acceptance still holds; `typecheck`, `test` and `build` pass.
+
+Out of scope: new formats, the learner model, the settings sheet.
+
+### Part A3 — MX Brio defaults
+
+**Goal:** the Logitech MX Brio opens at its default framing (no zoom), and every other camera is left as it is (§5.6). Done by the integrator, because only the spec machine has a Brio.
+
+Scope:
+
+1. In `lib/camera.ts`, after opening a track whose label matches the MX Brio, reset its zoom to the minimum and pan and tilt to 0 through the pan-tilt-zoom constraints, asking for PTZ access only for the Brio. Skip without an error where the browser exposes no PTZ. Keep the camera choice order (saved choice → Brio → default).
+2. A pure helper turns a track's label and capabilities into the reset constraints, with tests (a Brio with PTZ, a Brio without, another camera).
+3. Record how to reset the Brio by hand where the browser can't (`./view_cam.sh`, or `python3 camctl.py <device> zoom_absolute=100 pan_absolute=0 tilt_absolute=0`).
+
+Acceptance (MUST, on the spec machine): zoom the Brio in with `camctl.py`, then open a camera card in Chrome: the preview shows the full field of view and `getSettings().zoom` is at the minimum. The integrated camera opens with no PTZ prompt and unchanged settings. `typecheck`, `test` and `build` pass.
 
 ### Part B — Learning task formats
 
@@ -722,10 +909,14 @@ Scope:
 2. **`checkModeFor()`** (`src/camera/checkMode.ts`), §4.2, with tests.
 3. **`lesson`** (§4.3): watch → try → result, including the relearn variant. Camera mode reuses the `Imitate.tsx` logic (per-finger highlights, "looks like an N" confusions).
 4. **`question`** (§4.4): `sign-term`, `sign-sentence`, `spell-word`, each in its camera, mirror and self modes.
-5. **`quiz-choice` polish** (§4.5): letters, numbers, words and phrases; similarity-based and confusion-based distractors; replay and slow-motion params.
-6. **`quiz-build`** (§4.6): gloss mode (MUST); translation mode (MAY, only with `es_tokens`).
-7. **Generators:** each format's `generate()` returns sensible drafts from a minimal query interface. The full `LearnerQueries` arrives in Part C; until then, use a small stub (e.g. the items met so far, read from v2 `evidence` events, plus the curriculum order). Don't extend the old `learning/profile.ts`: it only understands v1 events.
+5. **`quiz-choice` polish** (§4.5): letters, numbers, words and phrases; similarity-based and confusion-based distractors; replay and slow-motion params. Its items come from `probes`, then `practice("receptive")`, instead of Part A's `nextItems` walk.
+6. **`quiz-build`** (§4.6): gloss mode (MUST); translation mode (MAY, only for phrases with authored `tokens`).
+7. **Generators:** each format's `generate()` picks its items only through the `LearnerQueries` lists of §8.3: `frontier` for lessons, `relearn` for relearn lessons, `practice` for questions and quizzes, `probes` for verification probes, `eligiblePhrases` for quiz-build and sign-sentence, `confusions` for distractors. Part 0's stub in `learner/queries.ts` answers them until Part C (built in parallel) replaces it: don't write another stub, and don't extend the old `learning/profile.ts` (it only understands v1 events). Test generators with `fakeQueries()`.
 8. **Evidence mapping tests:** given a result, the evidence drafts have the right skill, check mode, `selfGraded` flag and items.
+9. **Results always carry `feedback`** (correct or not, the correct answer, a note): since Part A2 the feed auto-advances after every result.
+10. **English for the content this part shows:** letter descriptions (`description.en`, translated faithfully, rule 5) and the handshape hints of `lib/handshapes.ts`, which move to i18n (R-020).
+
+Parallel work (§9.0): the feed, the tutorial and the action bar belong to A2, the viewer to H, the learner queries and the simple picker to C. Task progress for multi-step cards is shown inside `TaskFrame`, not in the feed header. `SignViewer` is used as it is. New strings go to `i18n/parts/learning.ts`.
 
 Acceptance (MUST):
 
@@ -733,7 +924,9 @@ Acceptance (MUST):
 - [ ] With the camera off, no format requests the camera; camera-optional formats run in `self` mode.
 - [ ] Mirror clips are never persisted (no IndexedDB, Cache or network writes), and are released on card exit.
 - [ ] quiz-build reports "right signs, wrong order" distinctly.
-- [ ] The simple picker now rotates through all formats. `typecheck`, `test` and `build` pass.
+- [ ] The simple picker rotates through all formats (it takes them from the registry). `typecheck`, `test` and `build` pass.
+
+Integration checks (after merge): with A2, every format's result shows the banner and auto-advances; with C, the formats still find content with the real queries; with H, the new viewer fits the task layouts.
 
 Out of scope: the learner model v2, the recommender, minigames.
 
@@ -743,15 +936,45 @@ Out of scope: the learner model v2, the recommender, minigames.
 
 Scope:
 
-1. `src/learner/`: the fold (`state.ts`), BKT (`bkt.ts`), the FSRS wrapper with grade-at-exit (`schedule.ts`), swipe rules (`swipes.ts`), tracks, unlocking, frontier and test-out (`curriculum.ts`), queries for the recommender (`queries.ts`: `predictSuccess`, `status`, `due`, `learning`, `frontier`, `knownPool`, `formatPref`, `challenge`…), and every constant in `params.ts`.
-2. The v1 upcast path folds old `answer` events.
-3. Incremental or memoised fold so appending one event doesn't refold everything on each card.
-4. Dev inspector: learner state table, format preferences and mutes, challenge level, open units and frontier.
-5. Make the formats' generators use the real queries (replace the Part B stub adapter), and remove `learning/profile.ts` when nothing uses it.
+1. `src/learner/`: the fold (`state.ts`), BKT (`bkt.ts`), the FSRS wrapper with grade-at-exit (`schedule.ts`), swipe rules (`swipes.ts`), tracks, unlocking, frontier and test-out (`curriculum.ts`), and every constant in `params.ts`.
+2. **Queries** (`queries.ts`): replace the internals of Part 0's stub so `createLearnerQueries(events, opts)` answers every `LearnerQueries` list of §8.3 from the real state, keeping the signature and `withContent()` (Part B's generators, built in parallel, call them). Add the selectors the next parts need: for the recommender (`predictSuccess`, due reviews, inFlight and overdue counts, format preferences and mutes, challenge `c`, `cf`, `ce`, target success, relearn and probe windows) and for the settings sheet (XP, streak, cards today, per-unit receptive and productive progress, muted formats).
+3. The v1 upcast path folds old `answer` events.
+4. Incremental or memoised fold so appending one event doesn't refold everything on each card.
+5. Dev inspector, as a panel in `dev/panels.ts`: learner state table, format preferences and mutes, challenge level, open units and frontier.
+6. The feed uses the state: `feed/derived.ts` keeps its functions but takes XP and streak from it; the simple picker passes the learner's `ce` instead of 0; dev mode's "auto" challenge reads the sandbox state.
+7. `learning/profile.ts` stays until Part F2 deletes it (the old activities still import it).
 
-Acceptance (MUST): unit tests cover every row of the tables in §7.4 and §7.5, the BKT formulas, hysteresis, the evidence ladder and `verified`, test-out, unlock rules, the grade-at-exit rule including a missing `card.exit`, determinism, and fold equality after export → import. `typecheck`, `test` and `build` pass.
+Parallel work (§9.0): Part B writes generators against the query contract at the same time, so keep the lists' meaning (§8.3) and their order rules. New strings go to `i18n/parts/learner.ts`.
+
+Acceptance (MUST): unit tests cover every row of the tables in §7.4 and §7.5, the BKT formulas, hysteresis, the evidence ladder and `verified`, test-out, unlock rules, the grade-at-exit rule including a missing `card.exit`, determinism, fold equality after export → import, and every `LearnerQueries` list. `typecheck`, `test` and `build` pass.
+
+Integration checks (after merge): with B merged, dev mode plays every format with chosen content, and the feed finds content for each format.
 
 Out of scope: the recommender (keep the simple picker running).
+
+### Part H — Hand and avatar quality
+
+**Goal:** the procedural 3D hand (letters) and the toon avatar (words, numbers) look clearly better and read as real signing, without changing what any sign means (rule 5: the motion still comes only from the real clips) and without slowing the feed. Independent of the other parts: it changes the viewer's inside, not its props.
+
+Scope:
+
+1. **Baseline:** pick a fixed review set and record it before changing anything (screenshots and short screen recordings in `#lab`, next to the real video): letters A, C, E, M, N, O, R, S, T, X, J, Z; words hello, thank-you, mother, father, eat, drink, name, want, yes, no; numbers 3, 6, 9. List the concrete problems in the part file (proportions, joints that break or bend backwards, jitter, hands detached from the arms, depth flips, framing, palm vs back hard to tell).
+2. **Hand** (`HandMesh.tsx`, `toon.ts`, `kinematics.ts`, `handshapeLibrary.ts`, `LetterScene.tsx`): anatomical proportions (tapered finger segments, knuckles, a palm shaped from the wrist and the knuckles instead of a convex blob, the thumb web); cel shading in which palm and back are easy to tell apart (nails, a palm tint); clean outlines; joint limits so a procedural letter never bends backwards or through itself; the camera angle that reads best per letter (side views for C, G, O, P, Q, X) in the `render` block of the sign file; smooth J and Z paths. Letters still pass `scripts/verify-letters.ts`.
+3. **Avatar** (`AvatarScene.tsx`, `scripts/extract_motion.py`, `public/motion/*.json`): temporal smoothing (e.g. One-Euro or Savitzky–Golay) and interpolation to the display frame rate, so the 15 fps data plays smoothly; a crossfade instead of a frozen pose when a hand is lost; constant bone lengths per clip (the median of the clip), with the hand attached to the arm's wrist and plausible elbows; better body proportions (shoulders, torso, neck, head); a face whose eyes, eyebrows and mouth follow the existing blendshapes (non-manual markers are grammar); framing that fills the stage on a phone (the `crop` box exists).
+4. **Motion files:** MAY be re-extracted (`uv run python web/scripts/extract_motion.py words`) and made smaller (fewer decimals, unused fields dropped). Keep them readable by the viewer, or add a `version` field the viewer checks. A re-extraction MAY change which words render as avatar or video (the quality gate in the script): record the changes in the part file.
+5. **MAY:** a rigged character (glTF, CC0 or CC-BY, ≤ 1.5 MB gzipped, credited under About) driven by the landmarks, loaded with three's own `GLTFLoader` (no new npm dependency), only with a recorded decision.
+6. **Budget:** 60 fps in the feed on a mid-range phone, no more than about twice today's draw calls per viewer, at most one WebGL context per viewer (§8.6).
+
+Parallel work (§9.0): Part B uses `SignViewer` at the same time, so its props only change additively and the feed layouts keep fitting. `#lab` keeps working. Sign files change only in their `render` block (Part B adds English descriptions to the same files). Strings go to the core `viewer` and `lab` sections. CSS stays in `viewer/viewer.css`.
+
+Acceptance (MUST):
+
+- [ ] The user approves the review set side by side with the real video in `#lab` (before/after recordings in the part file or shown to the user).
+- [ ] Measured on the avatar review set: mean frame-to-frame acceleration of the wrists and fingertips at least 50 % lower than before, and bone-length variation under 2 % of each bone's length (a small Node script, kept in `scripts/`).
+- [ ] `scripts/verify-letters.ts` passes for every letter it covers; no letter bends backwards in the procedural hand.
+- [ ] 60 fps on the dev machine in `#lab` and in the feed; no new console errors; `typecheck`, `test` and `build` pass.
+
+Out of scope: recognising the learner's signs (G1), new signs or media (G3).
 
 ### Part D — Recommender
 
@@ -760,13 +983,17 @@ Out of scope: the recommender (keep the simple picker running).
 Scope:
 
 1. `src/recommender/`: candidates, features, scoring, hard constraints, seeded softmax selection, explanations, config.
-2. `CardSource` implementation backed by the recommender, with queue invalidation (§7.8.6); `card.shown` logs reasons and score.
-3. The ℹ "why this card" button, with reason strings in both UI languages.
-4. Simulation harness (`recommender/sim/`): ground-truth learner model, personas (novice, fluent, struggling, format hater, no camera, random swiper), and a script `npm run simulate` printing the §7.12 metrics; the metrics also run as Vitest tests.
-5. Dev inspector: top candidates with the feature breakdown, force-next, seed control, and "simulate N cards with persona X".
-6. Remove `learning/orchestrator.ts` and the simple picker from the default route (the picker MAY stay for dev).
+2. `CardSource` implementation backed by the recommender, with queue invalidation (§7.8.6); `card.shown` logs reasons and score. It MAY add an optional `CardSource.stillValid(plan, ctx)` to the contract, called by the feed before the reveal.
+3. The ℹ "why this card" button in `CardHeader`, with reason strings in both UI languages (`i18n/parts/recommender.ts`).
+4. Simulation harness (`recommender/sim/`): ground-truth learner model, personas (novice, fluent, struggling, format hater, no camera, random swiper), and a script `npm run simulate` printing the §7.12 metrics; the metrics also run as Vitest tests. The format hater hates `game-rain` when it is registered, else `quiz-choice` (Part E is built in parallel).
+5. Dev inspector, as a panel in `dev/panels.ts`: top candidates with the feature breakdown, force-next, seed control, and "simulate N cards with persona X".
+6. Switch the learner's feed (`app/App.tsx`) to the recommender source; the simple picker MAY stay for dev. `learning/orchestrator.ts` is deleted in Part F2.
+
+Parallel work (§9.0): Part E adds games at the same time; they reach the recommender through the registry and their own `generate()`. Part F1 adds the settings button to `FeedTop` (D doesn't touch that line). New CSS goes in a new file.
 
 Acceptance (MUST): all 10 metrics of §7.12 pass in tests. A manual run in the browser feels varied, and the ℹ reasons make sense. `typecheck`, `test` and `build` pass.
+
+Integration checks (after E is merged): metrics 4 and 6 run with the real games (`game-rain` hated), and the recommender picks games by cadence and eligibility.
 
 Out of scope: new formats (Part E).
 
@@ -776,31 +1003,54 @@ Out of scope: new formats (Part E).
 
 Scope:
 
-1. `GameFrame` (intro, countdown, HUD, end screen, personal best from `game.score`), with game sounds (§3.7: countdown, hit, miss, life lost, game over, new best).
-2. Port: `game-rain`, `game-memory`, `game-match`, `game-spell-read`, `game-spell-sprint`, `game-story`, `game-dialogue` (each ≤ 90 s, with params from `ce`, a generator, per-item evidence, and dev-mode play).
-3. Number handshape rules (static 1–9) in `lib/handshapes.ts`, calibrated on reference poses taken from the existing number clips or motion files with the existing pipeline. Document their limits. `checkModeFor` then returns `camera` for those numbers.
+1. `GameFrame` (intro, countdown, HUD, end screen, personal best from `game.score`), with game sounds (§3.7: countdown, hit, miss, life lost, game over, new best) in `sound/effects.ts`.
+2. Port: `game-rain`, `game-memory`, `game-match`, `game-spell-read`, `game-spell-sprint`, `game-story`, `game-dialogue` (each ≤ 90 s, with params from `ce`, a generator, per-item evidence, and dev-mode play). Pools come from `pool()`, confusions from `confusions()` (§8.3). `game-dialogue` builds replies with Part B's `TileBank`. English for `comprehension.json` and `dialogues.json` comes first (R-020).
+3. Number handshape rules (static 1–9) in `lib/handshapes.ts`, calibrated on reference poses taken from the real number clips: the hand landmarks in `public/motion/num-*.json`, read with a Node script like `scripts/fit-letters.ts` (no Python needed). Document their limits. `checkModeFor` then returns `camera` for those numbers.
 4. New: `game-count-up` and `game-abc-run`.
 5. At least two backlog games (§4.7); `game-minimal-pairs` is recommended.
-6. Delete the old `activities/` files that were ported, and `learning/activityCatalog.ts` if unused.
+6. Leave the old `activities/` files in place: Part F2 deletes them once nothing imports them.
 
-Acceptance (MUST): every game is playable from dev mode, ends within its time limit, reports evidence and `game.score`, and respects the camera gate; the recommender picks games according to cadence and eligibility (simulation metric 6 still passes); `typecheck`, `test` and `build` pass.
+Parallel work (§9.0): Part D builds the recommender at the same time, and Part F1 the settings sheet. Games live in `tasks/gameFormats.ts`, `tasks/gameViews.tsx` and `tasks/game-*/`; strings in `i18n/parts/games.ts`; CSS in new files.
 
-### Part F — Product polish and cleanup
+Acceptance (MUST): every game is playable from dev mode, ends within its time limit, reports evidence and `game.score`, and respects the camera gate; `typecheck`, `test` and `build` pass.
 
-1. Settings and progress sheet (§3.6), including unmute, camera re-enable, the camera picker, and sound/haptics settings.
-2. PWA: manifest, icons, portrait orientation, `display: standalone`, installability, offline shell and content (§8.6). Test the three targets of §1.4 on real devices (desktop webcam, phone browser with the front camera, installed app). Write `docs/embedding.md` for hosts that embed the app in a WebView: granting camera permission (the microphone is never needed), inline media playback, HTTPS, and no pop-ups.
-3. Performance pass (§8.6): WebGL context budget, prefetching, lazy chunks, a 60 fps swipe check on a real phone.
-4. Accessibility pass (§3.3, §8.6).
-5. Cleanup: remove dead code and CSS from the old app. Rewrite `web/README.md` for the new app. Update `README.md`.
-6. MAY: Playwright smoke tests (load, swipe each direction, camera-off flow with a fake camera).
+Integration checks (after D is merged): the recommender picks games according to cadence and eligibility (simulation metric 6 still passes, metric 4 with `game-rain`).
 
-Acceptance (MUST): Lighthouse PWA installable; no dead modules; the README matches reality; all gates pass.
+### Part F1 — Settings sheet and PWA
+
+**Goal:** the learner can see progress and change settings, and the app installs and works offline. Can run while D and E are built.
+
+Scope:
+
+1. **Settings and progress sheet** (§3.6), opened from a settings button in the feed overlay (`FeedTop`): streak, XP and the daily-goal ring (Q-003); per-unit receptive and productive progress (Part C's selectors); muted formats with "unmute" (`format.unmute`); camera state, re-enable and the camera picker; sound on/off and volume; haptics; data export, import and reset (`data/repository.ts`); about (credits: WLASL, MediaPipe, FSRS); the hidden developer entry (tap the version 5 times). Preferences are logged with `settings.set`.
+2. **PWA** (§8.6): manifest (name, icons drawn for the project, portrait, `display: standalone`, theme colour), installability, and a hand-written service worker (no dependency) that caches the app shell and the content JSON for offline use; media stays network-only.
+3. **Lazy libraries:** load three.js (inside `SignViewer`) and MediaPipe (inside `lib/camera.ts`) on demand, so the first card appears sooner. Record the chunk sizes (R-015).
+4. `docs/embedding.md` for hosts that embed the app in a WebView: granting camera permission (the microphone is never needed), inline media playback, HTTPS or localhost, no pop-ups.
+
+Acceptance (MUST): Lighthouse finds the PWA installable; the installed app opens standalone on desktop Chrome (and on the Android phone, checked by the integrator); an offline reload shows a task; every setting works and persists; "unmute" brings a muted format back; `typecheck`, `test` and `build` pass.
+
+Out of scope: lazy views per format and the WebGL budget of the games (F2), the accessibility pass (F2), deleting old code (F2).
+
+### Part F2 — Final polish and cleanup
+
+**Goal:** everything merged works together on the real targets, and nothing of the old app is left.
+
+Scope (each area can go to a different machine; the files don't overlap):
+
+1. **Performance** (S3 or whoever is free): the WebGL context budget with the games' multi-viewer boards; lazy task views in `tasks/views.tsx`; prefetching; a 60 fps swipe check on the Android phone.
+2. **Accessibility pass** (§3.3, §8.6), same owner as 1.
+3. **Cleanup** (S2 or whoever is free): delete `src/activities/`, `learning/activityCatalog.ts`, `learning/orchestrator.ts` and `learning/profile.ts` (keep `learning/extensions.ts` compiling for G2, with local types), the unused parts of `lib/engine.ts`, `data/eventsV1.ts` if nothing needs it, the `nextItems` walk if no format uses it, and the dead CSS of `styles.css`.
+4. **Docs and devices** (integrator): rewrite `web/README.md` for the new app and update `README.md`; check the three targets of §1.4 on real devices (desktop webcams including the MX Brio, the Android phone's browser with the front camera, the installed app) and Safari on the Mac (an iPhone over HTTPS if one is available).
+5. The integration checks left open by earlier parts.
+6. MAY: Playwright smoke tests in the repo (load, swipe each direction, camera-off flow with a fake camera), as a pinned dev dependency (§8.1).
+
+Acceptance (MUST): Lighthouse PWA installable; no dead modules; the READMEs match reality; all gates pass.
 
 ### Part G — Optional extensions (only when asked, one at a time)
 
 - **G1 — Experimental word-sign check:** compare the learner's hand trajectories (MediaPipe hands, or holistic) with the reference motion files using DTW over normalised features. Show it as "beta" feedback only; never as a hard failure. Record precision on a small labelled set.
 - **G2 — LLM features:** wire `src/learning/extensions.ts` to `server/api.ts` (coach summaries every N cards; generated practice phrases validated against existing signs only).
-- **G3 — Content growth:** more WLASL signs through `scripts/extract_motion.py`; ASL-LEX phonology import; `es_tokens` for phrases; review by a fluent signer.
+- **G3 — Content growth:** more WLASL signs through `scripts/extract_motion.py`; ASL-LEX phonology import; authored `tokens` for phrases; review by a fluent signer.
 
 ## 10. Glossary
 
@@ -821,6 +1071,10 @@ Acceptance (MUST): Lighthouse PWA installable; no dead modules; the README match
 | Claim | "Too easy" on new content: assumed known until a probe verifies it. |
 | Probe | A short check that verifies claimed items. |
 | Sandbox | The dev-mode event log (`signa-dev`), separate from the real one. |
+| Stream | One machine working through a sequence of parts (S1 C → D, S2 B → E, S3 A2 → H → F1; §9.0). |
+| Wave | A set of parts built at the same time; the next wave starts from the merged result. |
+| Integrator | Whoever merges finished parts into `gesture_learning` and runs the checks that need the spec machine (§9.0.5). |
+| Part file | `docs/parts/<part>.md`: the state of one part built in parallel (checklist, decisions, log, handoff). |
 
 ## 11. Sources
 
