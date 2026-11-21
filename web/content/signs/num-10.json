@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "num-10",
+  "type": "number",
+  "gloss": "TEN",
+  "translations": {
+    "es": "diez",
+    "en": "ten"
+  },
+  "unit": "numbers",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/num-10.mp4",
+    "crop": [
+      0.301,
+      0.1759,
+      0.792,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%2010-6ojLD8vgvg8.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%2010-6ojLD8vgvg8.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-white",
+  "type": "word",
+  "gloss": "WHITE",
+  "translations": {
+    "es": "blanco",
+    "en": "white"
+  },
+  "unit": "colors",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-white.json"
+  },
+  "video": {
+    "src": "/media/signs/w-white.mp4",
+    "crop": [
+      0.2822,
+      0.0971,
+      0.737,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/white.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/white.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.864)."
+  }
+}

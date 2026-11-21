@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-apple",
+  "type": "word",
+  "gloss": "APPLE",
+  "translations": {
+    "es": "manzana",
+    "en": "apple"
+  },
+  "unit": "food",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-apple.json"
+  },
+  "video": {
+    "src": "/media/signs/w-apple.mp4",
+    "crop": [
+      0.2293,
+      0.1145,
+      0.6733,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/apple-2.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/apple-2.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.906)."
+  }
+}

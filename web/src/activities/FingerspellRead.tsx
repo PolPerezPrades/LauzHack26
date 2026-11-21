@@ -1,37 +1,26 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { getSign, letterId } from "../content/curriculum";
 import type { Answer } from "../lib/engine";
+import { SignViewer } from "../viewer/SignViewer";
 
-/** The app fingerspells a word letter by letter (real alphabet illustrations); the learner types it. */
+/** The 3D hand fingerspells a word letter by letter (smooth transitions); the learner types it. */
 export function FingerspellRead({ word, msPerLetter, onAnswer, locked }: {
   word: string; msPerLetter: number; onAnswer: (a: Answer) => void; locked: boolean;
 }) {
   const [phase, setPhase] = useState<"ready" | "playing" | "input">("ready");
-  const [shown, setShown] = useState(-1);   // index of the letter on screen, -1 = blank
   const [plays, setPlays] = useState(0);
   const [speed, setSpeed] = useState(msPerLetter);
   const [text, setText] = useState("");
   const [result, setResult] = useState<boolean | null>(null);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const ids = word.split("").map(letterId).filter((id) => getSign(id));
 
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
-
-  const play = () => {
-    timers.current.forEach(clearTimeout);
-    timers.current = [];
-    setPhase("playing");
-    const gap = Math.round(speed * 0.18); // short blank so double letters are visible
-    word.split("").forEach((_, i) => {
-      timers.current.push(setTimeout(() => setShown(i), i * speed));
-      timers.current.push(setTimeout(() => setShown(-1), (i + 1) * speed - gap));
-    });
-    timers.current.push(setTimeout(() => {
-      setPhase("input");
-      setPlays((p) => p + 1);
-      setSpeed((s) => Math.round(s * 0.85)); // each replay is a bit faster
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }, word.length * speed + 200));
+  const play = () => setPhase("playing");
+  const ended = () => {
+    setPhase("input");
+    setPlays((p) => p + 1);
+    setSpeed((s) => Math.round(s * 0.85)); // each replay is a bit faster
+    setTimeout(() => inputRef.current?.focus(), 50);
   };
 
   const submit = () => {
@@ -42,14 +31,14 @@ export function FingerspellRead({ word, msPerLetter, onAnswer, locked }: {
     onAnswer({ correct, items: letters.map((L) => ({ id: letterId(L), correct })) });
   };
 
-  const sign = shown >= 0 ? getSign(letterId(word[shown])) : undefined;
-
   return (
     <div className="activity">
       <h2 className="prompt">Deletreo rápido: ¿qué palabra es?</h2>
       <div className="spell-stage">
         {phase === "ready" && <button className="btn btn-primary" onClick={play}>▶ Ver deletreo</button>}
-        {phase === "playing" && (sign ? <img src={sign.media.src} alt="letra" /> : <div className="spell-blank" />)}
+        {phase === "playing" && (
+          <SignViewer key={plays} ids={ids} size="md" controls={false} credit={false} loop={false} letterHoldMs={speed} onSequenceEnd={ended} />
+        )}
         {phase === "input" && (
           <div className="spell-letters">
             {result !== null ? word.split("").map((L, i) => <span key={i}>{L}</span>) : <span className="muted">{word.length} letras</span>}
@@ -69,7 +58,6 @@ export function FingerspellRead({ word, msPerLetter, onAnswer, locked }: {
           <button className="btn btn-primary" disabled={result !== null || locked || !text.trim()}>Comprobar</button>
         </form>
       )}
-      <div className="credit center">Alfabeto: ilustraciones de dominio público (Wikimedia Commons)</div>
     </div>
   );
 }

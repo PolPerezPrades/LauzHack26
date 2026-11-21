@@ -1,0 +1,56 @@
+{
+  "schema": "sign/1",
+  "id": "L-F",
+  "type": "letter",
+  "gloss": "F",
+  "translations": {
+    "es": "F",
+    "en": "F"
+  },
+  "unit": "abc1",
+  "phonology": {
+    "hands": 1,
+    "handshape": "F",
+    "orientation": {
+      "palm": "out",
+      "fingers": "up"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Índice y pulgar se tocan formando un círculo; los otros tres dedos estirados."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": {
+    "src": "/media/letters-video/F.mp4",
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "asldeafined",
+      "url": "https://media.asldeafined.com/vocabulary/1528811116.918.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Ilustración (Public domain)",
+      "url": "https://commons.wikimedia.org/wiki/File:Sign_language_F.svg",
+      "image": "/media/letters/F.svg"
+    },
+    {
+      "label": "Pose real (MediaPipe sobre vídeo WLASL)",
+      "url": "https://media.asldeafined.com/vocabulary/1528811116.918.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

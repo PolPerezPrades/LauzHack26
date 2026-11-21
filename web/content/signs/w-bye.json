@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-bye",
+  "type": "word",
+  "gloss": "GOODBYE",
+  "translations": {
+    "es": "adiós",
+    "en": "goodbye"
+  },
+  "unit": "greetings",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-bye.mp4",
+    "crop": [
+      0.2913,
+      0.0805,
+      0.901,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%20GoodBye-73DrhTsZt7k.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%20GoodBye-73DrhTsZt7k.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

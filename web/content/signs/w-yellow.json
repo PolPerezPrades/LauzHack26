@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-yellow",
+  "type": "word",
+  "gloss": "YELLOW",
+  "translations": {
+    "es": "amarillo",
+    "en": "yellow"
+  },
+  "unit": "colors",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-yellow.json"
+  },
+  "video": {
+    "src": "/media/signs/w-yellow.mp4",
+    "crop": [
+      0.2982,
+      0.1012,
+      0.7414,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/yellow.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/yellow.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.864)."
+  }
+}

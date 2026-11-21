@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-understand",
+  "type": "word",
+  "gloss": "UNDERSTAND",
+  "translations": {
+    "es": "entender",
+    "en": "understand"
+  },
+  "unit": "core",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-understand.mp4",
+    "crop": [
+      0.3297,
+      0.0528,
+      0.8246,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%20Understand-zgYUzElmp1k.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%20Understand-zgYUzElmp1k.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

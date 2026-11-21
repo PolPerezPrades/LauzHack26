@@ -1,0 +1,56 @@
+{
+  "schema": "sign/1",
+  "id": "L-D",
+  "type": "letter",
+  "gloss": "D",
+  "translations": {
+    "es": "D",
+    "en": "D"
+  },
+  "unit": "abc1",
+  "phonology": {
+    "hands": 1,
+    "handshape": "D",
+    "orientation": {
+      "palm": "out",
+      "fingers": "up"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Índice arriba; el resto de dedos toca la punta del pulgar."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": {
+    "src": "/media/letters-video/D.mp4",
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "asldeafined",
+      "url": "https://media.asldeafined.com/vocabulary/1528811093.1409.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Ilustración (Public domain)",
+      "url": "https://commons.wikimedia.org/wiki/File:Sign_language_D.svg",
+      "image": "/media/letters/D.svg"
+    },
+    {
+      "label": "Pose real (MediaPipe sobre vídeo WLASL)",
+      "url": "https://media.asldeafined.com/vocabulary/1528811093.1409.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

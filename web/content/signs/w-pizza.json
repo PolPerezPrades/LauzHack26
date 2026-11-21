@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-pizza",
+  "type": "word",
+  "gloss": "PIZZA",
+  "translations": {
+    "es": "pizza",
+    "en": "pizza"
+  },
+  "unit": "food",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-pizza.json"
+  },
+  "video": {
+    "src": "/media/signs/w-pizza.mp4",
+    "crop": [
+      0.291,
+      0.0963,
+      0.672,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/pizza-2.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/pizza-2.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.875)."
+  }
+}

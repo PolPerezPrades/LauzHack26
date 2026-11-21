@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NON_MANUAL_LABEL, PHRASES, getSign, label } from "../content/curriculum";
 import type { Answer, Exercise } from "../lib/engine";
-import { SignMedia } from "../components/SignMedia";
+import { SignViewer } from "../viewer/SignViewer";
 
 type Ex = Extract<Exercise, { kind: "recognize" | "phrase" }>;
 
@@ -27,7 +27,7 @@ export function Recognition({ ex, onAnswer, locked }: { ex: Ex; onAnswer: (a: An
     <div className="activity">
       <h2 className="prompt">{title}</h2>
       {phrase?.ai && <div className="badge badge-ai">✨ Frase generada por IA · signos reales de WLASL</div>}
-      <SignMedia ids={ids} />
+      <SignViewer ids={ids} />
       <div className={`options ${sign?.kind === "letter" ? "options-letters" : ""}`}>
         {ex.options.map((id) => {
           const state = !chosen ? "" : id === target ? "opt-correct" : id === chosen ? "opt-wrong" : "opt-dim";
@@ -59,7 +59,7 @@ export function Intro({ signId, onDone }: { signId: string; onDone: () => void }
       <div className="badge">Nuevo signo</div>
       <h2 className="prompt intro-word">{s.kind === "letter" ? `Letra ${s.en}` : s.es}</h2>
       {s.kind !== "letter" && <div className="intro-gloss">ASL: {s.en.toUpperCase()}</div>}
-      <SignMedia ids={[signId]} />
+      <SignViewer ids={[signId]} />
       <p className="hint">Míralo un par de veces e imítalo con tu mano dominante.</p>
       <button className="btn btn-primary btn-wide" onClick={onDone}>Entendido</button>
     </div>

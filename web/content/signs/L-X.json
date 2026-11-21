@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "L-X",
+  "type": "letter",
+  "gloss": "X",
+  "translations": {
+    "es": "X",
+    "en": "X"
+  },
+  "unit": "abc3",
+  "phonology": {
+    "hands": 1,
+    "handshape": "X",
+    "orientation": {
+      "palm": "left",
+      "fingers": "up"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Índice doblado en gancho."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": null,
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

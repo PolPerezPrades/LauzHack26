@@ -1,0 +1,22 @@
+.sv { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; margin-bottom: 14px; }
+.sv-stage {
+  position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, #ffffff 0%, #eaf4fb 70%, #dcebf7 100%);
+  border: 2px solid #e5e5e5;
+}
+.sv-stage-hand { background: radial-gradient(circle at 50% 40%, #ffffff 0%, #f1f7ec 70%, #e3efd9 100%); }
+.sv-lg .sv-stage { max-width: 520px; }
+.sv-md .sv-stage { max-width: 340px; }
+.sv-sm { margin: 0; }
+.sv-sm .sv-stage { border-radius: 10px; border: none; }
+.sv-stage canvas { touch-action: none; }
+.sv-video { position: absolute; inset: 0; overflow: hidden; background: #111; }
+.sv-video video { position: absolute; }
+.sv-loading { position: absolute; inset: 0; display: grid; place-items: center; color: #777; }
+.sv-dots { position: absolute; bottom: 8px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
+.sv-dots span { width: 10px; height: 10px; border-radius: 50%; background: rgba(0, 0, 0, 0.18); }
+.sv-dots span.on { background: #1cb0f6; }
+.sv-hint { position: absolute; top: 8px; right: 10px; font-size: 0.72rem; color: #8aa; pointer-events: none; }
+.sv-controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.sv-credit { text-align: center; }
+.sv-missing { padding: 20px; color: #999; }

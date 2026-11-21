@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-water",
+  "type": "word",
+  "gloss": "WATER",
+  "translations": {
+    "es": "agua",
+    "en": "water"
+  },
+  "unit": "food",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-water.mp4",
+    "crop": [
+      0.2882,
+      0.0913,
+      0.7386,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/water.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/water.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

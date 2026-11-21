@@ -1,0 +1,51 @@
+{
+  "schema": "sign/1",
+  "id": "L-S",
+  "type": "letter",
+  "gloss": "S",
+  "translations": {
+    "es": "S",
+    "en": "S"
+  },
+  "unit": "abc3",
+  "phonology": {
+    "hands": 1,
+    "handshape": "S",
+    "orientation": {
+      "palm": "out",
+      "fingers": "up"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Puño con el pulgar cruzado por delante de los dedos."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": {
+    "src": "/media/letters-video/S.mp4",
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "asldeafined",
+      "url": "https://media.asldeafined.com/vocabulary/1528812514.7122.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Pose real (MediaPipe sobre vídeo WLASL)",
+      "url": "https://media.asldeafined.com/vocabulary/1528812514.7122.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

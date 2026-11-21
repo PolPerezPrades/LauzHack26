@@ -1,0 +1,60 @@
+{
+  "schema": "sign/1",
+  "id": "L-J",
+  "type": "letter",
+  "gloss": "J",
+  "translations": {
+    "es": "J",
+    "en": "J"
+  },
+  "unit": "abc2",
+  "phonology": {
+    "hands": 1,
+    "handshape": "J",
+    "orientation": {
+      "palm": "out",
+      "fingers": "up"
+    },
+    "location": "neutral",
+    "movement": {
+      "type": "trace",
+      "shape": "trace-J",
+      "articulator": "pinky"
+    },
+    "nonManual": null
+  },
+  "description": {
+    "es": "Configuración de la I: el meñique dibuja una J girando la muñeca."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": {
+    "src": "/media/letters-video/J.mp4",
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "asldeafined",
+      "url": "https://media.asldeafined.com/vocabulary/1528811480.114.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Ilustración (Public domain)",
+      "url": "https://commons.wikimedia.org/wiki/File:Sign_language_J.svg",
+      "image": "/media/letters/J.svg"
+    },
+    {
+      "label": "Pose real (MediaPipe sobre vídeo WLASL)",
+      "url": "https://media.asldeafined.com/vocabulary/1528811480.114.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

@@ -1,0 +1,236 @@
+{
+  "schema": "curriculum/1",
+  "units": [
+    {
+      "id": "abc1",
+      "level": 1,
+      "title": "Alfabeto A–I",
+      "icon": "🔤"
+    },
+    {
+      "id": "abc2",
+      "level": 1,
+      "title": "Alfabeto J–R",
+      "icon": "🔤"
+    },
+    {
+      "id": "abc3",
+      "level": 1,
+      "title": "Alfabeto S–Z",
+      "icon": "🔤"
+    },
+    {
+      "id": "numbers",
+      "level": 1,
+      "title": "Números 1–10",
+      "icon": "🔢"
+    },
+    {
+      "id": "greetings",
+      "level": 2,
+      "title": "Saludos",
+      "icon": "👋"
+    },
+    {
+      "id": "family",
+      "level": 2,
+      "title": "Familia",
+      "icon": "👪"
+    },
+    {
+      "id": "colors",
+      "level": 2,
+      "title": "Colores",
+      "icon": "🎨"
+    },
+    {
+      "id": "food",
+      "level": 2,
+      "title": "Comida",
+      "icon": "🍎"
+    },
+    {
+      "id": "core",
+      "level": 3,
+      "title": "Palabras para frases",
+      "icon": "🧩"
+    },
+    {
+      "id": "phrases",
+      "level": 3,
+      "title": "Frases cortas",
+      "icon": "💬"
+    }
+  ],
+  "phrases": [
+    {
+      "id": "ph-name",
+      "signs": [
+        "w-you",
+        "w-name",
+        "w-what"
+      ],
+      "en": "What is your name?",
+      "es": "¿Cómo te llamas?",
+      "nonManual": "wh",
+      "note": "Las preguntas con QUÉ/DÓNDE/POR QUÉ suelen ir al final, con las cejas fruncidas."
+    },
+    {
+      "id": "ph-deaf",
+      "signs": [
+        "w-you",
+        "w-deaf"
+      ],
+      "en": "Are you deaf?",
+      "es": "¿Eres sordo/a?",
+      "nonManual": "yn",
+      "note": "Pregunta de sí/no: cejas levantadas y cabeza ligeramente hacia delante. ASL no usa verbo «ser»."
+    },
+    {
+      "id": "ph-pizza",
+      "signs": [
+        "w-me",
+        "w-like",
+        "w-pizza"
+      ],
+      "en": "I like pizza.",
+      "es": "Me gusta la pizza.",
+      "nonManual": "neutral",
+      "note": "Orden básico sujeto-verbo-objeto."
+    },
+    {
+      "id": "ph-hungry",
+      "signs": [
+        "w-me",
+        "w-hungry"
+      ],
+      "en": "I am hungry.",
+      "es": "Tengo hambre.",
+      "nonManual": "neutral",
+      "note": "Sin verbo «estar/tener»: el adjetivo va directamente tras el sujeto."
+    },
+    {
+      "id": "ph-school",
+      "signs": [
+        "w-today",
+        "w-me",
+        "w-go",
+        "w-school"
+      ],
+      "en": "Today I go to school.",
+      "es": "Hoy voy a la escuela.",
+      "nonManual": "neutral",
+      "note": "Las marcas de tiempo (HOY, MAÑANA) van al principio de la frase."
+    },
+    {
+      "id": "ph-work",
+      "signs": [
+        "w-tomorrow",
+        "w-me",
+        "w-work"
+      ],
+      "en": "Tomorrow I work.",
+      "es": "Mañana trabajo.",
+      "nonManual": "neutral",
+      "note": "El tiempo se marca al inicio; el verbo no cambia."
+    },
+    {
+      "id": "ph-water",
+      "signs": [
+        "w-you",
+        "w-want",
+        "w-water"
+      ],
+      "en": "Do you want water?",
+      "es": "¿Quieres agua?",
+      "nonManual": "yn",
+      "note": "Pregunta de sí/no: cejas levantadas durante toda la frase."
+    },
+    {
+      "id": "ph-sister",
+      "signs": [
+        "w-my",
+        "w-sister",
+        "w-deaf"
+      ],
+      "en": "My sister is deaf.",
+      "es": "Mi hermana es sorda.",
+      "nonManual": "topic",
+      "note": "Tópico-comentario: MI HERMANA (cejas arriba) se presenta primero, luego el comentario."
+    },
+    {
+      "id": "ph-why",
+      "signs": [
+        "w-you",
+        "w-learn",
+        "w-sign",
+        "w-why"
+      ],
+      "en": "Why are you learning sign language?",
+      "es": "¿Por qué aprendes lengua de signos?",
+      "nonManual": "wh",
+      "note": "POR QUÉ al final con cejas fruncidas."
+    },
+    {
+      "id": "ph-understand",
+      "signs": [
+        "w-me",
+        "w-not",
+        "w-understand"
+      ],
+      "en": "I don't understand.",
+      "es": "No entiendo.",
+      "nonManual": "neg",
+      "note": "La negación se acompaña de un movimiento de cabeza de lado a lado."
+    },
+    {
+      "id": "ph-coffee",
+      "signs": [
+        "w-coffee",
+        "w-you",
+        "w-like"
+      ],
+      "en": "Do you like coffee?",
+      "es": "¿Te gusta el café?",
+      "nonManual": "yn",
+      "note": "El objeto se topicaliza al principio (cejas arriba) y la pregunta mantiene las cejas levantadas."
+    },
+    {
+      "id": "ph-ate",
+      "signs": [
+        "w-me",
+        "w-finish",
+        "w-eat"
+      ],
+      "en": "I already ate.",
+      "es": "Ya he comido.",
+      "nonManual": "neutral",
+      "note": "FINISH antes del verbo indica una acción ya completada."
+    },
+    {
+      "id": "ph-where-work",
+      "signs": [
+        "w-you",
+        "w-work",
+        "w-where"
+      ],
+      "en": "Where do you work?",
+      "es": "¿Dónde trabajas?",
+      "nonManual": "wh",
+      "note": "DÓNDE al final con cejas fruncidas."
+    },
+    {
+      "id": "ph-family",
+      "signs": [
+        "w-my",
+        "w-family",
+        "w-me",
+        "w-love"
+      ],
+      "en": "I love my family.",
+      "es": "Quiero a mi familia.",
+      "nonManual": "topic",
+      "note": "Tópico-comentario: MI FAMILIA primero (cejas arriba), luego YO AMAR."
+    }
+  ]
+}

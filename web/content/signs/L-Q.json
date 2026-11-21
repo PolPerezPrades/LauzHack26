@@ -1,0 +1,51 @@
+{
+  "schema": "sign/1",
+  "id": "L-Q",
+  "type": "letter",
+  "gloss": "Q",
+  "translations": {
+    "es": "Q",
+    "en": "Q"
+  },
+  "unit": "abc2",
+  "phonology": {
+    "hands": 1,
+    "handshape": "Q",
+    "orientation": {
+      "palm": "in",
+      "fingers": "down"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Como la G, pero apuntando hacia abajo."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": {
+    "src": "/media/letters-video/Q.mp4",
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "asldeafined",
+      "url": "https://media.asldeafined.com/vocabulary/1528812058.7327.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Pose real (MediaPipe sobre vídeo WLASL)",
+      "url": "https://media.asldeafined.com/vocabulary/1528812058.7327.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

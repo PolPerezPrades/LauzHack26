@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-learn",
+  "type": "word",
+  "gloss": "LEARN",
+  "translations": {
+    "es": "aprender",
+    "en": "learn"
+  },
+  "unit": "core",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-learn.mp4",
+    "crop": [
+      0.2366,
+      0.0267,
+      0.7276,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/learn.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/learn.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

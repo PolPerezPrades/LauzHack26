@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-yes",
+  "type": "word",
+  "gloss": "YES",
+  "translations": {
+    "es": "sí",
+    "en": "yes"
+  },
+  "unit": "greetings",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-yes.mp4",
+    "crop": [
+      0.2742,
+      0.0885,
+      0.7371,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/yes.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/yes.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

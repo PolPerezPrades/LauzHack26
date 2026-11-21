@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-black",
+  "type": "word",
+  "gloss": "BLACK",
+  "translations": {
+    "es": "negro",
+    "en": "black"
+  },
+  "unit": "colors",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-black.json"
+  },
+  "video": {
+    "src": "/media/signs/w-black.mp4",
+    "crop": [
+      0.2512,
+      0.0797,
+      0.7335,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/black.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/black.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.844)."
+  }
+}

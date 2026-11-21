@@ -1,0 +1,56 @@
+{
+  "schema": "sign/1",
+  "id": "L-B",
+  "type": "letter",
+  "gloss": "B",
+  "translations": {
+    "es": "B",
+    "en": "B"
+  },
+  "unit": "abc1",
+  "phonology": {
+    "hands": 1,
+    "handshape": "B",
+    "orientation": {
+      "palm": "out",
+      "fingers": "up"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Dedos juntos y estirados; pulgar doblado sobre la palma."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": {
+    "src": "/media/letters-video/B.mp4",
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "asldeafined",
+      "url": "https://media.asldeafined.com/vocabulary/1528809836.7505.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Ilustración (Public domain)",
+      "url": "https://commons.wikimedia.org/wiki/File:Sign_language_B.svg",
+      "image": "/media/letters/B.svg"
+    },
+    {
+      "label": "Pose real (MediaPipe sobre vídeo WLASL)",
+      "url": "https://media.asldeafined.com/vocabulary/1528809836.7505.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

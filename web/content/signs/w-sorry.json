@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-sorry",
+  "type": "word",
+  "gloss": "SORRY",
+  "translations": {
+    "es": "perdón",
+    "en": "sorry"
+  },
+  "unit": "greetings",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-sorry.mp4",
+    "crop": [
+      0.2624,
+      0.0903,
+      0.7035,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/sorry.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/sorry.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

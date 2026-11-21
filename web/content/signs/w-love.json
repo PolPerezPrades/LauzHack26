@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-love",
+  "type": "word",
+  "gloss": "LOVE",
+  "translations": {
+    "es": "amar / querer",
+    "en": "love"
+  },
+  "unit": "core",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-love.json"
+  },
+  "video": {
+    "src": "/media/signs/w-love.mp4",
+    "crop": [
+      0.293,
+      0.1109,
+      0.665,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/love.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/love.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0.867/0.9)."
+  }
+}

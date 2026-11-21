@@ -8,6 +8,7 @@ import { Home } from "./screens/Home";
 import { Lesson, type LessonSummary } from "./screens/Lesson";
 import { Results } from "./screens/Results";
 import { SignSprint } from "./activities/SignSprint";
+import { Lab } from "./screens/Lab";
 
 type Screen =
   | { name: "onboarding" }
@@ -26,10 +27,18 @@ export function App() {
     !initial.profile ? { name: "onboarding" } : !initial.profile.placementDone ? { name: "placement" } : { name: "home" },
   );
   useEffect(() => save(saved), [saved]);
+  const [lab, setLab] = useState(() => location.hash === "#lab");
+  useEffect(() => {
+    const on = () => setLab(location.hash === "#lab");
+    addEventListener("hashchange", on);
+    return () => removeEventListener("hashchange", on);
+  }, []);
 
   const { profile, progress } = saved;
   const setProgress = (fn: (p: Progress) => Progress) => setSaved((s) => ({ ...s, progress: fn(s.progress) }));
   const setProfile = (p: Profile) => setSaved((s) => ({ ...s, profile: p }));
+
+  if (lab) return <Lab onExit={() => { location.hash = ""; }} />;
 
   if (!hasMedia) {
     return (

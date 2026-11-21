@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "num-6",
+  "type": "number",
+  "gloss": "SIX",
+  "translations": {
+    "es": "seis",
+    "en": "six"
+  },
+  "unit": "numbers",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/num-6.mp4",
+    "crop": [
+      0.1481,
+      0.1425,
+      0.7128,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/six.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/six.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

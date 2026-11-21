@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "num-8",
+  "type": "number",
+  "gloss": "EIGHT",
+  "translations": {
+    "es": "ocho",
+    "en": "eight"
+  },
+  "unit": "numbers",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/num-8.mp4",
+    "crop": [
+      0.1129,
+      0.146,
+      0.7102,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/eight.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/eight.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "sign/1",
+  "id": "L-P",
+  "type": "letter",
+  "gloss": "P",
+  "translations": {
+    "es": "P",
+    "en": "P"
+  },
+  "unit": "abc2",
+  "phonology": {
+    "hands": 1,
+    "handshape": "P",
+    "orientation": {
+      "palm": "down+in",
+      "fingers": "out+down"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Como la K, pero apuntando hacia abajo."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": {
+    "src": "/media/letters-video/P.mp4",
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "asldeafined",
+      "url": "https://media.asldeafined.com/vocabulary/1528811887.8913.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Pose real (MediaPipe sobre vídeo WLASL)",
+      "url": "https://media.asldeafined.com/vocabulary/1528811887.8913.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

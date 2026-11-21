@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-cheese",
+  "type": "word",
+  "gloss": "CHEESE",
+  "translations": {
+    "es": "queso",
+    "en": "cheese"
+  },
+  "unit": "food",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-cheese.json"
+  },
+  "video": {
+    "src": "/media/signs/w-cheese.mp4",
+    "crop": [
+      0.2653,
+      0.1188,
+      0.6804,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/cheese.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/cheese.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0.875/0.917)."
+  }
+}

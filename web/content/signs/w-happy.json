@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-happy",
+  "type": "word",
+  "gloss": "HAPPY",
+  "translations": {
+    "es": "feliz",
+    "en": "happy"
+  },
+  "unit": "core",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-happy.json"
+  },
+  "video": {
+    "src": "/media/signs/w-happy.mp4",
+    "crop": [
+      0.2285,
+      0.0775,
+      0.7314,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/happy.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/happy.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.818)."
+  }
+}

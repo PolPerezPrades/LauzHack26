@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-my",
+  "type": "word",
+  "gloss": "MY",
+  "translations": {
+    "es": "mi",
+    "en": "my"
+  },
+  "unit": "core",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-my.mp4",
+    "crop": [
+      0.2472,
+      0.093,
+      0.7894,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/my.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/my.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

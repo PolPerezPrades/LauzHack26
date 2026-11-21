@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-son",
+  "type": "word",
+  "gloss": "SON",
+  "translations": {
+    "es": "hijo",
+    "en": "son"
+  },
+  "unit": "family",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-son.json"
+  },
+  "video": {
+    "src": "/media/signs/w-son.mp4",
+    "crop": [
+      0.3079,
+      0.1036,
+      0.6941,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/son.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/son.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0.846/0.962)."
+  }
+}

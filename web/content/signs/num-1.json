@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "num-1",
+  "type": "number",
+  "gloss": "ONE",
+  "translations": {
+    "es": "uno",
+    "en": "one"
+  },
+  "unit": "numbers",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/num-1.mp4",
+    "crop": [
+      0.1963,
+      0.14,
+      0.7135,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/one.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/one.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

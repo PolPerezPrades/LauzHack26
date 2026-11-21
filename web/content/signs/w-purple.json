@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-purple",
+  "type": "word",
+  "gloss": "PURPLE",
+  "translations": {
+    "es": "morado",
+    "en": "purple"
+  },
+  "unit": "colors",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-purple.json"
+  },
+  "video": {
+    "src": "/media/signs/w-purple.mp4",
+    "crop": [
+      0.2675,
+      0.0997,
+      0.727,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/purple.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/purple.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.846)."
+  }
+}

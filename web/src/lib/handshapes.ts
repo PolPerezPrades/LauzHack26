@@ -58,7 +58,7 @@ export function computeFeatures(lm: P[], w: P[], aspect: number): Features {
     bend[f] = b;
     const tipW = d(tip, 0);
     const pipW = d(pip, 0);
-    fingers[f] = b < 60 && tipW > pipW * 1.1 ? "ext" : tipW < pipW * 0.95 || b > 210 ? "curled" : "bent";
+    fingers[f] = b < 75 && tipW > pipW * 1.1 ? "ext" : tipW < pipW * 0.95 || b > 210 ? "curled" : "bent";
   }
   const axis = sub(w[17], w[5]);
   const axis2 = dot(axis, axis) || 1;
@@ -114,6 +114,7 @@ const UP = check("Apunta los dedos hacia arriba", (f) => f.pointing === "up");
 const SIDE = check("Gira la mano: los dedos apuntan hacia un lado", (f) => f.pointing === "side");
 const DOWN = check("Apunta los dedos hacia abajo", (f) => f.pointing === "down" || f.pointing === "side");
 const THUMB_OUT = check("Saca el pulgar hacia fuera", (f) => f.thumbOut > 0.6);
+const THUMB_ALONG = check("Estira el pulgar paralelo al índice", (f) => f.thumbOut > 0.45);
 const THUMB_IN = check("Recoge el pulgar, no lo saques", (f) => f.thumbOut < 0.95);
 const thumbLat = (min: number, max: number, hint: string) => check(hint, (f) => f.thumbLat >= min && f.thumbLat <= max);
 const touch = (a: number, b: number, max: number, hint: string) => check(hint, (f) => f.d(a, b) < max);
@@ -123,14 +124,14 @@ const RULES: Record<string, Check[]> = {
   B: [ext("index", "middle", "ring", "pinky"), TOGETHER, thumbLat(0.2, 2, "Dobla el pulgar sobre la palma"), UP],
   C: [curved("index", "middle", "ring", "pinky"), thumbLat(-1, 0.45, "El pulgar curvado enfrente, formando una C"),
     check("Abre un poco la C entre el pulgar y los dedos", (f) => f.d(4, 8) > 0.3 && f.d(4, 8) < 1.4)],
-  D: [ext("index"), closed("middle", "ring", "pinky"), touch(4, 12, 0.5, "Toca la punta del corazón con el pulgar")],
+  D: [ext("index"), closed("middle", "ring", "pinky"), touch(4, 12, 0.7, "Toca la punta del corazón con el pulgar")],
   E: [closed("index", "middle", "ring", "pinky"), thumbLat(0.25, 2, "Dobla el pulgar bajo las puntas de los dedos"),
     check("Acerca las puntas de los dedos al pulgar", (f) => (f.d(4, 8) + f.d(4, 12) + f.d(4, 16)) / 3 < 0.75), THUMB_IN],
-  F: [touch(4, 8, 0.35, "Toca la punta del índice con el pulgar (círculo)"), ext("middle", "ring", "pinky")],
-  G: [ext("index"), closed("middle", "ring", "pinky"), THUMB_OUT, SIDE],
+  F: [touch(4, 8, 0.35, "Toca la punta del índice con el pulgar (círculo)"), fingers(["middle", "ring", "pinky"], ["ext", "bent"])],
+  G: [ext("index"), closed("middle", "ring", "pinky"), THUMB_ALONG, SIDE],
   H: [ext("index", "middle"), closed("ring", "pinky"), TOGETHER, SIDE],
   I: [ext("pinky"), closed("index", "middle", "ring"), THUMB_IN],
-  K: [ext("index", "middle"), closed("ring", "pinky"), APART,
+  K: [ext("index"), fingers(["middle"], ["ext", "bent"]), closed("ring", "pinky"), APART,
     check("Pon el pulgar entre el índice y el corazón", (f) => Math.min(f.d(4, 10), f.d(4, 6), f.d(4, 9)) < 0.55), UP],
   L: [ext("index"), closed("middle", "ring", "pinky"), THUMB_OUT,
     check("Forma una L: pulgar y índice en ángulo recto", (f) => f.thumbIndexAngle > 45), UP],
@@ -138,8 +139,8 @@ const RULES: Record<string, Check[]> = {
   N: [closed("index", "middle", "ring", "pinky"), thumbLat(0.3, 0.8, "Mete el pulgar bajo dos dedos (índice y corazón)")],
   O: [closed("index", "middle", "ring", "pinky"), touch(4, 8, 0.4, "Junta la punta del índice con el pulgar (forma una O)"),
     touch(4, 12, 0.55, "Cierra la O: todas las puntas tocan el pulgar")],
-  P: [ext("index", "middle"), closed("ring", "pinky"), APART, DOWN],
-  Q: [ext("index"), closed("middle", "ring", "pinky"), THUMB_OUT, DOWN],
+  P: [fingers(["index", "middle"], ["ext", "bent"]), closed("ring", "pinky"), APART, DOWN],
+  Q: [ext("index"), closed("middle", "ring", "pinky"), THUMB_ALONG, DOWN],
   R: [ext("index", "middle"), closed("ring", "pinky"), check("Cruza el corazón por encima del índice", (f) => f.crossedIM)],
   S: [fist("index", "middle", "ring", "pinky"), thumbLat(0.12, 0.75, "Cruza el pulgar por delante de los dedos"),
     check("Apoya el pulgar sobre los dedos doblados", (f) => Math.min(f.d(4, 6), f.d(4, 10)) < 0.65)],

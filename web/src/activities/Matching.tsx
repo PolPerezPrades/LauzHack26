@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getSign, label } from "../content/curriculum";
-import { SignMedia } from "../components/SignMedia";
+import { SignViewer } from "../viewer/SignViewer";
 import { shuffle, type Answer } from "../lib/engine";
 
 /** Match sign videos with their meaning against the clock. Mistakes cost 2 seconds. */
@@ -70,7 +70,7 @@ export function Matching({ signIds, seconds, onAnswer, locked }: {
         <div className="match-col">
           {left.map((id) => (
             <button key={id} className={cls(id, "l")} disabled={disabled || matched.includes(id)} onClick={() => setSelL(id)}>
-              <SignMedia ids={[id]} size="sm" controls={false} credit={false} />
+              <SignViewer ids={[id]} size="sm" controls={false} credit={false} />
             </button>
           ))}
         </div>
@@ -82,7 +82,7 @@ export function Matching({ signIds, seconds, onAnswer, locked }: {
           ))}
         </div>
       </div>
-      <div className="credit center">Vídeos: WLASL (diccionarios ASL) · Letras: Wikimedia Commons</div>
+      <div className="credit center">Signos: movimiento real de WLASL (diccionarios ASL) · Letras: mano 3D verificada</div>
     </div>
   );
 }

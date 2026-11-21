@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CAMERA_LETTERS, getSign, letterId } from "../content/curriculum";
 import { CameraView } from "../components/CameraView";
+import { SignViewer } from "../viewer/SignViewer";
 import { evaluateLetter, type Features } from "../lib/handshapes";
 import { shuffle } from "../lib/engine";
 
@@ -113,7 +114,7 @@ export function SignSprint({ onExit, best }: { onExit: (r: SprintResult | null) 
       </div>
       <div className="camera-row">
         {showRef && refSign && (
-          <div className="ref-card ref-small"><img src={refSign.media.src} alt={`Letra ${letter}`} /><div className="credit">Ayuda</div></div>
+          <div className="ref-card ref-small"><SignViewer ids={[refSign.id]} size="sm" controls={false} credit={false} /><div className="credit">Ayuda</div></div>
         )}
         <CameraView onFrame={onFrame}>
           <div className="cam-status"><div className="cam-hint">{hint}</div></div>

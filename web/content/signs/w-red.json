@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-red",
+  "type": "word",
+  "gloss": "RED",
+  "translations": {
+    "es": "rojo",
+    "en": "red"
+  },
+  "unit": "colors",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-red.json"
+  },
+  "video": {
+    "src": "/media/signs/w-red.mp4",
+    "crop": [
+      0.2728,
+      0.088,
+      0.7313,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/red.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/red.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.85)."
+  }
+}

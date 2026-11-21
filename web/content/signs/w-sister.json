@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-sister",
+  "type": "word",
+  "gloss": "SISTER",
+  "translations": {
+    "es": "hermana",
+    "en": "sister"
+  },
+  "unit": "family",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-sister.mp4",
+    "crop": [
+      0.2927,
+      0.1023,
+      0.7474,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/sister.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/sister.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

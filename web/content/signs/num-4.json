@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "num-4",
+  "type": "number",
+  "gloss": "FOUR",
+  "translations": {
+    "es": "cuatro",
+    "en": "four"
+  },
+  "unit": "numbers",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/num-4.mp4",
+    "crop": [
+      0.1655,
+      0.1472,
+      0.7126,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/four.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/four.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

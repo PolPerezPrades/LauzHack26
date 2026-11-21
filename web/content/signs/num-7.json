@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "num-7",
+  "type": "number",
+  "gloss": "SEVEN",
+  "translations": {
+    "es": "siete",
+    "en": "seven"
+  },
+  "unit": "numbers",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/num-7.mp4",
+    "crop": [
+      0.1553,
+      0.1416,
+      0.7112,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/seven.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/seven.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

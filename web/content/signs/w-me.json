@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-me",
+  "type": "word",
+  "gloss": "ME / I",
+  "translations": {
+    "es": "yo",
+    "en": "me / I"
+  },
+  "unit": "core",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-me.mp4",
+    "crop": [
+      0.4341,
+      0.0947,
+      0.9267,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%20me%202-Y668nIcpIJM.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%20me%202-Y668nIcpIJM.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

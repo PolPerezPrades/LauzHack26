@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-blue",
+  "type": "word",
+  "gloss": "BLUE",
+  "translations": {
+    "es": "azul",
+    "en": "blue"
+  },
+  "unit": "colors",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-blue.mp4",
+    "crop": [
+      0.2719,
+      0.1027,
+      0.7317,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/blue.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/blue.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

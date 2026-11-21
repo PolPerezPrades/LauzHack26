@@ -10,7 +10,7 @@
  * not configured or fails, each endpoint answers with a local rule-based fallback.
  */
 import Anthropic from "@anthropic-ai/sdk";
-import { existsSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -23,11 +23,14 @@ interface SignDef { id: string; en: string; es: string; unit: string }
 // ---------------------------------------------------------------------------------------------
 // content helpers
 
+/** Words that exist as real signs (content/signs/*.json) — the only vocabulary phrases may use. */
 function loadVocabulary(): SignDef[] {
-  const content = JSON.parse(readFileSync(path.join(ROOT, "content", "signs.json"), "utf8"));
-  const mediaPath = path.join(ROOT, "src", "content", "media.json");
-  const media = existsSync(mediaPath) ? JSON.parse(readFileSync(mediaPath, "utf8")) : { signs: {} };
-  return (content.signs as SignDef[]).filter((s) => media.signs?.[s.id] && !s.id.startsWith("num-"));
+  const dir = path.join(ROOT, "content", "signs");
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => JSON.parse(readFileSync(path.join(dir, f), "utf8")))
+    .filter((s) => s.type === "word" && s.video)
+    .map((s) => ({ id: s.id, en: s.translations.en, es: s.translations.es, unit: s.unit }));
 }
 
 // ---------------------------------------------------------------------------------------------

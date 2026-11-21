@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "num-9",
+  "type": "number",
+  "gloss": "NINE",
+  "translations": {
+    "es": "nueve",
+    "en": "nine"
+  },
+  "unit": "numbers",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/num-9.mp4",
+    "crop": [
+      0.2831,
+      0.1363,
+      0.7905,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%209-2guCgS9_uhg.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%209-2guCgS9_uhg.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

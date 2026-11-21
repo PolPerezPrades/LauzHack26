@@ -1,0 +1,51 @@
+{
+  "schema": "sign/1",
+  "id": "L-O",
+  "type": "letter",
+  "gloss": "O",
+  "translations": {
+    "es": "O",
+    "en": "O"
+  },
+  "unit": "abc2",
+  "phonology": {
+    "hands": 1,
+    "handshape": "O",
+    "orientation": {
+      "palm": "left",
+      "fingers": "up"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Todos los dedos curvados tocan el pulgar: forma una O."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": {
+    "src": "/media/letters-video/O.mp4",
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "asldeafined",
+      "url": "https://media.asldeafined.com/vocabulary/1528811854.2948.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Pose real (MediaPipe sobre vídeo WLASL)",
+      "url": "https://media.asldeafined.com/vocabulary/1528811854.2948.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

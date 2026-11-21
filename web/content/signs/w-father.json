@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-father",
+  "type": "word",
+  "gloss": "FATHER",
+  "translations": {
+    "es": "padre",
+    "en": "father"
+  },
+  "unit": "family",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-father.json"
+  },
+  "video": {
+    "src": "/media/signs/w-father.mp4",
+    "crop": [
+      0.1108,
+      0,
+      0.7277,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/father.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/father.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.882)."
+  }
+}

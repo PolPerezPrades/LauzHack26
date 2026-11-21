@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getSign, letterId } from "../content/curriculum";
 import { CameraView } from "../components/CameraView";
+import { SignViewer } from "../viewer/SignViewer";
 import { describe, evaluateLetter, type Evaluation, type Features } from "../lib/handshapes";
 import type { Answer } from "../lib/engine";
 
@@ -57,8 +58,8 @@ export function CameraSign({ letter, onAnswer, locked }: { letter: string; onAns
       <h2 className="prompt">Signa la letra <span className="big-letter">{letter}</span></h2>
       <div className="camera-row">
         <div className="ref-card">
-          {sign && <img src={sign.media.src} alt={`Letra ${letter} en ASL`} />}
-          <div className="credit">Referencia · {sign?.media.credit}</div>
+          {sign && <SignViewer ids={[sign.id]} size="md" credit={false} controls={false} />}
+          <div className="credit">Referencia</div>
         </div>
         <CameraView onFrame={onFrame} highlight={success ? "ok" : ev?.ok ? "near" : "none"}>
           <div className="cam-status">

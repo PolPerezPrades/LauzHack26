@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-want",
+  "type": "word",
+  "gloss": "WANT",
+  "translations": {
+    "es": "querer",
+    "en": "want"
+  },
+  "unit": "core",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-want.json"
+  },
+  "video": {
+    "src": "/media/signs/w-want.mp4",
+    "crop": [
+      0.2787,
+      0.0843,
+      0.7375,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/want.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/want.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0.727/0.864)."
+  }
+}

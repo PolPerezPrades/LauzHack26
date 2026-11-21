@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-hello",
+  "type": "word",
+  "gloss": "HELLO",
+  "translations": {
+    "es": "hola",
+    "en": "hello"
+  },
+  "unit": "greetings",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-hello.json"
+  },
+  "video": {
+    "src": "/media/signs/w-hello.mp4",
+    "crop": [
+      0.2185,
+      0,
+      0.8352,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%20Hello-6kvCOzxP9_A.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · signschool",
+      "url": "https://signstock.blob.core.windows.net/signschool/videos/db_uploads/SignSchool%20Hello-6kvCOzxP9_A.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.815)."
+  }
+}

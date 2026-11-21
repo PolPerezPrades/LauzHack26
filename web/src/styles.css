@@ -178,13 +178,13 @@ code { background: #eee; padding: 0.1em 0.35em; border-radius: 6px; }
 .tile-sel { border-color: var(--blue); background: var(--blue-bg); box-shadow: 0 4px 0 var(--blue); }
 .tile-wrong { border-color: var(--red); background: var(--red-bg); animation: shake 0.3s; }
 .tile-done { border-color: var(--green); background: var(--green-bg); opacity: 0.55; box-shadow: none; }
-.match-col .media-sm .media { max-height: 110px; }
+.match-col .sv-sm .sv-stage { aspect-ratio: 16 / 10; max-height: 120px; }
 
 /* camera */
 .camera-row { display: flex; gap: 14px; align-items: stretch; flex-wrap: wrap; }
-.ref-card { width: 170px; flex-shrink: 0; align-self: flex-start; background: #fff; border: 2px solid var(--line); border-radius: var(--radius); padding: 10px; display: flex; flex-direction: column; align-items: center; }
+.ref-card { width: 230px; flex-shrink: 0; align-self: flex-start; background: #fff; border: 2px solid var(--line); border-radius: var(--radius); padding: 10px; display: flex; flex-direction: column; align-items: center; }
 .ref-card img { width: 100%; }
-.ref-small { width: 120px; }
+.ref-small { width: 150px; }
 .cam { position: relative; flex: 1; min-width: 280px; border-radius: var(--radius); overflow: hidden; background: #111; aspect-ratio: 4 / 3; border: 4px solid transparent; transition: border-color 0.2s; }
 .cam-near { border-color: var(--yellow); }
 .cam-ok { border-color: var(--green); }
@@ -201,7 +201,7 @@ code { background: #eee; padding: 0.1em 0.35em; border-radius: 6px; }
 .debug { background: #222; color: #9f9; font-size: 0.75rem; padding: 10px; border-radius: 10px; white-space: pre-wrap; }
 
 /* spelling */
-.spell-stage { height: 260px; display: grid; place-items: center; background: #fff; border: 2px solid var(--line); border-radius: var(--radius); }
+.spell-stage { min-height: 270px; display: grid; place-items: center; padding: 8px; background: #fff; border: 2px solid var(--line); border-radius: var(--radius); }
 .spell-stage img { height: 230px; }
 .spell-blank { height: 230px; }
 .spell-letters { font-size: 2.6rem; font-weight: 900; letter-spacing: 0.25em; }
@@ -235,3 +235,11 @@ code { background: #eee; padding: 0.1em 0.35em; border-radius: 6px; }
   .ref-card img { width: 90px; }
   .footer { flex-direction: column; align-items: stretch; }
 }
+
+/* sign lab */
+.lab { max-width: 1200px; }
+.lab-picker { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.lab-grid h3 { font-size: 1rem; color: var(--muted); }
+.lab-ill { width: 160px; background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px; }
+.lab-meta { line-height: 1.6; }

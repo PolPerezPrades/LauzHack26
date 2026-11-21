@@ -1,0 +1,41 @@
+{
+  "schema": "sign/1",
+  "id": "w-thank-you",
+  "type": "word",
+  "gloss": "THANK YOU",
+  "translations": {
+    "es": "gracias",
+    "en": "thank you"
+  },
+  "unit": "greetings",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "avatar",
+    "motion": "/motion/w-thank-you.json"
+  },
+  "video": {
+    "src": "/media/signs/w-thank-you.mp4",
+    "crop": [
+      0.2744,
+      0.1189,
+      0.7121,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/thank%20you.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · aslbrick",
+      "url": "http://aslbricks.org/New/ASL-Videos/thank%20you.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "note": "Movimiento extraído del vídeo real (cobertura manos: 0/0.941)."
+  }
+}

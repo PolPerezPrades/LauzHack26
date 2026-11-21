@@ -1,0 +1,45 @@
+{
+  "schema": "sign/1",
+  "id": "L-Y",
+  "type": "letter",
+  "gloss": "Y",
+  "translations": {
+    "es": "Y",
+    "en": "Y"
+  },
+  "unit": "abc3",
+  "phonology": {
+    "hands": 1,
+    "handshape": "Y",
+    "orientation": {
+      "palm": "out",
+      "fingers": "up"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Pulgar y meñique estirados."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": null,
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Ilustración (Public domain)",
+      "url": "https://commons.wikimedia.org/wiki/File:Sign_language_Y.svg",
+      "image": "/media/letters/Y.svg"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}

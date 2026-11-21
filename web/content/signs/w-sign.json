@@ -1,0 +1,40 @@
+{
+  "schema": "sign/1",
+  "id": "w-sign",
+  "type": "word",
+  "gloss": "SIGN",
+  "translations": {
+    "es": "signar / signo",
+    "en": "sign"
+  },
+  "unit": "core",
+  "phonology": null,
+  "description": null,
+  "render": {
+    "type": "video"
+  },
+  "video": {
+    "src": "/media/signs/w-sign.mp4",
+    "crop": [
+      0.2528,
+      0.0892,
+      0.82,
+      1
+    ],
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/sign.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "WLASL v0.3 · startasl",
+      "url": "https://s3-us-west-1.amazonaws.com/files.startasl.com/asldictionary/sign.mp4"
+    }
+  ],
+  "review": {
+    "status": "source-video",
+    "note": "Se muestra el vídeo original encuadrado."
+  }
+}

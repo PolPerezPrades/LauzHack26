@@ -1,0 +1,56 @@
+{
+  "schema": "sign/1",
+  "id": "L-H",
+  "type": "letter",
+  "gloss": "H",
+  "translations": {
+    "es": "H",
+    "en": "H"
+  },
+  "unit": "abc1",
+  "phonology": {
+    "hands": 1,
+    "handshape": "H",
+    "orientation": {
+      "palm": "in",
+      "fingers": "left"
+    },
+    "location": "neutral",
+    "movement": null,
+    "nonManual": null
+  },
+  "description": {
+    "es": "Índice y corazón juntos apuntando hacia un lado."
+  },
+  "render": {
+    "type": "hand"
+  },
+  "video": {
+    "src": "/media/letters-video/H.mp4",
+    "source": {
+      "dataset": "WLASL v0.3",
+      "site": "asldeafined",
+      "url": "https://media.asldeafined.com/vocabulary/1528811271.9748.mp4"
+    }
+  },
+  "references": [
+    {
+      "label": "Lifeprint · alfabeto ASL",
+      "url": "https://www.lifeprint.com/asl101/fingerspelling/abc.htm"
+    },
+    {
+      "label": "Ilustración (Public domain)",
+      "url": "https://commons.wikimedia.org/wiki/File:Sign_language_H.svg",
+      "image": "/media/letters/H.svg"
+    },
+    {
+      "label": "Pose real (MediaPipe sobre vídeo WLASL)",
+      "url": "https://media.asldeafined.com/vocabulary/1528811271.9748.mp4"
+    }
+  ],
+  "review": {
+    "status": "auto-checked",
+    "by": "scripts/verify-letters.ts",
+    "note": "Pendiente de revisión por signante nativo/fluido."
+  }
+}
