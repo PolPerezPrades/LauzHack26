@@ -4,7 +4,10 @@
     uv run python -m perception hands pose          # only some
     uv run python -m perception face gaze --res 4k
 
-Keys: 1-4 toggle hands/pose/face/gaze, e enroll a face, m mirror, s snapshot, q/Esc quit.
+    uv run python -m perception --list-cameras     # show camera indices/names
+
+Keys: 1-4 toggle hands/pose/face/gaze, e enroll a face, m mirror, s snapshot,
+c camera settings (Windows), q/Esc quit.
 """
 import argparse
 import time
@@ -13,7 +16,7 @@ from pathlib import Path
 
 import cv2
 
-from .camera import RESOLUTIONS, Camera
+from .camera import RESOLUTIONS, WINDOWS, Camera, list_cameras
 from .common import Frame, label
 from .pipeline import DEFAULT_GPU, MODULES, Pipeline
 
@@ -30,7 +33,8 @@ def parse_args():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("modules", nargs="*", metavar="MODULE",
                    help=f"any of {', '.join(MODULES)} (default: all). Toggle later with keys 1-4.")
-    p.add_argument("--device", help="camera path or index (default: MX Brio by id, else 0)")
+    p.add_argument("--device", help="camera path or index (default: MX Brio by id/name, else 0)")
+    p.add_argument("--list-cameras", action="store_true", help="list available cameras and exit")
     p.add_argument("--res", choices=RESOLUTIONS, default="1080p", help="capture resolution (default 1080p)")
     p.add_argument("--infer-width", type=int, default=1920, help="max width of the image fed to the models")
     p.add_argument("--display-width", type=int, default=1920, help="max width of the displayed image")
@@ -51,6 +55,10 @@ def parse_args():
 
 def main():
     args = parse_args()
+    if args.list_cameras:
+        for idx, name in list_cameras():
+            print(f"{idx}	{name}")
+        return
     cam = Camera(args.device, args.res, reset_zoom=not args.no_reset_zoom)
     print(f"[camera] {cam.device} @ {cam.size[0]}x{cam.size[1]}")
     pipe = Pipeline(args.modules or MODULES, max_hands=args.max_hands, max_poses=args.max_poses,
@@ -92,7 +100,7 @@ def main():
                 ms = tm.get(m, 0) + (tm.get("face_mesh", 0) if m == "face" or (m == "gaze" and "face" not in pipe.enabled) else 0)
                 y += label(canvas, f"[{i}] {m:<5} {f'{ms:5.1f} ms' if on else '  off'}", (8, y), anchor="tl",
                            scale=0.5, color=(0, 0, 0) if on else (170, 170, 170), bg=(80, 220, 80) if on else (50, 50, 50))
-            label(canvas, "1-4 toggle  e enroll face  m mirror  s snapshot  q quit", (8, y), anchor="tl",
+            label(canvas, "1-4 toggle  e enroll face  m mirror  s snapshot  " + ("c camera  " if WINDOWS else "") + "q quit", (8, y), anchor="tl",
                   scale=0.42, bg=(30, 30, 30))
             if typing is not None:
                 label(canvas, f"Enroll name: {typing}_   (Enter = save, Esc = cancel)",
@@ -138,6 +146,8 @@ def main():
                 typing = ""
             elif key == ord("m"):
                 mirror = not mirror
+            elif key == ord("c") and WINDOWS:
+                cam.settings_dialog()
             elif key == ord("s"):
                 SNAPSHOTS.mkdir(exist_ok=True)
                 path = SNAPSHOTS / time.strftime("%Y%m%d-%H%M%S.jpg")

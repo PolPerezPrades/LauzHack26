@@ -69,6 +69,17 @@ wheels = [
 ]
 
 [[package]]
+name = "cv2-enumerate-cameras"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/de/61/65ea4f16f211b6bd90c18384296a6a79e7d5f49f56082ee36a2185a8f5d6/cv2_enumerate_cameras-1.4.0.tar.gz", hash = "sha256:d6f39a236e15cc1bddf00e852a4c6bdfea94d3eebb2d3213848bb5c4036b0689", size = 12315, upload-time = "2026-09-26T14:09:42.754Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/48/2f/5277bcabd62e675b85f00825d8ebc3ceaa23c7fd6362a4dc09f3accc716e/cv2_enumerate_cameras-1.4.0-cp310-abi3-win32.whl", hash = "sha256:9c5cd79dd6e8d2b6450e40bb208d968f50976cf15f276c5e10c9880498e23b25", size = 211333, upload-time = "2026-09-26T14:09:32.664Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/6d/15b6f504b79749a45a53304310c1665044f03d1b79ec2b00598924fc0d99/cv2_enumerate_cameras-1.4.0-cp310-abi3-win_amd64.whl", hash = "sha256:0dcc60c0cc1638bbfb381d0430391d3aabb70324e5eef338d018831207813060", size = 209221, upload-time = "2026-09-26T14:09:34.228Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/99/e7ab30db5eb4f2f87be9f419eda101ba1cdba6192c5cfdc7ef60305866e7/cv2_enumerate_cameras-1.4.0-py3-none-any.whl", hash = "sha256:ef3db06a004ada2e82b62efaac69f37223f1505b64954bf0f838d21f4cf237cc", size = 13334, upload-time = "2026-09-26T14:09:41.693Z" },
+]
+
+[[package]]
 name = "cycler"
 version = "0.12.1"
 source = { registry = "https://pypi.org/simple" }
@@ -134,6 +145,7 @@ name = "lauzhack26"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "cv2-enumerate-cameras", marker = "sys_platform == 'win32'" },
     { name = "mediapipe" },
     { name = "numpy" },
     { name = "onnxruntime" },
@@ -142,6 +154,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cv2-enumerate-cameras", marker = "sys_platform == 'win32'", specifier = ">=1.4.0" },
     { name = "mediapipe", specifier = "==1.2.0" },
     { name = "numpy", specifier = ">=2,<2.6" },
     { name = "onnxruntime", specifier = "==1.31.1" },

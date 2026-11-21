@@ -1,28 +1,47 @@
-"""Threaded V4L2 capture for the Logitech MX Brio (works with any UVC webcam).
+"""Threaded capture for the Logitech MX Brio (works with any UVC webcam).
 
+Linux uses V4L2 (device found via /dev/v4l/by-id); Windows uses DirectShow (device found by name).
 A background thread keeps grabbing frames so read() always returns the newest one
 (no stale buffered frames -> low latency even when inference is slower than the camera).
 """
 import glob
+import sys
 import threading
 import time
 
 import cv2
 
 RESOLUTIONS = {"720p": (1280, 720), "1080p": (1920, 1080), "1440p": (2560, 1440), "4k": (3840, 2160)}
+WINDOWS = sys.platform == "win32"
+# DirectShow honours MJPG + resolution reliably; MSMF is slow to open and may ignore the FOURCC.
+BACKEND = cv2.CAP_DSHOW if WINDOWS else cv2.CAP_V4L2
+
+
+def list_cameras():
+    """[(index, name)] of the cameras OpenCV can open with BACKEND (names only available on Windows)."""
+    if WINDOWS:
+        from cv2_enumerate_cameras import enumerate_cameras
+        return [(c.index, c.name) for c in enumerate_cameras(BACKEND)]
+    return [(d, d) for d in sorted(glob.glob("/dev/v4l/by-id/*-video-index0"))]
 
 
 def find_mx_brio():
+    if WINDOWS:
+        return next((i for i, name in list_cameras() if "mx brio" in name.lower()), None)
     devs = sorted(glob.glob("/dev/v4l/by-id/usb-046d_MX_Brio_*-video-index0"))
     return devs[0] if devs else None
 
 
 class Camera:
     def __init__(self, device=None, resolution="1080p", fps=30, reset_zoom=True):
-        device = device or find_mx_brio() or 0
+        if device is None:
+            device = find_mx_brio()
+            if device is None:
+                print("[camera] MX Brio not found, using the default camera (index 0)", file=sys.stderr)
+                device = 0
         if isinstance(device, str) and device.isdigit():
             device = int(device)
-        self.cap = cv2.VideoCapture(device, cv2.CAP_V4L2)
+        self.cap = cv2.VideoCapture(device, BACKEND)
         if not self.cap.isOpened():
             raise RuntimeError(f"cannot open camera {device}")
         w, h = RESOLUTIONS[resolution]
@@ -45,6 +64,10 @@ class Camera:
         self._thread = threading.Thread(target=self._loop, daemon=True)
         self._thread.start()
 
+    def settings_dialog(self):
+        """Windows only: open the DirectShow camera properties dialog (zoom, focus, exposure...)."""
+        return self.cap.set(cv2.CAP_PROP_SETTINGS, 1)
+
     def _loop(self):
         while self._running:
             ok, frame = self.cap.read()
@@ -52,7 +75,8 @@ class Camera:
                 time.sleep(0.01)
                 continue
             with self._cond:
-                self._frame, self._ts = frame, time.monotonic()
+                # perf_counter: monotonic with sub-ms resolution (time.monotonic is ~15 ms on Windows)
+                self._frame, self._ts = frame, time.perf_counter()
                 self._seq += 1
                 self._cond.notify_all()
 

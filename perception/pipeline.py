@@ -3,6 +3,7 @@
 hands, pose and the face chain (face mesh -> identity + gaze) run concurrently; MediaPipe and
 onnxruntime release the GIL during inference, so this gives real parallelism.
 """
+import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
@@ -10,7 +11,8 @@ from dataclasses import dataclass, field
 MODULES = ("hands", "pose", "face", "gaze")
 # Benchmarked on Ryzen 7 4800H + GTX 1650, all 4 modules: pose on GPU = 33 ms/frame, all CPU = 37,
 # all GPU = 55 (the GL delegates contend with each other). Only pose gains much from the GPU.
-DEFAULT_GPU = {"pose"}
+# MediaPipe's Windows wheels are built without GPU support, so don't even try there.
+DEFAULT_GPU = set() if sys.platform == "win32" else {"pose"}
 
 
 @dataclass
