@@ -89,12 +89,17 @@ export function computeFeatures(lm: P[], w: P[], aspect: number): Features {
 }
 
 // ---- checks ------------------------------------------------------------------------------
-interface Check { hint: string | ((f: Features) => string); test: (f: Features) => boolean }
+/** Part of the hand a failed check is about (drives the per-finger feedback on the 3D hand). */
+export type Part = Finger | "thumb" | "orientation";
+interface Check { hint: string | ((f: Features) => string); test: (f: Features) => boolean; parts?: (f: Features) => Part[] }
+/** attach the parts of the hand a check is about */
+const on = (parts: Part[], c: Check): Check => ({ ...c, parts: () => parts });
 
 const VERB: Record<FState, string> = { ext: "Estira", bent: "Curva", curled: "Cierra" };
 function fingers(names: Finger[], allowed: FState[]): Check {
   return {
     test: (f) => names.every((n) => allowed.includes(f.fingers[n])),
+    parts: (f) => names.filter((n) => !allowed.includes(f.fingers[n])),
     hint: (f) => {
       const wrong = names.filter((n) => !allowed.includes(f.fingers[n]));
       const verb = allowed.includes("ext") ? VERB.ext : allowed.includes("curled") && !allowed.includes("bent") ? VERB.curled : allowed.includes("bent") && !allowed.includes("curled") ? VERB.bent : VERB.curled;
@@ -108,49 +113,51 @@ const fist = (...n: Finger[]) => fingers(n, ["curled"]);
 const curved = (...n: Finger[]) => fingers(n, ["bent"]);
 const check = (hint: string, test: (f: Features) => boolean): Check => ({ hint, test });
 
-const TOGETHER = check("Junta los dedos", (f) => f.spreadIM < 18);
-const APART = check("Separa el índice y el corazón en V", (f) => f.spreadIM >= 14);
-const UP = check("Apunta los dedos hacia arriba", (f) => f.pointing === "up");
-const SIDE = check("Gira la mano: los dedos apuntan hacia un lado", (f) => f.pointing === "side");
-const DOWN = check("Apunta los dedos hacia abajo", (f) => f.pointing === "down" || f.pointing === "side");
-const THUMB_OUT = check("Saca el pulgar hacia fuera", (f) => f.thumbOut > 0.6);
-const THUMB_ALONG = check("Estira el pulgar paralelo al índice", (f) => f.thumbOut > 0.45);
-const THUMB_IN = check("Recoge el pulgar, no lo saques", (f) => f.thumbOut < 0.95);
-const thumbLat = (min: number, max: number, hint: string) => check(hint, (f) => f.thumbLat >= min && f.thumbLat <= max);
-const touch = (a: number, b: number, max: number, hint: string) => check(hint, (f) => f.d(a, b) < max);
+const TOGETHER = on(["index", "middle"], check("Junta los dedos", (f) => f.spreadIM < 18));
+const APART = on(["index", "middle"], check("Separa el índice y el corazón en V", (f) => f.spreadIM >= 14));
+const UP = on(["orientation"], check("Apunta los dedos hacia arriba", (f) => f.pointing === "up"));
+const SIDE = on(["orientation"], check("Gira la mano: los dedos apuntan hacia un lado", (f) => f.pointing === "side"));
+const DOWN = on(["orientation"], check("Apunta los dedos hacia abajo", (f) => f.pointing === "down" || f.pointing === "side"));
+const THUMB_OUT = on(["thumb"], check("Saca el pulgar hacia fuera", (f) => f.thumbOut > 0.6));
+const THUMB_ALONG = on(["thumb"], check("Estira el pulgar paralelo al índice", (f) => f.thumbOut > 0.45));
+const THUMB_IN = on(["thumb"], check("Recoge el pulgar, no lo saques", (f) => f.thumbOut < 0.95));
+const thumbLat = (min: number, max: number, hint: string) => on(["thumb"], check(hint, (f) => f.thumbLat >= min && f.thumbLat <= max));
+const TIP_FINGER: Record<number, Finger> = { 6: "index", 8: "index", 10: "middle", 12: "middle", 16: "ring", 20: "pinky" };
+const touch = (a: number, b: number, max: number, hint: string) =>
+  on(["thumb", ...(TIP_FINGER[b] ? [TIP_FINGER[b]] : [])], check(hint, (f) => f.d(a, b) < max));
 
 const RULES: Record<string, Check[]> = {
   A: [fist("index", "middle", "ring", "pinky"), thumbLat(-1, 0.18, "Pon el pulgar al lado del índice, no delante"), THUMB_IN],
   B: [ext("index", "middle", "ring", "pinky"), TOGETHER, thumbLat(0.2, 2, "Dobla el pulgar sobre la palma"), UP],
   C: [curved("index", "middle", "ring", "pinky"), thumbLat(-1, 0.45, "El pulgar curvado enfrente, formando una C"),
-    check("Abre un poco la C entre el pulgar y los dedos", (f) => f.d(4, 8) > 0.3 && f.d(4, 8) < 1.4)],
+    on(["thumb", "index"], check("Abre un poco la C entre el pulgar y los dedos", (f) => f.d(4, 8) > 0.3 && f.d(4, 8) < 1.4))],
   D: [ext("index"), closed("middle", "ring", "pinky"), touch(4, 12, 0.7, "Toca la punta del corazón con el pulgar")],
   E: [closed("index", "middle", "ring", "pinky"), thumbLat(0.25, 2, "Dobla el pulgar bajo las puntas de los dedos"),
-    check("Acerca las puntas de los dedos al pulgar", (f) => (f.d(4, 8) + f.d(4, 12) + f.d(4, 16)) / 3 < 0.75), THUMB_IN],
+    on(["index", "middle", "ring"], check("Acerca las puntas de los dedos al pulgar", (f) => (f.d(4, 8) + f.d(4, 12) + f.d(4, 16)) / 3 < 0.75)), THUMB_IN],
   F: [touch(4, 8, 0.35, "Toca la punta del índice con el pulgar (círculo)"), fingers(["middle", "ring", "pinky"], ["ext", "bent"])],
   G: [ext("index"), closed("middle", "ring", "pinky"), THUMB_ALONG, SIDE],
   H: [ext("index", "middle"), closed("ring", "pinky"), TOGETHER, SIDE],
   I: [ext("pinky"), closed("index", "middle", "ring"), THUMB_IN],
   K: [ext("index"), fingers(["middle"], ["ext", "bent"]), closed("ring", "pinky"), APART,
-    check("Pon el pulgar entre el índice y el corazón", (f) => Math.min(f.d(4, 10), f.d(4, 6), f.d(4, 9)) < 0.55), UP],
+    on(["thumb"], check("Pon el pulgar entre el índice y el corazón", (f) => Math.min(f.d(4, 10), f.d(4, 6), f.d(4, 9)) < 0.55)), UP],
   L: [ext("index"), closed("middle", "ring", "pinky"), THUMB_OUT,
-    check("Forma una L: pulgar y índice en ángulo recto", (f) => f.thumbIndexAngle > 45), UP],
+    on(["thumb", "index"], check("Forma una L: pulgar y índice en ángulo recto", (f) => f.thumbIndexAngle > 45)), UP],
   M: [closed("index", "middle", "ring", "pinky"), thumbLat(0.6, 2, "Mete el pulgar bajo tres dedos (hasta el meñique)")],
   N: [closed("index", "middle", "ring", "pinky"), thumbLat(0.3, 0.8, "Mete el pulgar bajo dos dedos (índice y corazón)")],
   O: [closed("index", "middle", "ring", "pinky"), touch(4, 8, 0.4, "Junta la punta del índice con el pulgar (forma una O)"),
     touch(4, 12, 0.55, "Cierra la O: todas las puntas tocan el pulgar")],
   P: [fingers(["index", "middle"], ["ext", "bent"]), closed("ring", "pinky"), APART, DOWN],
   Q: [ext("index"), closed("middle", "ring", "pinky"), THUMB_ALONG, DOWN],
-  R: [ext("index", "middle"), closed("ring", "pinky"), check("Cruza el corazón por encima del índice", (f) => f.crossedIM)],
+  R: [ext("index", "middle"), closed("ring", "pinky"), on(["index", "middle"], check("Cruza el corazón por encima del índice", (f) => f.crossedIM))],
   S: [fist("index", "middle", "ring", "pinky"), thumbLat(0.12, 0.75, "Cruza el pulgar por delante de los dedos"),
-    check("Apoya el pulgar sobre los dedos doblados", (f) => Math.min(f.d(4, 6), f.d(4, 10)) < 0.65)],
+    on(["thumb"], check("Apoya el pulgar sobre los dedos doblados", (f) => Math.min(f.d(4, 6), f.d(4, 10)) < 0.65))],
   T: [closed("index", "middle", "ring", "pinky"), thumbLat(-0.15, 0.45, "Mete el pulgar entre el índice y el corazón"),
     touch(4, 6, 0.5, "El pulgar asoma bajo el índice doblado")],
   U: [ext("index", "middle"), closed("ring", "pinky"), TOGETHER,
-    check("No cruces los dedos", (f) => !f.crossedIM || f.spreadIM > 8), UP],
+    on(["index", "middle"], check("No cruces los dedos", (f) => !f.crossedIM || f.spreadIM > 8)), UP],
   V: [ext("index", "middle"), closed("ring", "pinky"), APART, UP],
   W: [ext("index", "middle", "ring"), closed("pinky"), UP],
-  X: [curved("index"), closed("middle", "ring", "pinky"), check("Dobla el índice como un gancho", (f) => f.bend.index > 70)],
+  X: [curved("index"), closed("middle", "ring", "pinky"), on(["index"], check("Dobla el índice como un gancho", (f) => f.bend.index > 70))],
   Y: [ext("pinky"), closed("index", "middle", "ring"), THUMB_OUT],
 };
 
@@ -160,17 +167,25 @@ export interface Evaluation {
   ok: boolean;
   score: number;   // fraction of checks passed
   hints: string[];
+  /** parts of the hand with something wrong (for highlighting the 3D reference) */
+  wrong: Part[];
 }
 
 export function evaluateLetter(letter: string, f: Features): Evaluation {
   const rules = RULES[letter.toUpperCase()];
-  if (!rules) return { ok: false, score: 0, hints: ["Esta letra lleva movimiento y no se puede comprobar con la cámara"] };
+  if (!rules) return { ok: false, score: 0, hints: ["Esta letra lleva movimiento y no se puede comprobar con la cámara"], wrong: [] };
   const failed = rules.filter((r) => !r.test(f));
   return {
     ok: failed.length === 0,
     score: (rules.length - failed.length) / rules.length,
     hints: failed.map((r) => (typeof r.hint === "function" ? r.hint(f) : r.hint)),
+    wrong: [...new Set(failed.flatMap((r) => r.parts?.(f) ?? []))],
   };
+}
+
+/** Letters whose every rule passes for this hand (to tell the learner what they ARE signing). */
+export function matchingLetters(f: Features): string[] {
+  return Object.keys(RULES).filter((L) => RULES[L].every((r) => r.test(f)));
 }
 
 export function describe(f: Features) {

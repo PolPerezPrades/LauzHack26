@@ -22,6 +22,8 @@ export interface ActivityMeta {
   seconds: { base: number; perItem: number };
   /** listed in the games catalogue for free play */
   inCatalog?: boolean;
+  /** content-driven activities pick a passage / dialogue instead of items */
+  content?: "passage" | "dialogue" | "story";
 }
 
 export const ACTIVITIES: ActivityMeta[] = [
@@ -41,9 +43,34 @@ export const ACTIVITIES: ActivityMeta[] = [
     trains: "receptive", seconds: { base: 25, perItem: 0 },
   },
   {
-    id: "camera", title: "Signa ante la cámara", icon: "📷", description: "Haz la letra con tu mano; la cámara la comprueba.",
+    id: "imitate", title: "Imitar el signo", icon: "📷", description: "Haz la letra ante la cámara: te dice qué dedo corregir.",
     kind: "practice", requires: { camera: true, itemKinds: ["letter"], minItems: 1, maxItems: 1 },
     trains: "productive", seconds: { base: 25, perItem: 0 },
+  },
+  {
+    id: "rain", title: "Lluvia de signos", icon: "🌧", description: "Los signos caen cada vez más rápido: identifícalos antes de que toquen el suelo.",
+    kind: "game", requires: { camera: false, itemKinds: ["letter", "number", "word"], minItems: 6, maxItems: 10 },
+    trains: "receptive", seconds: { base: 15, perItem: 7 }, inCatalog: true,
+  },
+  {
+    id: "memory", title: "Memory", icon: "🃏", description: "Da la vuelta a las cartas y empareja cada signo con su significado.",
+    kind: "game", requires: { camera: false, itemKinds: ["letter", "number", "word"], minItems: 4, maxItems: 4 },
+    trains: "receptive", seconds: { base: 20, perItem: 12 }, inCatalog: true,
+  },
+  {
+    id: "comprehension", title: "Comprensión", icon: "📖", description: "Te cuentan algo en signos; responde para demostrar que lo entendiste.",
+    kind: "practice", requires: { camera: false, itemKinds: ["word"], minItems: 0, maxItems: 0 },
+    trains: "receptive", seconds: { base: 90, perItem: 0 }, inCatalog: true, content: "passage",
+  },
+  {
+    id: "conversation", title: "Conversación guiada", icon: "🗨", description: "Te hacen preguntas en signos y respondes construyendo la frase en orden ASL.",
+    kind: "practice", requires: { camera: false, itemKinds: ["word"], minItems: 0, maxItems: 0 },
+    trains: "productive", seconds: { base: 120, perItem: 0 }, inCatalog: true, content: "dialogue",
+  },
+  {
+    id: "story", title: "Historia: la cafetería", icon: "☕", description: "Modo historia: pide en una cafetería atendida por personas sordas.",
+    kind: "game", requires: { camera: false, itemKinds: ["word"], minItems: 0, maxItems: 0 },
+    trains: "productive", seconds: { base: 150, perItem: 0 }, inCatalog: true, content: "story",
   },
   {
     id: "spell", title: "Deletreo rápido", icon: "🔡", description: "La mano deletrea una palabra cada vez más rápido: escríbela.",

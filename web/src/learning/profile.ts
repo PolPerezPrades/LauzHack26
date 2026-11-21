@@ -55,6 +55,8 @@ export interface Profile {
   answers: number;
   difficulty: number;        // -1 (easier) … +1 (harder), from accuracyEma vs target band
   gameBest: Record<string, number>;
+  /** passage / dialogue id → last time it was completed */
+  contentDone: Record<string, number>;
   eventCount: number;
 }
 
@@ -69,7 +71,7 @@ export function emptyProfile(): Profile {
     settings: { onboarded: false, selfLevel: 0, goalMin: 10, cameraPref: true, startUnit: null, placementDone: false },
     items: {}, activities: {}, sessions: { started: 0, completed: 0, abandoned: 0, avgSeconds: 0, lastTs: null },
     xp: 0, streak: 0, bestStreak: 0, activeDays: [], today: { day: "", seconds: 0, xp: 0 },
-    accuracyEma: 0.82, answers: 0, difficulty: 0, gameBest: {}, eventCount: 0,
+    accuracyEma: 0.82, answers: 0, difficulty: 0, gameBest: {}, contentDone: {}, eventCount: 0,
   };
 }
 
@@ -99,6 +101,7 @@ export interface ReduceOptions {
 export function buildProfile(events: LearningEvent[], opts: ReduceOptions): Profile {
   const p = emptyProfile();
   const steps = new Map<string, string[]>(); // `${session}:${step}` → items
+  const stepContent = new Map<string, string>();
   const days = new Map<string, { seconds: number; xp: number }>();
   let sessionSeconds = 0;
 
@@ -122,11 +125,14 @@ export function buildProfile(events: LearningEvent[], opts: ReduceOptions): Prof
       case "activity.start":
         act(p, e.activity).started++;
         steps.set(`${e.sessionId}:${e.step}`, e.items);
+        if (e.content) stepContent.set(`${e.sessionId}:${e.step}`, e.content);
         break;
       case "activity.end": {
         const a = act(p, e.activity);
         if (e.status === "completed") a.completed++;
         else a.abandoned++;
+        const content = stepContent.get(`${e.sessionId}:${e.step}`);
+        if (content && e.status === "completed") p.contentDone[content] = e.ts;
         if (e.activity === "intro" && e.status === "completed") {
           for (const id of steps.get(`${e.sessionId}:${e.step}`) ?? []) item(p, id).introducedTs ??= e.ts;
         }

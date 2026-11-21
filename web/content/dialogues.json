@@ -1,0 +1,53 @@
+{
+  "schema": "dialogue/1",
+  "dialogues": [
+    {
+      "id": "dlg-meet", "title": "Conocer a alguien", "level": 2, "story": false,
+      "setting": "🎓 Un compañero de clase sordo se te acerca en la cafetería de la universidad.",
+      "partner": { "name": "Sam", "emoji": "🧑🏽" },
+      "start": "n1",
+      "nodes": {
+        "n1": { "partner": ["w-hello"], "es": "¡Hola!", "hint": "Devuelve el saludo.", "expect": [{ "signs": ["w-hello"], "next": "n2" }] },
+        "n2": { "partner": ["w-you", "w-name", "w-what"], "es": "¿Cómo te llamas?", "hint": "MI NOMBRE… y después deletrea tu nombre. En ASL no hace falta el verbo «ser».",
+          "expect": [{ "signs": ["w-my", "w-name"], "next": "n3", "fingerspellName": true }, { "signs": ["w-me", "w-name"], "next": "n3", "fingerspellName": true }] },
+        "n3": { "partner": ["w-nice"], "es": "Encantado.", "hint": "Responde con el mismo signo: NICE.", "expect": [{ "signs": ["w-nice"], "next": "n4" }] },
+        "n4": { "partner": ["w-you", "w-deaf"], "es": "¿Eres sordo/a? (cejas levantadas: pregunta de sí/no)", "hint": "Contesta SÍ o NO.",
+          "expect": [{ "signs": ["w-yes"], "next": "n5" }, { "signs": ["w-no"], "next": "n5" }] },
+        "n5": { "partner": ["w-you", "w-learn", "w-sign", "w-why"], "es": "¿Por qué aprendes lengua de signos?", "hint": "Por ejemplo: YO GUSTAR SIGNAR, o MI AMIGO SORDO (tópico + comentario).",
+          "expect": [
+            { "signs": ["w-me", "w-like", "w-sign"], "next": "n6" }, { "signs": ["w-my", "w-friend", "w-deaf"], "next": "n6" },
+            { "signs": ["w-my", "w-family", "w-deaf"], "next": "n6" }, { "signs": ["w-my", "w-sister", "w-deaf"], "next": "n6" },
+            { "signs": ["w-my", "w-brother", "w-deaf"], "next": "n6" }
+          ] },
+        "n6": { "partner": ["w-good"], "es": "¡Qué bien!", "hint": "Tienes que irte: despídete.", "expect": [{ "signs": ["w-bye"], "next": "end" }] },
+        "end": { "partner": ["w-bye"], "es": "¡Adiós!", "end": true }
+      }
+    },
+    {
+      "id": "dlg-cafe", "title": "Historia: la cafetería", "level": 2, "story": true,
+      "setting": "☕ Entras en una cafetería donde todo el personal es sordo. Hoy pides tú… en ASL.",
+      "partner": { "name": "Alex, camarera", "emoji": "👩🏻‍🍳" },
+      "start": "c1",
+      "nodes": {
+        "c1": { "narration": "Alex levanta la vista de la cafetera y te sonríe.", "partner": ["w-hello"], "es": "¡Hola!", "hint": "Saluda.", "expect": [{ "signs": ["w-hello"], "next": "c2" }] },
+        "c2": { "narration": "Te señala la pizarra con las bebidas.", "partner": ["w-you", "w-want", "w-what"], "es": "¿Qué quieres?", "hint": "YO QUERER + la bebida (o la bebida + POR FAVOR).",
+          "expect": [
+            { "signs": ["w-me", "w-want", "w-coffee"], "next": "c3" }, { "signs": ["w-me", "w-want", "w-water"], "next": "c3" },
+            { "signs": ["w-me", "w-want", "w-milk"], "next": "c3" }, { "signs": ["w-coffee", "w-please"], "next": "c3" },
+            { "signs": ["w-water", "w-please"], "next": "c3" }, { "signs": ["w-milk", "w-please"], "next": "c3" }
+          ] },
+        "c3": { "narration": "Mientras prepara la bebida, levanta las cejas:", "partner": ["w-you", "w-hungry"], "es": "¿Tienes hambre?", "hint": "Contesta SÍ o NO.",
+          "expect": [{ "signs": ["w-yes"], "next": "c4" }, { "signs": ["w-no"], "next": "c5" }] },
+        "c4": { "narration": "Te enseña la vitrina de los dulces.", "partner": ["w-you", "w-want", "w-what"], "es": "¿Qué quieres comer?", "hint": "YO QUERER + comida (galleta, pan, plátano…).",
+          "expect": [
+            { "signs": ["w-me", "w-want", "w-cookie"], "next": "c5" }, { "signs": ["w-me", "w-want", "w-bread"], "next": "c5" },
+            { "signs": ["w-me", "w-want", "w-banana"], "next": "c5" }, { "signs": ["w-cookie", "w-please"], "next": "c5" },
+            { "signs": ["w-bread", "w-please"], "next": "c5" }
+          ] },
+        "c5": { "narration": "Alex te entrega el pedido. ¿Qué le dices?", "partner": [], "es": "", "hint": "Dale las gracias.", "expect": [{ "signs": ["w-thank-you"], "next": "c6" }] },
+        "c6": { "narration": "Alex se despide con la mano.", "partner": ["w-bye"], "es": "¡Adiós!", "hint": "Despídete tú también.", "expect": [{ "signs": ["w-bye"], "next": "end" }] },
+        "end": { "narration": "¡Has pedido en ASL de principio a fin! 🎉", "partner": [], "es": "", "end": true }
+      }
+    }
+  ]
+}

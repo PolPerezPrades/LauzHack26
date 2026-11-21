@@ -10,7 +10,11 @@ import type { SessionContext } from "../data/events";
 import type { PlanStep } from "../learning/orchestrator";
 import type { Profile } from "../learning/profile";
 import { phraseOptions, signOptions, spellWord, type Answer } from "../lib/engine";
-import { CameraSign } from "./CameraSign";
+import { Comprehension } from "./Comprehension";
+import { Conversation } from "./Conversation";
+import { Imitate } from "./Imitate";
+import { Memory } from "./Memory";
+import { SignRain } from "./SignRain";
 import { FingerspellRead } from "./FingerspellRead";
 import { Matching } from "./Matching";
 import { Quiz } from "./Quiz";
@@ -45,9 +49,17 @@ export const COMPONENTS: Record<string, ComponentType<ActivityProps>> = {
     return <Matching signIds={step.items} seconds={seconds} onAnswer={onResult} locked={locked} />;
   },
 
-  camera: ({ step, onResult, locked }) => (
-    <CameraSign letter={getSign(step.items[0])!.en} onAnswer={onResult} locked={locked} />
-  ),
+  imitate: ({ step, onResult, locked }) => <Imitate letter={getSign(step.items[0])!.en} onAnswer={onResult} locked={locked} />,
+
+  rain: ({ step, profile, onResult, locked }) => <SignRain items={step.items} profile={profile} onAnswer={onResult} locked={locked} />,
+
+  memory: ({ step, onResult, locked }) => <Memory items={step.items} onAnswer={onResult} locked={locked} />,
+
+  comprehension: ({ step, onResult, locked }) => <Comprehension passageId={step.content!} onAnswer={onResult} locked={locked} />,
+
+  conversation: ({ step, onResult, locked }) => <Conversation dialogueId={step.content!} onAnswer={onResult} locked={locked} />,
+
+  story: ({ step, onResult, locked }) => <Conversation dialogueId={step.content!} onAnswer={onResult} locked={locked} />,
 
   spell: function SpellActivity({ step, profile, onResult, locked }) {
     const [word] = useState(() => spellWord(step.items, d(profile)));
@@ -65,5 +77,8 @@ export const COMPONENTS: Record<string, ComponentType<ActivityProps>> = {
 
   quiz: ({ step, profile, onResult, locked }) => <Quiz items={step.items} profile={profile} onAnswer={onResult} locked={locked} />,
 };
+
+// logs written before phase 2 call the camera activity "camera"
+COMPONENTS.camera = COMPONENTS.imitate;
 
 export { letterId };

@@ -26,7 +26,7 @@ function correctText(activity: string, items: string[]) {
   if (!id) return "";
   if (activity === "phrase") return `Respuesta: ${PHRASES.get(id)?.es}`;
   if (activity === "recognize") return `Respuesta: ${label(id)}${getSign(id)?.kind === "word" ? ` (${getSign(id)!.en.toUpperCase()})` : ""}`;
-  if (activity === "camera") return "Mira la referencia y vuelve a intentarlo: reaparecerá pronto";
+  if (activity === "camera" || activity === "imitate") return "Mira la referencia y vuelve a intentarlo: reaparecerá pronto";
   if (activity === "match") return "Se acabó el tiempo o hubo varios fallos";
   return "Lo repasaremos pronto";
 }
@@ -58,12 +58,12 @@ export function Session({ plan, profile, ctx, emit, onFinish, onExit }: {
     if (!begun.current) {
       begun.current = true;
       emit({ type: "session.start", sessionId: sessionId.current, mode: plan.mode, target: plan.target, ctx, log: plan.log,
-        plan: plan.steps.map((s) => ({ activity: s.activity, items: s.items, why: s.why })) });
+        plan: plan.steps.map((s) => ({ activity: s.activity, items: s.items, why: s.why, content: s.content })) });
       console.debug("[orquestador]", plan.log.join(" | "));
     }
     if (!step) return;
     stepStart.current = Date.now();
-    emit({ type: "activity.start", sessionId: sessionId.current, step: i, activity: step.activity, items: step.items });
+    emit({ type: "activity.start", sessionId: sessionId.current, step: i, activity: step.activity, items: step.items, content: step.content });
     console.debug(`[orquestador] paso ${i + 1}: ${step.activity} [${step.items.join(", ")}] · elegido porque: ${step.why.join(" + ")}`);
   }, [i]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -77,7 +77,7 @@ export function Session({ plan, profile, ctx, emit, onFinish, onExit }: {
       answers.current.push({ itemId: it.id, correct: it.correct, activity: step.activity });
     }
     if (step.activity === "sprint" && a.xp !== undefined) emit({ type: "game.score", activity: "sprint", score: a.xp / 2 });
-    let gained = a.xp ?? (a.correct ? (step.activity === "camera" ? 15 : step.activity === "phrase" ? 12 : 10) : 0);
+    let gained = a.xp ?? (a.correct ? (step.activity === "imitate" ? 15 : step.activity === "phrase" ? 12 : 10) : 0);
     const nextCombo = a.items.length ? (a.correct ? combo + 1 : 0) : combo;
     if (a.correct && nextCombo >= 3) gained += 2;
     xp.current += gained;

@@ -38,6 +38,21 @@ Siempre hay botón de repetir, cámara lenta y, si el signo viene de un vídeo, 
 - **Catálogo común de actividades** (`src/learning/activityCatalog.ts` y `src/activities/registry.tsx`): requisitos, habilidad que entrenan y duración.
 - Puntos de extensión para LLMs (fase 3) en `src/learning/extensions.ts`.
 
+## Actividades
+
+| Actividad | Habilidad | Cámara | Qué entrena |
+|---|---|---|---|
+| Reconocer / Entender una frase / Mini-examen | receptiva | no | recuperación activa; frases con gramática ASL |
+| 🌧 Lluvia de signos | receptiva | no | reconocer bajo presión de tiempo creciente |
+| 🃏 Memory · 🧩 Emparejar contra reloj | receptiva | no | discriminación visual y recuerdo espaciado |
+| 🔡 Deletreo rápido | receptiva | no | leer dactilología a velocidad creciente |
+| 📖 Comprensión | receptiva | no | entender un relato en signos y responder preguntas |
+| 📷 Imitar el signo | productiva | sí | configuración de la mano, con diagnóstico por dedo y detección de confusiones |
+| ⚡ Sprint de deletreo | productiva | sí | deletrear palabras con la mano en 60 s |
+| 🗨 Conversación guiada · ☕ Historia: la cafetería | productiva | no | responder construyendo la frase en orden ASL (árbol de diálogo guionizado) |
+
+Relatos y diálogos: `content/comprehension.json` y `content/dialogues.json` (solo usan signos existentes; se validan al cargar).
+
 ## Contenido
 
 - `content/signs/<id>.json`: un JSON por signo, independiente del renderizador (fonología: configuración, orientación,

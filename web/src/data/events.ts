@@ -16,14 +16,14 @@ export interface SessionContext {
   hour: number;
 }
 
-export interface PlanStepSummary { activity: string; items: string[]; why: string[] }
+export interface PlanStepSummary { activity: string; items: string[]; why: string[]; content?: string }
 
 export type EventBody =
   | { type: "profile.set"; selfLevel: 0 | 1 | 2 | 3; goalMin: number; cameraPref: boolean }
   | { type: "settings.set"; goalMin?: number; cameraPref?: boolean }
   | { type: "placement.done"; startUnit: string; demonstrated: number }
   | { type: "session.start"; sessionId: string; mode: "auto" | "topic" | "game"; target?: string; ctx: SessionContext; plan: PlanStepSummary[]; log: string[] }
-  | { type: "activity.start"; sessionId: string; step: number; activity: string; items: string[] }
+  | { type: "activity.start"; sessionId: string; step: number; activity: string; items: string[]; content?: string }
   | {
       type: "answer"; sessionId?: string; activity: string; itemId: string; modality: Modality;
       correct: boolean; ms?: number; confusedWith?: string; detail?: string;

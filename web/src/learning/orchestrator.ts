@@ -12,6 +12,7 @@
  * Modes: "auto" (what to do today), "topic" (a chosen unit), "game" (a chosen game).
  */
 import { CAMERA_LETTERS, PHRASES, SIGNS, UNITS, getSign, label, type Unit } from "../content/curriculum";
+import { DIALOGUES, PASSAGES, scenarioSigns } from "../content/scenarios";
 import type { Modality, SessionContext } from "../data/events";
 import { ACTIVITY, availableIn, estimateSeconds, type ItemKind } from "./activityCatalog";
 import { isDue, isWeak, mastery, retrievability, topConfusion, TARGET_ACCURACY, type Profile } from "./profile";
@@ -21,6 +22,8 @@ export interface PlanStep {
   items: string[];
   modality: Modality;
   why: string[];
+  /** passage / dialogue id for content-driven activities */
+  content?: string;
 }
 export interface SessionPlan {
   mode: "auto" | "topic" | "game";
@@ -67,9 +70,9 @@ export function planSession(p: Profile, ctx: SessionContext, req: PlanRequest = 
   const steps: PlanStep[] = [];
   let seconds = 0;
   const can = (id: string) => { const a = ACTIVITY.get(id); return !!a && availableIn(a, ctx); };
-  const push = (activity: string, items: string[], why: string[]) => {
+  const push = (activity: string, items: string[], why: string[], content?: string) => {
     const meta = ACTIVITY.get(activity)!;
-    steps.push({ activity, items, modality: meta.trains, why });
+    steps.push({ activity, items, modality: meta.trains, why, content });
     seconds += estimateSeconds(meta, items.length);
   };
 
@@ -80,6 +83,12 @@ export function planSession(p: Profile, ctx: SessionContext, req: PlanRequest = 
   // ---- game mode: one game, items chosen from what the learner knows --------------------------
   if (req.mode === "game" && req.activityId) {
     const meta = ACTIVITY.get(req.activityId)!;
+    if (meta.content) {
+      const c = pickScenario(p, meta.content, now, true)!;
+      push(meta.id, scenarioSigns(c.id), ["elegido por ti", c.why], c.id);
+      log.push(`${meta.title}: «${c.title}».`);
+      return { mode: "game", target: meta.id, steps, log, seconds };
+    }
     const pool = knownPool(p, meta.requires.itemKinds, now);
     const n = meta.requires.maxItems || 0;
     const items = n ? pool.slice(0, n) : [];
@@ -134,29 +143,38 @@ export function planSession(p: Profile, ctx: SessionContext, req: PlanRequest = 
     practiced.add(id);
   }
 
+  for (const id of dueP.slice(0, 3)) {
+    if (seconds > budget * 0.6) break;
+    flush();
+    const first = !p.items[id].productive;
+    push("imitate", [id], [first ? "ya la reconoces: toca producirla (habilidad productiva)" : "repaso productivo vencido", "cámara disponible"]);
+  }
+  // understanding in context and guided conversation once most of their signs are known
+  if (req.mode === "auto" && unit.level >= 2) {
+    const comp = pickScenario(p, "passage", now);
+    if (comp && seconds < budget * 0.6) push("comprehension", scenarioSigns(comp.id), ["comprensión en contexto", comp.why], comp.id);
+    const dlg = pickScenario(p, "dialogue", now);
+    if (dlg && seconds < budget * 0.6) push("conversation", scenarioSigns(dlg.id), ["producción: responder en signos (orden ASL)", dlg.why], dlg.id);
+  }
+
   const reviewLeft = dueR.filter((id) => !practiced.has(id));
-  // groups of 4 same-kind items → matching game
-  const groupKind = (k: ItemKind) => reviewLeft.filter((id) => itemKind(id) === k);
+  // same-kind reviews grouped into a game: 6+ → rain, 4+ → match / memory (what the learner finishes)
+  const groupKind = (k: ItemKind) => reviewLeft.filter((id) => itemKind(id) === k && !practiced.has(id));
   for (const k of ["word", "letter", "number"] as ItemKind[]) {
     const g = groupKind(k);
-    if (g.length >= 4 && can("match")) {
-      const items = g.slice(0, 4);
-      flush();
-      push("match", items, ["repasos vencidos agrupados en un juego", `variedad de formato`]);
-      items.forEach((i) => practiced.add(i));
-    }
+    if (g.length < 4) continue;
+    const game = pickGame(p, g.length >= 6 ? ["rain", "match", "memory"] : ["match", "memory"], steps, can);
+    if (!game) continue;
+    const items = g.slice(0, ACTIVITY.get(game.id)!.requires.maxItems);
+    flush();
+    push(game.id, items, ["repasos vencidos agrupados en un juego", game.why]);
+    items.forEach((i) => practiced.add(i));
   }
   for (const id of reviewLeft.filter((i) => !practiced.has(i))) {
     if (seconds > budget * 0.75) break;
     flush();
     push(recognizeFor(id), [id], reviewWhy(p, id, now, "repaso vencido"));
     practiced.add(id);
-  }
-  for (const id of dueP.slice(0, 3)) {
-    if (seconds > budget * 0.85) break;
-    flush();
-    const first = !p.items[id].productive;
-    push("camera", [id], [first ? "ya la reconoces: toca producirla (habilidad productiva)" : "repaso productivo vencido", "cámara disponible"]);
   }
   for (const id of weak.slice(0, 3)) {
     if (seconds > budget * 0.85) break;
@@ -185,8 +203,9 @@ export function planSession(p: Profile, ctx: SessionContext, req: PlanRequest = 
   while (queue.length) flush();
   // second, spaced round on today's new signs: a matching game if there are 4+, else single recalls
   const today = newItems.filter((id) => itemKind(id) !== "phrase");
-  if (seconds < budget * 0.85 && today.length >= 4 && can("match")) {
-    push("match", shuffleIds(today).slice(0, 4), ["segunda ronda espaciada de los signos nuevos", "juego"]);
+  const round2 = today.length >= 4 ? pickGame(p, ["match", "memory"], steps, can) : null;
+  if (seconds < budget * 0.85 && round2) {
+    push(round2.id, shuffleIds(today).slice(0, 4), ["segunda ronda espaciada de los signos nuevos", round2.why]);
   } else {
     for (const id of today) {
       if (seconds > budget * 0.85) break;
@@ -203,14 +222,20 @@ export function planSession(p: Profile, ctx: SessionContext, req: PlanRequest = 
     practiced.add(id);
   }
 
-  // a game for variety when there is time and material
+  // a game for variety when there is time and material (chosen from the learner's behaviour)
   const letters = all.filter((id) => itemKind(id) === "letter");
-  if (seconds < budget * 0.95 && letters.length >= 6 && req.mode !== "topic" || (req.mode === "topic" && unit.id.startsWith("abc") && letters.length >= 4)) {
-    const word = spellPool(p, now);
-    if (word.length) push("spell", word, ["juego de deletreo con letras que ya conoces", "variedad"]);
-  }
-  if (ctx.camera && seconds < budget * 0.9 && letters.filter((id) => mastery(p.items[id].receptive, now) > 0.2).length >= 8 && req.mode === "auto") {
-    push("sprint", [], ["cámara disponible y ya conoces suficientes letras", "juego productivo"]);
+  const knownLetters = letters.filter((id) => mastery(p.items[id].receptive, now) > 0.2).length;
+  const known = all.filter((id) => itemKind(id) !== "phrase");
+  if (seconds < budget * 0.95) {
+    const options = [
+      ...(letters.length >= 4 ? ["spell"] : []),
+      ...(known.length >= 6 ? ["rain"] : []),
+      ...(knownLetters >= 8 && req.mode === "auto" ? ["sprint"] : []),
+    ];
+    const game = pickGame(p, options, steps, can);
+    if (game?.id === "spell") push("spell", spellPool(p, now), ["juego de deletreo con letras que ya conoces", game.why]);
+    else if (game?.id === "rain") push("rain", knownPool(p, ["letter", "number", "word"], now).slice(0, 8), ["juego con signos que ya conoces", game.why]);
+    else if (game?.id === "sprint") push("sprint", [], ["cámara disponible y ya conoces suficientes letras", game.why]);
   }
 
   // final mini-exam on what was practised this session
@@ -235,6 +260,40 @@ function reviewWhy(p: Profile, id: string, now: number, prefix: string): string[
     ...(c ? [`confundes ${label(id)} con ${label(c)}`] : []),
     ...(!errs && r > 0 && r < 0.97 ? [`recuerdo estimado ${pct(r)}`] : []),
   ];
+}
+
+/**
+ * Game choice from behaviour: favours games the learner usually finishes, tries formats never
+ * played, and avoids repeating one already in this session.
+ */
+function pickGame(p: Profile, ids: string[], steps: PlanStep[], can: (id: string) => boolean) {
+  const scored = ids.filter(can).map((id) => {
+    const s = p.activities[id];
+    const started = s?.started ?? 0;
+    const completion = ((s?.completed ?? 0) + 1) / (started + 2);
+    const inPlan = steps.some((st) => st.activity === id);
+    const score = (0.5 + completion) / (1 + 0.15 * started) - (inPlan ? 1 : 0) + Math.random() * 0.15;
+    const why = started === 0 ? "formato nuevo para ti" : completion > 0.7 && started >= 2 ? "un juego que sueles terminar" : "variedad de formato";
+    return { id, score, why };
+  });
+  return scored.sort((a, b) => b.score - a.score)[0] ?? null;
+}
+
+/** Best passage / dialogue: most of its signs already known, not done recently. */
+function pickScenario(p: Profile, kind: "passage" | "dialogue" | "story", now: number, force = false) {
+  const list = kind === "passage"
+    ? [...PASSAGES.values()].map((x) => ({ id: x.id, title: x.title, level: x.level }))
+    : [...DIALOGUES.values()].filter((d) => d.story === (kind === "story")).map((x) => ({ id: x.id, title: x.title, level: x.level }));
+  const scored = list.map((c) => {
+    const signs = scenarioSigns(c.id);
+    const knownShare = signs.filter((id) => p.items[id]?.receptive).length / Math.max(1, signs.length);
+    const recent = !!p.contentDone[c.id] && now - p.contentDone[c.id] < 86_400_000;
+    return { ...c, knownShare, score: knownShare - (recent ? 1 : 0) - c.level * 0.01, why: `conoces el ${pct(knownShare)} de sus signos` };
+  }).sort((a, b) => b.score - a.score);
+  const best = scored[0];
+  if (!best) return null;
+  if (force) return best;
+  return best.knownShare >= 0.7 && best.score > 0 ? best : null;
 }
 
 function recognizeFor(id: string) {

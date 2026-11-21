@@ -1,0 +1,41 @@
+{
+  "schema": "comprehension/1",
+  "passages": [
+    {
+      "id": "comp-colors", "level": 2, "title": "Colores favoritos",
+      "sentences": [["w-me", "w-like", "w-blue"], ["w-my", "w-sister", "w-like", "w-pink"], ["w-my", "w-father", "w-like", "w-black"]],
+      "questions": [
+        { "q": "¿Qué color le gusta a quien signa?", "options": ["Azul", "Rosa", "Negro"], "answer": 0, "items": ["w-blue"] },
+        { "q": "¿Qué color le gusta a su hermana?", "options": ["Rosa", "Verde", "Azul"], "answer": 0, "items": ["w-sister", "w-pink"] },
+        { "q": "¿Y a su padre?", "options": ["Negro", "Blanco", "Rojo"], "answer": 0, "items": ["w-father", "w-black"] }
+      ]
+    },
+    {
+      "id": "comp-family", "level": 3, "title": "Mi familia",
+      "sentences": [["w-my", "w-sister", "w-deaf"], ["w-my", "w-brother", "w-like", "w-pizza"], ["w-my", "w-mother", "w-love", "w-coffee"]],
+      "questions": [
+        { "q": "¿Quién es sorda?", "options": ["Su hermana", "Su madre", "Su hermano"], "answer": 0, "items": ["w-sister", "w-deaf"] },
+        { "q": "¿Qué le gusta a su hermano?", "options": ["La pizza", "El café", "La leche"], "answer": 0, "items": ["w-brother", "w-pizza"] },
+        { "q": "¿Qué le encanta a su madre?", "options": ["El café", "El agua", "La pizza"], "answer": 0, "items": ["w-mother", "w-coffee"] }
+      ]
+    },
+    {
+      "id": "comp-day", "level": 3, "title": "Un día cualquiera",
+      "sentences": [["w-today", "w-me", "w-go", "w-school"], ["w-me", "w-hungry"], ["w-me", "w-want", "w-apple"], ["w-tomorrow", "w-me", "w-work"]],
+      "questions": [
+        { "q": "¿Adónde va hoy?", "options": ["A la escuela", "Al trabajo", "A casa de un amigo"], "answer": 0, "items": ["w-today", "w-school"] },
+        { "q": "¿Qué quiere comer?", "options": ["Una manzana", "Un plátano", "Pan"], "answer": 0, "items": ["w-want", "w-apple"] },
+        { "q": "¿Qué hará mañana?", "options": ["Trabajar", "Ir a la escuela", "Comer pizza"], "answer": 0, "items": ["w-tomorrow", "w-work"] }
+      ]
+    },
+    {
+      "id": "comp-friend", "level": 3, "title": "Mi amigo",
+      "sentences": [["w-my", "w-friend", "w-deaf"], ["w-me", "w-learn", "w-sign"], ["w-my", "w-friend", "w-like", "w-green"]],
+      "questions": [
+        { "q": "¿Quién es sordo?", "options": ["Su amigo", "Quien signa", "Su padre"], "answer": 0, "items": ["w-friend", "w-deaf"] },
+        { "q": "¿Qué está aprendiendo quien signa?", "options": ["Lengua de signos", "A cocinar", "Los colores"], "answer": 0, "items": ["w-learn", "w-sign"] },
+        { "q": "¿Qué color le gusta a su amigo?", "options": ["Verde", "Rojo", "Azul"], "answer": 0, "items": ["w-green"] }
+      ]
+    }
+  ]
+}
