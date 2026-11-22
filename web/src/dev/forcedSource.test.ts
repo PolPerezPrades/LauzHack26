@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import { unitOrder } from "../content/curriculum";
 import { createRng } from "../core/rng";
 import type { CardRef, CardSource, FeedContext } from "../core/types";
-import { createForcedSource } from "./forcedSource";
+import { createLog } from "../learner/testLog";
+import { sanitizeDevConfig } from "./devConfig";
+import { createForcedSource, forcedCe, type ForcedConfig } from "./forcedSource";
 
 const ctx = (history: CardRef[], cameraUsable = true): FeedContext => ({ history, events: [], cameraUsable, rng: createRng(9) });
 
@@ -40,6 +42,24 @@ describe("dev forced source", () => {
     expect((set.params as { choices: string[] }).choices).toHaveLength(3);
     const probe = play(createForcedSource({ format: "dev-camera-probe", ce: 0, overrides: { holdMs: 2000 } }), 1)[0];
     expect(probe.params).toEqual({ holdMs: 2000 });
+  });
+
+  it("takes the challenge from the sandbox learner when it is on auto", () => {
+    // four "too hard" quizzes left unanswered: c −1.00, cf(quiz-choice) −0.60 → ce −1
+    const log = createLog();
+    for (const id of ["w-red", "w-blue", "w-green", "w-pink"]) log.swipe([id], "too_hard", "quiz-choice");
+    const sandbox = (cfg: ForcedConfig) => createForcedSource(cfg).next({ ...ctx([]), events: log.events })!;
+    const choices = (cfg: ForcedConfig) => (sandbox(cfg).params as { choices: string[] }).choices;
+    expect(forcedCe({ format: "quiz-choice", ce: 0.5, autoCe: true }, log.events)).toBe(-1);
+    expect(forcedCe({ format: "quiz-choice", ce: 0.5 }, log.events)).toBe(0.5);
+    expect(choices({ format: "quiz-choice", items: ["L-A"], ce: 0, autoCe: true })).toHaveLength(2);
+    expect(choices({ format: "quiz-choice", items: ["L-A"], ce: 0 })).toHaveLength(4);
+  });
+
+  it("keeps the auto challenge when the config is read back", () => {
+    expect(sanitizeDevConfig({ format: "quiz-choice", ce: 0.3, autoCe: true })).toMatchObject({ ce: 0.3, autoCe: true });
+    expect(sanitizeDevConfig({ format: "quiz-choice", ce: 0.3, autoCe: "yes" }).autoCe).toBeUndefined();
+    expect(sanitizeDevConfig(null)).toEqual({ format: "quiz-choice", ce: 0, items: [], overrides: {} });
   });
 
   it("gives no camera card while the camera isn't usable", () => {

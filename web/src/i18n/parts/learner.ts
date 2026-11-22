@@ -1,13 +1,86 @@
 /**
- * Strings of the learner model's UI (the dev learner-state inspector), in every UI language.
- * Part C owns this file. Add each string to `en` and `es` (the build fails if
- * one is missing), and each new format's title and rules to `formats`. Components read them as
- * `t.learner.…`, and format titles through `t.formats`.
+ * Strings of the learner model's UI (the dev learner-state inspector, the auto challenge in dev
+ * mode), in every UI language. Part C owns this file. Add each string to `en` and `es` (the build
+ * fails if one is missing), and each new format's title and rules to `formats`. Components read
+ * them as `t.learner.…`, and format titles through `t.formats`. Model symbols (pKnown, R, c, cf,
+ * ce) stay as they are in both languages: they name the spec's variables.
  */
 import { definePart } from "./types";
 
 export const learner = definePart({
-  en: {},
-  es: {},
+  en: {
+    title: "Learner state",
+    source: "Database",
+    sourceSandbox: "sandbox (signa-dev)",
+    sourceReal: "real (signa, read-only)",
+    empty: "Nothing learned yet in this database.",
+    summary: {
+      challenge: "challenge c",
+      accuracy: "accuracy",
+      target: "target success",
+      xp: "XP",
+      streak: "streak",
+      today: "cards today",
+      cards: "cards shown",
+      sessions: "sessions",
+    },
+    pacing: (inFlight: number, max: number, overdue: number) => `In flight ${inFlight} / ${max} · overdue reviews ${overdue}`,
+    newAllowed: "new lessons allowed",
+    newPaused: "new lessons paused",
+    backoff: (item: string, card: number) => `Last back-off: ${item} (card ${card})`,
+    units: "Units",
+    unitState: { open: "open", closed: "closed", testedOut: "tested out" },
+    lists: { frontier: "Frontier", probes: "Probes", relearn: "Relearn", none: "none" },
+    formats: "Formats",
+    noFormats: "No format played yet.",
+    formatCols: { format: "format", pref: "preference", shown: "shown", completed: "completed", dislikes: "dislikes", muted: "muted" },
+    items: "Items",
+    unit: "Unit",
+    allUnits: "All units",
+    metOnly: "Only items met",
+    skills: { receptive: "receptive", productive: "productive" },
+    itemCols: { item: "item", status: "status", due: "due", evidence: "evidence", answers: "answers" },
+    status: { new: "new", learning: "learning", known: "known", due: "due" },
+    evidence: { none: "none", exposed: "exposed", claimed: "claimed", practiced: "practiced", verified: "verified" },
+    yes: "yes",
+    autoChallenge: (ce: string) => `auto: the sandbox learner's ce for this format (now ${ce})`,
+  },
+  es: {
+    title: "Estado del alumno",
+    source: "Base de datos",
+    sourceSandbox: "sandbox (signa-dev)",
+    sourceReal: "real (signa, solo lectura)",
+    empty: "Todavía no hay nada aprendido en esta base de datos.",
+    summary: {
+      challenge: "reto c",
+      accuracy: "acierto",
+      target: "acierto objetivo",
+      xp: "XP",
+      streak: "racha",
+      today: "tarjetas hoy",
+      cards: "tarjetas mostradas",
+      sessions: "sesiones",
+    },
+    pacing: (inFlight: number, max: number, overdue: number) => `En curso ${inFlight} / ${max} · repasos pendientes ${overdue}`,
+    newAllowed: "lecciones nuevas permitidas",
+    newPaused: "lecciones nuevas en pausa",
+    backoff: (item: string, card: number) => `Último retroceso: ${item} (tarjeta ${card})`,
+    units: "Unidades",
+    unitState: { open: "abierta", closed: "cerrada", testedOut: "superada por prueba" },
+    lists: { frontier: "Frontera", probes: "Comprobaciones", relearn: "Reaprender", none: "ninguno" },
+    formats: "Formatos",
+    noFormats: "Todavía no se ha jugado ningún formato.",
+    formatCols: { format: "formato", pref: "preferencia", shown: "mostradas", completed: "completadas", dislikes: "rechazos", muted: "silenciado" },
+    items: "Ítems",
+    unit: "Unidad",
+    allUnits: "Todas las unidades",
+    metOnly: "Solo ítems ya vistos",
+    skills: { receptive: "receptiva", productive: "productiva" },
+    itemCols: { item: "ítem", status: "estado", due: "repaso", evidence: "evidencia", answers: "respuestas" },
+    status: { new: "nuevo", learning: "aprendiendo", known: "sabido", due: "por repasar" },
+    evidence: { none: "ninguna", exposed: "visto", claimed: "declarado", practiced: "practicado", verified: "verificado" },
+    yes: "sí",
+    autoChallenge: (ce: string) => `auto: el ce del alumno del sandbox para este formato (ahora ${ce})`,
+  },
   formats: { en: {}, es: {} },
 });

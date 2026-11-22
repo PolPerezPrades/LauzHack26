@@ -1,9 +1,13 @@
 /**
  * Small pure views of the log for the feed: card history (for card sources), XP and streak (the
- * overlay chip) and the sound preference. Interim: Part C's learner state replaces XP and streak.
+ * overlay chip, read from the learner state since Part C) and the sound preference.
  */
 import type { CardPlan, CardRef } from "../core/types";
 import type { LearningEvent } from "../data/events";
+import { streakOf, xpOf } from "../learner/selectors";
+import { learnerStateOf } from "../learner/state";
+
+export { dayKey } from "../learner/days";
 
 /** Cards shown in the log (with their exit, once they left), plus the feed's queue marked as planned. */
 export function cardHistory(events: readonly LearningEvent[], queued: readonly (CardPlan | null | undefined)[] = []): CardRef[] {
@@ -28,30 +32,10 @@ export function cardHistory(events: readonly LearningEvent[], queued: readonly (
   return order;
 }
 
-export function dayKey(ts: number) {
-  const d = new Date(ts);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
 /** XP = sum of card results; streak = consecutive local days with a completed card, ending today or yesterday. */
 export function feedStats(events: readonly LearningEvent[], now: number): { xp: number; streak: number } {
-  let xp = 0;
-  const days = new Set<string>();
-  for (const e of events) {
-    if (e.type !== "card.result") continue;
-    xp += e.xp;
-    days.add(dayKey(e.ts));
-  }
-  // walk calendar days at local noon, so DST changes never skip or repeat a day
-  const day = new Date(now);
-  day.setHours(12, 0, 0, 0);
-  if (!days.has(dayKey(day.getTime()))) day.setDate(day.getDate() - 1);
-  let streak = 0;
-  while (days.has(dayKey(day.getTime()))) {
-    streak++;
-    day.setDate(day.getDate() - 1);
-  }
-  return { xp, streak };
+  const state = learnerStateOf(events);
+  return { xp: xpOf(state), streak: streakOf(state, now) };
 }
 
 export function soundMuted(events: readonly LearningEvent[]): boolean {

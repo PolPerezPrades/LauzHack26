@@ -19,9 +19,13 @@ function sanitize(raw: unknown): ForcedConfig {
     ...(typeof c.unit === "string" ? { unit: c.unit } : {}),
     items: Array.isArray(c.items) ? c.items.filter((x): x is string => typeof x === "string") : [],
     ce: typeof c.ce === "number" && Number.isFinite(c.ce) ? Math.max(-1, Math.min(1, c.ce)) : 0,
+    ...(c.autoCe === true ? { autoCe: true } : {}),
     overrides,
   };
 }
+
+/** Exposed for tests: the config as read back from storage. */
+export const sanitizeDevConfig = sanitize;
 
 export function loadDevConfig(): ForcedConfig {
   try {

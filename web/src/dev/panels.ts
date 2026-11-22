@@ -5,6 +5,7 @@
  */
 import type { ComponentType } from "react";
 import type { LogStore } from "../data/logStore";
+import { LearnerInspector } from "./LearnerInspector";
 
 export interface DevPanelProps {
   /** the sandbox log ("signa-dev"), where forced play writes */
@@ -18,4 +19,6 @@ export interface DevPanel {
   Component: ComponentType<DevPanelProps>;
 }
 
-export const DEV_PANELS: readonly DevPanel[] = [];
+export const DEV_PANELS: readonly DevPanel[] = [
+  { id: "learner", Component: LearnerInspector },
+];

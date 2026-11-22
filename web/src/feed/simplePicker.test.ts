@@ -3,6 +3,7 @@ import { curriculumOrder } from "../content/curriculum";
 import { createRng } from "../core/rng";
 import type { CardPlan, CardRef, FeedContext, TaskSpec } from "../core/types";
 import { makeEvent } from "../data/events";
+import { createLog } from "../learner/testLog";
 import { FORMATS } from "../tasks/registry";
 import { cardHistory } from "./derived";
 import { createSimplePicker } from "./simplePicker";
@@ -93,6 +94,18 @@ describe("simple picker", () => {
     const probe = FORMATS.find((f) => f.id === "dev-camera-probe")!;
     expect(createSimplePicker({ formats: [probe], newId: ids }).next(ctx([], true))).toBeNull();
     expect(createSimplePicker({ formats: [tutorial, cameraFormat], newId: ids }).next(ctx([exited("system-tutorial")], false))).toBeNull();
+  });
+
+  it("passes the learner's effective challenge (ce) to the formats", () => {
+    const picker = createSimplePicker({ newId: ids });
+    const history = [exited("system-tutorial")];
+    const options = (events: FeedContext["events"]) =>
+      ((picker.next({ ...ctx(history), events })!.params as { choices: string[] }).choices).length;
+    expect(options([])).toBe(4);
+    // four "too hard" quizzes left unanswered: c −1.00, cf(quiz-choice) −0.60 → ce −1 → 2 options
+    const log = createLog();
+    for (const id of ["w-red", "w-blue", "w-green", "w-pink"]) log.swipe([id], "too_hard", "quiz-choice");
+    expect(options(log.events)).toBe(2);
   });
 
   it("respects formats and items to avoid", () => {
