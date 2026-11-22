@@ -51,7 +51,7 @@ export function animateSpring(el: HTMLElement, from: Pose, reduced: boolean): An
   });
 }
 
-/** Next pressed before the task is done: a small bump up and back ("not yet"). */
+/** Next asked for (↑, Enter, Space) before the task is done: a small bump up and back ("not yet"). */
 export function animateNudge(el: HTMLElement, reduced: boolean): Animation | null {
   if (!canAnimate(el)) return null;
   const up = poseTransform({ dx: 0, dy: reduced ? -4 : -16, rot: 0 });

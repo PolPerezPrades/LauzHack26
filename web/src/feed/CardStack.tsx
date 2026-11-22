@@ -20,6 +20,7 @@ export interface CardStackHandle {
   /** Call right after the next card was promoted to current. */
   settle(): void;
   spring(): Promise<void>;
+  /** "Not yet": Next (a key) before the task is completed */
   nudge(): void;
 }
 
@@ -32,7 +33,10 @@ interface Props {
   /** upward drags may commit (the task is completed, or the card allows Next anytime) */
   canUp(): boolean;
   canDrag(): boolean;
-  onDragStart(): void;
+  /** a pointer went down on the current card (it may become a tap, a hold or a drag) */
+  onPress(): void;
+  /** that pointer went up, or was taken away, without dragging */
+  onPressEnd(): void;
   /** the drag crossed the commit distance (once per drag) */
   onThreshold(): void;
   onRelease(dir: SwipeDir | null, peakProgress: number): void;
@@ -46,7 +50,7 @@ const STAMPS: { dir: StampDir; exit: ExitKind }[] = [
   { dir: "down", exit: "dislike_format" },
 ];
 
-export function CardStack({ ref, current, next, renderCurrent, renderPreview, canUp, canDrag, onDragStart, onThreshold, onRelease, children }: Props) {
+export function CardStack({ ref, current, next, renderCurrent, renderPreview, canUp, canDrag, onPress, onPressEnd, onThreshold, onRelease, children }: Props) {
   const t = useT();
   const stackRef = useRef<HTMLDivElement>(null);
   const frontRef = useRef<HTMLDivElement>(null);
@@ -71,12 +75,13 @@ export function CardStack({ ref, current, next, renderCurrent, renderPreview, ca
 
   useSwipe(stackRef, {
     canStart: (target) => !!frontRef.current?.contains(target) && canDrag(),
+    onPress,
+    onPressEnd,
     onStart() {
       springing.current?.cancel();
       springing.current = null;
       const r = frontRef.current?.getBoundingClientRect();
       drag.current = { width: r?.width || 1, height: r?.height || 1, ticked: false, peak: 0 };
-      onDragStart();
     },
     onMove(dx, dy) {
       const up = canUp();

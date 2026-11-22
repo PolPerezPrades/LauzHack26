@@ -3,12 +3,14 @@
  * Every card goes through the lifecycle of §3.4 —
  *   queued   a preview behind the current card (no camera, timers or WebGL)
  *   active   `card.shown` is logged and the task mounts; it activates once it is in place
- *   result   `evidence` + `card.result` are logged; feedback inside the card; a correct answer
- *            auto-advances (1.2 s), a wrong one waits; swipes stay possible to add an opinion
+ *   result   `evidence` + `card.result` are logged; a banner inside the card says how it went, and
+ *            every result leaves on its own with the Next exit when its countdown ends
+ *            (autoAdvance.ts). Holding the card freezes the countdown, a spring-back restarts it,
+ *            and swipes stay possible to add an opinion
  *   exit     `card.exit` is logged; one shared animation; the queued card is replaced first if it
  *            can no longer be shown (camera off)
- * — and every exit has a gesture, a button and a key. Logic and logging live here; the DOM side of
- * gestures and animations lives in CardStack.
+ * — and every exit has a gesture and a key; every exit but Next also has a button (Next happens on
+ * its own). Logic and logging live here; the DOM side of gestures and animations lives in CardStack.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { flushSync } from "react-dom";
@@ -21,6 +23,7 @@ import { sound, type SoundName } from "../sound";
 import { TUTORIAL_ID, getFormat, needsCamera } from "../tasks/registry";
 import { PREFETCH, VIEWS } from "../tasks/views";
 import { ActionBar } from "./ActionBar";
+import { autoAdvanceMs, createCountdown, type CountdownView } from "./autoAdvance";
 import { CardHeader, CardPreview, FeedbackPanel, TaskErrorBoundary, TaskFailed } from "./CardParts";
 import { CardStack, type CardStackHandle } from "./CardStack";
 import { FEED } from "./config";
@@ -44,6 +47,8 @@ export interface FeedProps {
 }
 
 const isTyping = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+/** Enter and Space belong to a focused control that can use them; a disabled one (an answered option) can't. */
+const ownsEnterAndSpace = (t: EventTarget | null) => t instanceof Element && !!t.closest("button:not(:disabled), a[href], [role='button']:not([aria-disabled='true'])");
 const cardUsesCamera = (plan: CardPlan | null) => {
   const spec = plan ? getFormat(plan.format) : undefined;
   return !!spec && spec.requires.camera !== "none";
@@ -59,7 +64,9 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
   const [queue, setQueueState] = useState<Queue>({ current: null, next: null });
   const [result, setResultState] = useState<TaskResult | null>(null);
   const [active, setActive] = useState(false);
-  const [autoAdvanceMs, setAutoAdvanceMs] = useState<number | null>(null);
+  const [countdownView, setCountdownView] = useState<CountdownView | null>(null);
+  // the wait before a finished card leaves on its own; it drives the banner's countdown bar
+  const [countdown] = useState(() => createCountdown(setCountdownView));
   const [announcement, setAnnouncement] = useState({ text: "", n: 0 });
   const [started, setStarted] = useState(false);
 
@@ -72,7 +79,6 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
   const loggedShown = useRef<string | null>(null);
   const shownAt = useRef(0);
   const activeAt = useRef(0);
-  const autoTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const rng = useMemo(() => createRng(seedFrom(sessionId)), [sessionId]);
 
   const setQueue = useCallback((q: Queue) => {
@@ -84,11 +90,6 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
     setResultState(r);
   }, []);
   const announce = useCallback((text: string) => setAnnouncement((a) => ({ text, n: a.n + 1 })), []);
-  const cancelAutoAdvance = useCallback(() => {
-    clearTimeout(autoTimer.current);
-    autoTimer.current = undefined;
-    setAutoAdvanceMs(null);
-  }, []);
 
   const pick = useCallback((queued: (CardPlan | null)[], avoid?: CardAvoid): CardPlan | null => {
     try {
@@ -108,7 +109,7 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
     const completed = resultRef.current !== null;
     if (kind === "next" && !completed && !getFormat(plan.format)?.nextAnytime) return false;
     exiting.current = true;
-    cancelAutoAdvance();
+    countdown.cancel();
     setActive(false);
     log.emit({ type: "card.exit", sessionId, cardId: plan.cardId, format: plan.format, exit: kind, completed, msVisible: Math.round(performance.now() - shownAt.current) });
     sound.play(EXIT_SOUND[kind]);
@@ -131,7 +132,7 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
     if (stack.current) void stack.current.exit(DIR_FOR_EXIT[kind], !fromDrag).then(promote);
     else promote();
     return true;
-  }, [announce, cancelAutoAdvance, log, pick, sessionId, setQueue, setResult]);
+  }, [announce, countdown, log, pick, sessionId, setQueue, setResult]);
 
   const report = useCallback((cardId: string, r: TaskResult) => {
     const plan = queueRef.current.current;
@@ -148,15 +149,9 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
       const now = currentMessages().feed;
       announce(r.feedback.correct ? now.announceCorrect : now.announceWrong(r.feedback.answer));
     }
-    const delay = r.score !== undefined ? FEED.autoAdvanceGameMs : r.feedback?.correct ? FEED.autoAdvanceCorrectMs : null;
-    if (delay !== null) {
-      setAutoAdvanceMs(delay);
-      autoTimer.current = setTimeout(() => {
-        autoTimer.current = undefined;
-        exit("next");
-      }, delay);
-    }
-  }, [announce, exit, log, sessionId, setResult]);
+    // every result leaves on its own (Part A2); a swipe before that adds the learner's opinion
+    countdown.start(autoAdvanceMs(r), () => exit("next"));
+  }, [announce, countdown, exit, log, sessionId, setResult]);
 
   const fill = useCallback(() => {
     const current = pick([]);
@@ -210,14 +205,13 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
     if (change.event.type === "opt-out" && cardUsesCamera(queueRef.current.current)) exit("camera_off");
   }), [exit, log, sessionId]);
 
-  // keyboard: arrows for the four exits, Enter/Space for Next (ignored while typing)
+  // keyboard: arrows for the four exits; ↑, Enter and Space skip the wait after a result (ignored while typing)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || e.repeat || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || isTyping(e.target)) return;
       const kind = KEY_EXIT[e.key];
       if (!kind) return;
-      // Enter and Space belong to the focused control (an option, a button)
-      if ((e.key === "Enter" || e.key === " ") && e.target instanceof Element && e.target.closest("button, a[href], [role='button']")) return;
+      if ((e.key === "Enter" || e.key === " ") && ownsEnterAndSpace(e.target)) return;
       e.preventDefault();
       if (!exit(kind) && kind === "next") stack.current?.nudge();
     };
@@ -225,7 +219,19 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
     return () => window.removeEventListener("keydown", onKey);
   }, [exit]);
 
-  useEffect(() => () => clearTimeout(autoTimer.current), []);
+  // A hidden page freezes the countdown: a correction nobody sees must not leave on its own. Back
+  // on the page, the wait starts again from the beginning.
+  useEffect(() => {
+    const onVisibility = () => (document.hidden ? countdown.hold("hidden") : countdown.release("hidden", true));
+    onVisibility();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      countdown.release("hidden");
+    };
+  }, [countdown]);
+
+  useEffect(() => () => countdown.cancel(), [countdown]);
 
   const muted = useMemo(() => soundMuted(events), [events]);
   useEffect(() => {
@@ -247,8 +253,6 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
   };
 
   const plan = queue.current;
-  const spec = plan ? getFormat(plan.format) : undefined;
-  const canNext = !!plan && (result !== null || !!spec?.nextAnytime);
 
   return (
     <div className="feed">
@@ -268,17 +272,22 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
                     {View ? <View plan={p} active={active} camera={cameraSession} report={(r) => report(p.cardId, r)} /> : <TaskFailed />}
                   </TaskErrorBoundary>
                 </div>
-                {result && <FeedbackPanel cardId={p.cardId} result={result} autoAdvanceMs={autoAdvanceMs} />}
+                {result && <FeedbackPanel cardId={p.cardId} result={result} countdown={countdownView} />}
               </>
             );
           }}
           renderPreview={(p) => <CardPreview plan={p} spec={getFormat(p.format)} />}
           canUp={() => resultRef.current !== null || !!getFormat(queueRef.current.current?.format ?? "")?.nextAnytime}
           canDrag={() => !exiting.current}
-          onDragStart={cancelAutoAdvance}
+          // a finger on the card holds the countdown (to keep reading); a drag keeps holding it
+          onPress={() => countdown.hold("pointer")}
+          onPressEnd={() => countdown.release("pointer")}
           onThreshold={() => sound.play("tick")}
           onRelease={(dir, peak) => {
-            if (dir && exit(EXIT_FOR_DIR[dir], true)) return;
+            const left = dir !== null && exit(EXIT_FOR_DIR[dir], true);
+            // a card that sprang back starts its countdown again from the beginning, so it never gets stuck
+            countdown.release("pointer", true);
+            if (left) return;
             void stack.current?.spring();
             if (peak >= FEED.springSoundProgress) sound.play("spring");
           }}
@@ -291,7 +300,7 @@ export function FeedScreen({ log, source, sessionId, forcedLabel, onBackToDev }:
             </div>
           )}
         </CardStack>
-        <ActionBar canNext={canNext} disabled={!plan} highlight={plan?.format === TUTORIAL_ID} onExit={(k) => { if (!exit(k) && k === "next") stack.current?.nudge(); }} />
+        <ActionBar disabled={!plan} highlight={plan?.format === TUTORIAL_ID} onExit={(k) => exit(k)} />
         <div className="sr-only" aria-live="polite">
           <span key={announcement.n}>{announcement.text}</span>
         </div>

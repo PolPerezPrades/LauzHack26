@@ -1,6 +1,7 @@
 /**
- * First-launch gesture tutorial (SPEC §3.5): explains the four exits while the action buttons are
- * highlighted. Any exit dismisses it (Next included) and it is never scored.
+ * First-launch gesture tutorial (SPEC §3.5): finished cards fly up on their own, and the three
+ * swipes give an opinion; the action buttons are highlighted meanwhile. Any exit dismisses it — a
+ * swipe in any direction, one of the three buttons, ↑ — and it is never scored (it reports no result).
  */
 import type { TaskSpec } from "../../core/types";
 

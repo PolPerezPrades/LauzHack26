@@ -132,6 +132,8 @@ html, body { overscroll-behavior: none; }
 /* the sign keeps a usable size; while feedback is showing it may shrink further */
 .feed-card .task-media .sv-stage { flex: 1 1 auto; min-height: 110px; aspect-ratio: auto; max-width: none; }
 .feed-card:has(.feedback) .task-media .sv-stage { min-height: 56px; }
+/* last resort while the banner shows: the viewer clips its own controls and credit rather than draw over the options */
+.feed-card:has(.feedback) .task-media { overflow: hidden; }
 .feed-card .task-media .sv-controls { flex-wrap: nowrap; gap: 6px; }
 .feed-card .task-media .sv-controls .chip { padding: 3px 8px; font-size: 0.74rem; white-space: nowrap; }
 .feed-card .task-media .sv-credit { font-size: 0.66rem; color: #6b6b6b; }
@@ -171,15 +173,20 @@ html, body { overscroll-behavior: none; }
 .feedback-ok { background: var(--green-bg); color: var(--ok-ink); }
 .feedback-bad { background: var(--red-bg); color: var(--bad-ink); }
 .feedback-title { font-size: 1.2rem; font-weight: 900; }
+.feedback-chose { font-weight: 600; }
 .feedback-sub { font-weight: 800; }
 .feedback-note { margin-top: 4px; font-size: 0.85rem; line-height: 1.35; color: var(--text); }
 .feedback-hint { margin-top: 6px; font-size: 0.78rem; }
+/* the countdown until the card leaves on its own (SPEC §3.4) */
 .feedback-timer { position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: var(--ok-ink); transform-origin: left; animation: feedback-timer linear forwards; }
+.feedback-bad .feedback-timer { background: var(--bad-ink); }
+/* held (a finger on the card, or the page hidden): the bar stops where it is */
+.feedback-timer.is-held { animation-play-state: paused; }
 @keyframes feedback-in { from { transform: translateY(100%); } to { transform: none; } }
 @keyframes feedback-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 
-/* ---- action bar ------------------------------------------------------------------------------ */
-.action-bar { flex: 0 0 auto; display: grid; grid-template-columns: 1fr 1fr 1.4fr 1fr; gap: 8px; padding: 6px 16px 12px; }
+/* ---- action bar: one button per swipe; Next has none, it happens on its own (Part A2) ---------- */
+.action-bar { flex: 0 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 6px 16px 12px; }
 .act {
   position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   min-height: 56px; padding: 6px 4px; font: inherit; font-size: 0.72rem; font-weight: 800; color: var(--feed-ink);
@@ -193,7 +200,6 @@ html, body { overscroll-behavior: none; }
 .act-too_easy { color: var(--easy-ink); }
 .act-too_hard { color: var(--hard-ink); }
 .act-dislike_format { color: var(--bad-ink); }
-.act-next:not(:disabled) { color: #fff; background: var(--next-bg); border-color: var(--next-edge); box-shadow: 0 3px 0 var(--next-edge); }
 /* tutorial: the real buttons are highlighted with a pulsing ring */
 .action-bar-highlight .act::after {
   content: ""; position: absolute; inset: -5px; border: 3px solid var(--blue); border-radius: 20px;
@@ -212,7 +218,7 @@ html, body { overscroll-behavior: none; }
   .feedback { padding: 8px 14px 10px; }
   .feedback-title { font-size: 1.05rem; }
   .feedback-note { font-size: 0.78rem; }
-  .feedback-hint { display: none; }
+  .feedback-hint { margin-top: 4px; }
   .tutorial-intro, .tutorial-note, .tutorial-try { font-size: 0.8rem; }
   .tutorial-row { padding: 6px 10px; gap: 10px; font-size: 0.82rem; }
   .tutorial-icon { width: 30px; height: 30px; font-size: 1.1rem; }
@@ -220,7 +226,8 @@ html, body { overscroll-behavior: none; }
 }
 @media (max-height: 600px) {
   .feed-card:has(.feedback) .sv-controls, .feed-card:has(.feedback) .sv-credit { display: none; }
-  .tutorial-note { display: none; }
+  /* the hold hint is the only way to learn about holding, so it goes only on the shortest screens */
+  .feedback-hint, .tutorial-note { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

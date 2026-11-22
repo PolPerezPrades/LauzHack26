@@ -65,7 +65,11 @@ export interface TaskResult {
   /** games only */
   score?: number;
   xp: number;
-  /** no feedback = nothing to show (no overlay, no auto-advance) */
+  /**
+   * The banner shown until the card leaves on its own: every result auto-advances (SPEC §3.4), and
+   * a wrong answer stays longer, by the length of its `answer` and `note`. Formats should always
+   * send it: without it there is no banner, and the card leaves after the correct-answer delay.
+   */
   feedback?: TaskFeedback;
 }
 

@@ -44,9 +44,22 @@ describe("dictionaries", () => {
     }
   });
 
-  it("explain the same four exits in the tutorial, in the same order", () => {
+  it("explain in the tutorial that finished cards leave on their own, then the three swipes, in the same order", () => {
+    expect(en.tutorial.rows.map((r) => r.exit)).toEqual(["next", "too_easy", "too_hard", "dislike_format"]);
     expect(es.tutorial.rows.map((r) => r.exit)).toEqual(en.tutorial.rows.map((r) => r.exit));
-    expect(new Set(en.tutorial.rows.map((r) => r.exit))).toEqual(new Set(["next", "too_easy", "too_hard", "dislike_format"]));
+    expect(en.tutorial.rows[0].text).toMatch(/on its own/);
+    expect(es.tutorial.rows[0].text).toMatch(/sola/);
+  });
+
+  it("have three action buttons and no Next button text left (Part A2)", () => {
+    for (const t of [en, es]) expect(Object.keys(t.feed.actions).sort()).toEqual(["dislike_format", "too_easy", "too_hard"]);
+    // the exit names are announced when a card leaves, they are not buttons
+    const shown = (t: typeof en) => {
+      const { exits: _announced, ...feed } = t.feed;
+      return [...strings(feed), ...strings(t.tutorial)].join("\n");
+    };
+    expect(shown(en)).not.toMatch(/\bNext\b/);
+    expect(shown(es)).not.toMatch(/\bContinuar\b/i);
   });
 
   it("label every non-manual marker used by the phrases", () => {
