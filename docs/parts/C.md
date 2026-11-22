@@ -1,6 +1,6 @@
 # Part C — Learner model v2
 
-- **Status:** finished on `part-c` (2026-11-22), waiting for the user's commit and the integrator's merge
+- **Status:** finished; committed on `part-c` (`ff199e2`) and pushed to GitHub (2026-11-22); waiting for the integrator's merge
 - **Stream:** S1 "learner brain" · Ashlie's PC (Windows 11) · wave 1 · branch `part-c`
 - **Needs merged first:** Part 0 · **Better after:** —
 - **Spec:** [SPEC §9, Part C](../SPEC.md#part-c--learner-model-v2), plus §7 (all of it), §8.3, §8.4; the parallel rules in [§9.0](../SPEC.md#90-parallel-plan)
@@ -143,7 +143,8 @@ Newest first: date · what was done · verification · next step.
   - *Done:* the whole learner model of SPEC §7.3–§7.7 in `src/learner/` (params, BKT, FSRS with grade at exit, swipes, curriculum, fold, selectors), the stub queries replaced, XP and streak from the state, the picker's `ce`, dev auto challenge, the learner-state inspector, English and Spanish strings.
   - *Recorded:* D-C01–D-C15, Q-C01, R-C01–R-C07.
   - *Verification:* typecheck, test (18 files, 206 tests: 124 learner tests, replacing the 6 stub tests, plus new picker, derived and forced-source tests) and build green. 2,000-event log: full fold ~6 ms, appending ~0.02 ms per event, queries ~0.3 ms. Headless Chrome over the DevTools protocol against `npm run dev` (port 5174): tutorial, then 6 quiz cards with every exit; the XP/streak chip; the learner inspector over the real and sandbox logs at 412 px and 1100 px; the auto challenge (a sandbox at ce −0.92 gives 2 options); Spanish; no page-wide horizontal scroll; no console errors (only R-014's `THREE.Clock` warnings). 18/18 checks.
-  - *Next:* the user commits `part-c` and pushes; the integrator merges it; Part D (S1) starts from it.
+  - *Git:* the user committed the work as `ff199e2` ("part c"). At the user's request the agent pushed `part-c` to GitHub, over HTTPS with the stored Git Credential Manager login, because this PC has no SSH key for the `origin` remote (`git@github.com:…`); AGENTS.md rule 1 otherwise holds. The local branch has no upstream set; `git push origin part-c` needs an SSH key here.
+  - *Next:* the integrator merges `part-c`; Part D (S1) starts from it.
 
 ## 10. Handoff to the integrator
 
