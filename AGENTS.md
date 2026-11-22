@@ -4,6 +4,8 @@ Signa is a web app that teaches **American Sign Language (ASL)** to English and 
 
 **Parts are built in parallel.** Since 2026-11-22, three agents on three machines each build one part at a time, on its own branch, and an integrator merges them (SPEC §9.0). Each parallel part owns some files and keeps its own state file in `docs/parts/`. Read SPEC §9.0 before you start.
 
+> **Hackathon deadline: 2026-11-22 at 11:30 (local time).** Signa is a LauzHack project. Until then, a working demo on `gesture_learning` beats a complete checklist: keep the app building and running, cut optional and MAY items, make small changes that merge cleanly, and record what you skipped in your part file.
+
 ## Key documents
 
 | File | What it is | When to read it |

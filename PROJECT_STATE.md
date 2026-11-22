@@ -59,6 +59,7 @@ Only the integrator (Pablo's laptop, SPEC §9.0.5) edits this file, `docs/SPEC.m
 ## 2. Snapshot
 
 - **Last updated:** 2026-11-22
+- **Deadline:** the hackathon ends on **2026-11-22 at 11:30** (local time). Favour a demoable app over full checklists: cut optional items, keep every merge green, and stop merging about 30 minutes before the end.
 - **Phase:** parallel delivery, wave 1 (SPEC §9.0, D-041). **Merged into `gesture_learning`: Parts A3, C, B and A2.** Wave 1 has only Part H left (S3, Max), and it can start now. Wave 2 can start:
   - Part D (S1, Ashlie): no `part-d` branch on `origin` yet. It must take `gesture_learning` before its feed edits (R-027).
   - Part E (S2, Pol): B is merged.
