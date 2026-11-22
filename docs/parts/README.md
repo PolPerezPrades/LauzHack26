@@ -82,14 +82,16 @@ Do Part A2 (Feed feedback follow-ups) of Signa, and only that part. You are stre
 Finish with typecheck, test and build green. Then tell me what you did, how you verified it, what I should test by hand, and what the integrator must know.
 ```
 
-### S3 · Max's Mac (macOS) · Part H, branch `part-h` (after A2 is committed and pushed)
+### S3 · Max's Mac (macOS) · Part H, branch `part-h` (A2, B and C merged 2026-11-22)
+
+Start from the new `gesture_learning` (`git checkout gesture_learning && git pull`, then `git checkout -b part-h`). If `part-h` already exists from an older base, merge `gesture_learning` into it instead (never a rebase, SPEC §9.0.2).
 
 ```text
-Do Part H (Hand and avatar quality) of Signa, and only that part. You are stream S3 of a parallel plan, on a Mac, on the git branch part-h. Part A2 is already done.
+Do Part H (Hand and avatar quality) of Signa, and only that part. You are stream S3 of a parallel plan, on a Mac, on the git branch part-h. It starts from gesture_learning with Parts A2 (yours), B, C and A3 merged.
 
-1. Read AGENTS.md, PROJECT_STATE.md (§1 first), docs/SPEC.md §1–§2, §8.5–§8.6 and §9 (start with §9.0, then the Part H entry), docs/fase2.md (how the hand and the avatar are built today), and docs/parts/H.md, which is your state file.
+1. Read AGENTS.md, PROJECT_STATE.md (§1 first), docs/SPEC.md §1–§2, §8.5–§8.6 and §9 (start with §9.0, then the Part H entry), docs/fase2.md (how the hand and the avatar are built today), docs/parts/B.md §10 (how Part B's task layouts use SignViewer), and docs/parts/H.md, which is your state file.
 2. Setup in web/: `npm ci` and `npm run setup:media` (the clips are needed for the real-video comparison). To re-extract motion, install uv and run `uv run python web/scripts/extract_motion.py words` from the repository root.
-3. Other agents are building Part B (which uses SignViewer) and Part C at the same time on other machines. Edit only the files Part H owns (SPEC §9.0.3): web/src/viewer/, the lab, the motion scripts and files, and only the `render` block of the sign files. SignViewer's props change only additively.
+3. Other agents are building Part D (recommender) and Part E (minigames) at the same time on other machines. Edit only the files Part H owns (SPEC §9.0.3): web/src/viewer/, the lab, the motion scripts and files, and only the `render` block of the sign files. SignViewer's props change only additively. Part B's task layouts rely on the .sv, .sv-stage, .sv-controls and .sv-credit class names: keep them, and check that the lesson, question and quiz cards still fit on a 320 × 568 screen, with the result banner showing too.
 4. Start with the baseline: record the review set in #lab before changing anything. Show me before and after, side by side with the real video; I decide whether it looks good enough. Check Chrome and Safari, and keep 60 fps.
 5. Record everything in docs/parts/H.md: checklist, decisions D-H01…, questions, risks, log and handoff. Don't edit PROJECT_STATE.md, docs/SPEC.md, AGENTS.md or the READMEs.
 6. Don't commit, push or create branches; I will.
@@ -109,6 +111,12 @@ Same template: the part, its stream and machine, the spec sections it lists, its
 
 Start from the new `gesture_learning` (`git checkout gesture_learning && git pull`, then `git checkout -b part-d`). This PC has no SSH key for `origin`, so pull and push over HTTPS, as for `part-c` (C.md §9).
 
+**Update 2026-11-22: Parts B and A2 are merged.** Before D's edits in `feed/FeedScreen.tsx` and `feed/CardParts.tsx`, merge `gesture_learning` into `part-d` (`git checkout part-d && git fetch origin && git merge origin/gesture_learning`, never a rebase; R-027), then tell the agent:
+
+```text
+Parts B (learning formats) and A2 (feed feedback) are now merged into part-d. Before you edit feed/FeedScreen.tsx and feed/CardParts.tsx, read docs/parts/A2.md (§3 and §8) and docs/parts/B.md (§7 and §10). Keep A2's countdown wiring: countdown.start in report, countdown.cancel in exit, hold/release from onPress, onPressEnd and onRelease, and the visibility effect; CardStack no longer has onDragStart. Two Part B risks are yours. R-B01: the picker queues the same lesson twice at a cold start, so the card source must avoid the items of the queued cards. R-B02: show the "can't use the camera now" header button only while the camera is usable. Since Part B, the real formats take their items from the learner lists, and only lessons find content at a cold start. Record what you change in docs/parts/D.md.
+```
+
 ```text
 Do Part D (Recommender) of Signa, and only that part. You are stream S1 of a parallel plan, on a Windows 11 PC, on the git branch part-d. It starts from gesture_learning with Part C (the learner model you built) and Part A3 merged.
 
@@ -117,6 +125,40 @@ Do Part D (Recommender) of Signa, and only that part. You are stream S1 of a par
 3. Other agents are building Part B (learning formats) and Parts A2, then H (feed, viewer), at the same time on other machines. Edit only the files Part D owns (SPEC §9.0.3, docs/parts/D.md §1) and keep contracts additive (§9.0.4). Part A2 owns feed/FeedScreen.tsx and feed/CardParts.tsx until it is merged (R-027). Build the recommender, the simulations and the inspector first, and make your edits in those two files last and small. If gesture_learning has Part A2 by then, tell me, and I will merge it into part-d before you start them.
 4. Take the learner state with learnerStateOf(ctx.events), and build generator queries with queriesFor(state, opts). Scoring constants go to recommender/config.ts (D-C02). New strings go to web/src/i18n/parts/recommender.ts. The only package.json change is the simulate script.
 5. Record everything in docs/parts/D.md: checklist, decisions D-D01…, questions, risks, log and handoff. Don't edit PROJECT_STATE.md, docs/SPEC.md, AGENTS.md or the READMEs.
+6. Don't commit, push or create branches; I will.
+
+Finish with typecheck, test and build green. Then tell me what you did, how you verified it, what I should test by hand, and what the integrator must know.
+```
+
+### S2 · Pol's laptop (Ubuntu 26.04) · Part E, branch `part-e` (Part B merged 2026-11-22)
+
+Start from the new `gesture_learning` (`git checkout gesture_learning && git pull`, then `git checkout -b part-e`).
+
+```text
+Do Part E (Minigames) of Signa, and only that part. You are stream S2 of a parallel plan, on an Ubuntu 26.04 laptop, on the git branch part-e. It starts from gesture_learning with Part B (the learning formats you built), Part C (the learner model), Part A2 (feed feedback) and Part A3 merged.
+
+1. Read AGENTS.md, PROJECT_STATE.md (§1 first), docs/SPEC.md §1–§2, §3.7, §4.7, §8.3 and §9 (start with §9.0, then the Part E entry), docs/parts/B.md §10 (what Part E can reuse), docs/parts/C.md §8, and docs/parts/E.md, which is your state file. The old activities in web/src/activities/ are the references for the ports.
+2. Setup in web/: `npm ci` (never `npm install`) and `npm run setup:media`.
+3. Other agents are building Part D (recommender) and Parts H, then F1 (viewer; settings sheet and PWA), at the same time on other machines. Edit only the files Part E owns (SPEC §9.0.3, docs/parts/E.md §1) and keep contracts additive (§9.0.4). As in Part B: pick items only through the LearnerQueries lists (pool() and confusions() for the games), test generators with fakeQueries() and tasks/testing.ts, and reuse tasks/ui/. Put the number rules behind hasCameraRule(), evaluateSign() and matchingSigns() in lib/handshapes.ts. A game's end result carries its score and feedback: the feed waits 2.5 s on it, then moves on. When you edit dev/DevScreen.tsx, keep ParamsPicker's sandbox prop, useForcedCe() and <ChallengeControl> (Part C). New strings go to web/src/i18n/parts/games.ts.
+4. Test the camera games with this laptop's webcam (or Chrome's fake camera fed with a hand clip), and with the camera off.
+5. Record everything in docs/parts/E.md: checklist, decisions D-E01…, questions, risks, log and handoff. Don't edit PROJECT_STATE.md, docs/SPEC.md, AGENTS.md or the READMEs.
+6. Don't commit, push or create branches; I will.
+
+Finish with typecheck, test and build green. Then tell me what you did, how you verified it, what I should test by hand, and what the integrator must know.
+```
+
+### S3 · Max's Mac (macOS) · Part F1, branch `part-f1` (after Part H; C and A2 merged 2026-11-22)
+
+Start from `gesture_learning` once Part H is committed and pushed (ideally merged), as for H.
+
+```text
+Do Part F1 (Settings sheet and PWA) of Signa, and only that part. You are stream S3 of a parallel plan, on a Mac, on the git branch part-f1. It starts from gesture_learning with Parts C, A2, A3 and B merged, and Part H once it is.
+
+1. Read AGENTS.md, PROJECT_STATE.md (§1 first), docs/SPEC.md §1–§2, §1.4, §3.6, §3.7, §8.6 and §9 (start with §9.0, then the Part F1 entry), docs/parts/C.md §10 (the learner API for the progress sheet), docs/parts/A3.md §8, and docs/parts/F1.md, which is your state file.
+2. Setup in web/: `npm ci` (never `npm install`) and `npm run setup:media`.
+3. Other agents are building Part D (recommender) and Part E (minigames) at the same time on other machines. Edit only the files Part F1 owns (SPEC §9.0.3, docs/parts/F1.md §1) and keep contracts additive (§9.0.4). In feed/FeedScreen.tsx, change only the <FeedTop …/> line: Part D owns the rest. A camera picker must open cameras through switchCamera() or acquireCamera() in lib/camera.ts, never a raw getUserMedia, and lib/camera.test.ts must keep passing (Part A3). Read the learner state through learnerStateOf() and the selectors (Part C). New strings go to web/src/i18n/parts/settings.ts.
+4. Check the sheet and installing the app in Chrome and Safari.
+5. Record everything in docs/parts/F1.md: checklist, decisions D-F101…, questions, risks, log and handoff. Don't edit PROJECT_STATE.md, docs/SPEC.md, AGENTS.md or the READMEs.
 6. Don't commit, push or create branches; I will.
 
 Finish with typecheck, test and build green. Then tell me what you did, how you verified it, what I should test by hand, and what the integrator must know.

@@ -1,6 +1,6 @@
 # Part B — Learning task formats
 
-- **Status:** ready to merge
+- **Status:** merged in `bd6a485` (2026-11-22)
 - **Stream:** S2 "tasks" · Pol's laptop (Ubuntu 26.04) · wave 1 · branch `part-b`
 - **Needs merged first:** Part 0 · **Better after:** A2 (every result auto-advances)
 - **Spec:** [SPEC §9, Part B](../SPEC.md#part-b--learning-task-formats), plus §4.1–§4.6, §5, §8.3; the parallel rules in [§9.0](../SPEC.md#90-parallel-plan)
@@ -100,11 +100,11 @@ Format: `R-BNN` description.
 
 ## 8. Integration checks (for the integrator)
 
-- [ ] With A2: the banner and auto-advance after every format's result (each result has `feedback`; the wrong ones carry the answer and a note).
-- [ ] With C: the formats still find content with the real queries, in the feed and in dev forced mode. In particular: a lesson gives the item a productive retrieval, so `practice("productive")` should list it for questions; `eligiblePhrases` should list phrases for quiz-build and sign-sentence; `probes` should list claimed items for the probe card.
-- [ ] With C: R-B01 (a queued duplicate lesson) — fixed in the picker or left to Part D.
+- [x] With A2: the banner and auto-advance after every format's result (each result has `feedback`; the wrong ones carry the answer and a note). — *2026-11-22, after merging A2 (`a33182e`): in headless Chrome, every format and variant showed its banner and left on its own. The measured wait matched the countdown bar to within 40 ms: 0.6 s when right; when wrong, A2's formula on B's answer and note (2.5 s for a word, 3.47 s for a lesson's "come back soon" note, 5 s for a phrase or a quiz-build). A wrong choice says "You chose: …", and a 3-question probe card does too when exactly one answer is wrong. At 320 × 568, 360 × 640 and 412 × 915, B's longest wrong-answer banners sit inside the card with the prompt, options, built answer and spelled word unclipped; at 320 × 568 a phrase quiz leaves the viewer 35 px while the banner shows (A2's R-A203).*
+- [x] With C: the formats still find content with the real queries, in the feed and in dev forced mode. In particular: a lesson gives the item a productive retrieval, so `practice("productive")` should list it for questions; `eligiblePhrases` should list phrases for quiz-build and sign-sentence; `probes` should list claimed items for the probe card. — *2026-11-22, after the merge. A scratch test runs these generators on `queriesFor(learnerStateOf(log))`. At a cold start only the lesson finds content. After a lesson, both practice lists hold the item. Three "too easy" swipes on new letters give one 3-question probe card. `ph-name` becomes eligible once its three signs are met and at least 70 % known receptively, after which both quiz-build and sign-sentence pick it. Met C, A and B give the word CAB. The real feed rotated lesson → quiz-choice → question with content on every card (18 of 18), and dev forced mode played every format.*
+- [ ] With C: R-B01 (a queued duplicate lesson) — fixed in the picker or left to Part D. — *2026-11-22: reproduced with C's real queries (tutorial → lesson L-A → lesson L-A). Left to Part D, which owns the picker in wave 2.*
 - [ ] With H: the new viewer fits the lesson, question and quiz layouts on a 320 × 568 screen (re-run the small-screen checks below).
-- [ ] On the spec machine: a lesson for a static letter with the MX Brio and a real hand; the mirror on the Android phone's front camera.
+- [ ] On the spec machine: a lesson for a static letter with the MX Brio and a real hand; the mirror on the Android phone's front camera. — *Open, for Pablo by hand: no Brio was plugged in during the merge.*
 
 ## 9. Session log
 

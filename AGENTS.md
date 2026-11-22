@@ -63,18 +63,21 @@ Signa is a web app that teaches **American Sign Language (ASL)** to English and 
 │   ├── server/           api.ts (/api/health, /api/coach, /api/phrases with Claude, local fallbacks), index.ts (prod server)
 │   └── src/
 │       ├── core/         contracts (types.ts: TaskSpec, CardPlan, LearnerQueries…), seeded rng
-│       ├── feed/         the feed: stack, swipes, action bar, feedback, simple picker (interim card source)
+│       ├── feed/         the feed: stack, swipes, action bar, result banner and countdown (autoAdvance.ts,
+│       │                 feedback.ts, Part A2), simple picker (interim card source)
 │       ├── tasks/        formats: registry.ts + views.tsx compose learningFormats/learningViews (Part B)
-│       │                 and gameFormats/gameViews (Part E); one folder per format
+│       │                 and gameFormats/gameViews (Part E); one folder per format (lesson, question,
+│       │                 quiz-choice, quiz-build); ui/ (TaskFrame, ChoiceGrid, TileBank, SelfCheck,
+│       │                 MirrorCompare, CameraCheck…); learningConfig.ts (B's constants); testing.ts
 │       ├── learner/      learner model v2 (Part C): state.ts (memoised fold), selectors.ts, queries.ts (LearnerQueries),
 │       │                 params.ts (constants), bkt/schedule/swipes/curriculum.ts, testing.ts (fakeQueries)
-│       ├── camera/       camera session (opt-out, state)
+│       ├── camera/       camera session (opt-out, state), checkMode.ts (camera, mirror or self, Part B)
 │       ├── dev/          dev mode; panels.ts is the inspector slot (Part C's learner inspector, then Part D's)
 │       ├── i18n/         en.ts, es.ts (core strings); parts/<name>.ts (each later part's strings, both languages)
 │       ├── sound/        synthesised sound effects
 │       ├── viewer/       SignViewer: 3D toon hand (letters), avatar (words), video fallback — reuse
 │       ├── lib/          camera.ts (shared stream + hand landmarker), cameraDefaults.ts (MX Brio reset, Part A3),
-│       │                 handshapes.ts (letter rules), engine.ts (distractors…)
+│       │                 handshapes.ts (letter rules, issues as codes), engine.ts (distractors, SPELL_WORDS…)
 │       ├── components/   CameraView.tsx
 │       ├── content/      loaders and validation for signs, curriculum, scenarios
 │       ├── data/         event log (Dexie), versioned events, export/import
