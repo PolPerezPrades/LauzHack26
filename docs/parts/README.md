@@ -103,4 +103,21 @@ Done on the spec machine, because it needs the MX Brio. Same template as above, 
 
 ## Wave 2 and later
 
-Same template: the part, its stream and machine, the spec sections it lists, its part file, the parts working at the same time, and the files it owns. The integrator writes these prompts when wave 1 is merged.
+Same template: the part, its stream and machine, the spec sections it lists, its part file, the parts working at the same time, and the files it owns. The integrator writes each prompt once the parts it needs are merged.
+
+### S1 · Ashlie's PC (Windows 11) · Part D, branch `part-d` (Part C merged 2026-11-22)
+
+Start from the new `gesture_learning` (`git checkout gesture_learning && git pull`, then `git checkout -b part-d`). This PC has no SSH key for `origin`, so pull and push over HTTPS, as for `part-c` (C.md §9).
+
+```text
+Do Part D (Recommender) of Signa, and only that part. You are stream S1 of a parallel plan, on a Windows 11 PC, on the git branch part-d. It starts from gesture_learning with Part C (the learner model you built) and Part A3 merged.
+
+1. Read AGENTS.md, PROJECT_STATE.md (§1 first), docs/SPEC.md §1–§2, §3.4, §7.8–§7.12, §8.3 and §9 (start with §9.0, then the Part D entry), docs/parts/C.md (its handoff lists the learner API for you), and docs/parts/D.md, which is your state file.
+2. Setup in web/: `npm ci` (never `npm install`). Run the gates from PowerShell, not Git Bash (R-C01).
+3. Other agents are building Part B (learning formats) and Parts A2, then H (feed, viewer), at the same time on other machines. Edit only the files Part D owns (SPEC §9.0.3, docs/parts/D.md §1) and keep contracts additive (§9.0.4). Part A2 owns feed/FeedScreen.tsx and feed/CardParts.tsx until it is merged (R-027). Build the recommender, the simulations and the inspector first, and make your edits in those two files last and small. If gesture_learning has Part A2 by then, tell me, and I will merge it into part-d before you start them.
+4. Take the learner state with learnerStateOf(ctx.events), and build generator queries with queriesFor(state, opts). Scoring constants go to recommender/config.ts (D-C02). New strings go to web/src/i18n/parts/recommender.ts. The only package.json change is the simulate script.
+5. Record everything in docs/parts/D.md: checklist, decisions D-D01…, questions, risks, log and handoff. Don't edit PROJECT_STATE.md, docs/SPEC.md, AGENTS.md or the READMEs.
+6. Don't commit, push or create branches; I will.
+
+Finish with typecheck, test and build green. Then tell me what you did, how you verified it, what I should test by hand, and what the integrator must know.
+```

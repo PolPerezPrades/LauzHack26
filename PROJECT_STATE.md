@@ -59,28 +59,32 @@ Only the integrator (Pablo's laptop, SPEC §9.0.5) edits this file, `docs/SPEC.m
 ## 2. Snapshot
 
 - **Last updated:** 2026-11-22
-- **Phase:** parallel delivery (SPEC §9.0, D-041). Part A is done (real-device checks still open, R-016). **Part 0, the parallel scaffolding, is done**: the learner-query contract and its stub, per-part registries, i18n modules and dev panels, `.gitattributes`, the part files and the plan. **Wave 1 is ready to start**: C (S1, Ashlie), B (S2, Pol), A2 then H (S3, Max), and A3 (the integrator, on this laptop).
-- **Branch:** `gesture_learning`. Part A is `5d99806`; Part 0 is the commit after it ("Part 0: parallel plan and scaffolding"). Each part is built on its own branch (`part-<id>`, SPEC §9.0.1) and merged here by the integrator.
-- **What works now:** as after Part A. `/` opens the vertical feed: the gesture tutorial on first launch, then quiz-choice cards that walk the curriculum in order. The four exits work by swipe (touch, mouse), by the action-bar buttons and by the arrow keys; Next only works after completion. Feedback appears inside the card: a correct answer auto-advances after 1.2 s, a wrong one waits (Part A2 changes both). Sounds are synthesised, with a mute toggle. Event log v2. `#dev` is dev mode v1, `#dev/play` the forced feed, `#lab` the sign lab. EN | ES switch. New in Part 0, with no visible change: card sources get the log in `FeedContext.events` and build learner queries with `createLearnerQueries()` (a stub until Part C).
-- **Quality gates (2026-11-22, after Part 0):** `npm run typecheck` ✓; `npm test` ✓ (12 files, 84 tests); `npm run build` ✓ (the R-015 chunk-size warning). Real-time headless Chrome 157 check over the DevTools protocol against `npm run dev`: the tutorial first, the quiz card after ←, dev mode renders, no console errors.
-- **Toolchain:** four machines (SPEC §9.0.6). This laptop (the spec machine, integrator) has Node 22.23.5 and npm 10.9.9 in `~/.local/bin`, the MX Brio and the Android phone. Pol's laptop may have no Node (R-013); Max's Mac and Ashlie's Windows PC install Node 22.18 or newer. Every machine installs with `npm ci` (D-050).
+- **Phase:** parallel delivery, wave 1 (SPEC §9.0, D-041). **Merged into `gesture_learning`: Part A3 and Part C.** Still running: B (S2, Pol) and A2, then H (S3, Max). S1 (Ashlie) is free, and Part D can start because C is merged. Part A is done (real-device checks still open, R-016).
+- **Branch:** `gesture_learning`. Part A is `5d99806`, Part 0 `98d2fb7`. Merges: `725a508` (`part-a3`) and `0e2fc81` (`part-c`). The agent made both merge commits at the user's request on 2026-11-22 and pushed nothing. Each part is built on its own branch (`part-<id>`, SPEC §9.0.1) and merged here by the integrator.
+- **What works now:** as after Part 0, plus:
+  - **A3:** an MX Brio opens at its default framing in Chrome (zoom at the minimum, pan and tilt 0) through the PTZ constraints, which are asked for only for the Brio. The first time in a profile this adds a second Chrome prompt (R-A301). Other cameras get no PTZ request. Firefox and Safari skip the reset without an error (R-A303).
+  - **C:** the learner model v2 (SPEC §7.3–§7.7) is a pure, memoised fold of the log in `src/learner/`, and `createLearnerQueries()` answers every list from it, with Part 0's signatures. The XP/streak chip reads the learner state, with the same numbers. The simple picker passes each format the learner's `ce`. Dev mode has a learner-state inspector (sandbox or real log) and an "auto" challenge.
+  - Feed behaviour is still Part A's: quiz-choice is the only learning format until B lands; a correct answer auto-advances after 1.2 s, and a wrong one waits (A2 changes both).
+- **Quality gates (2026-11-22, after merging A3 and C, on this laptop):** `npm ci` ✓ (lockfile unchanged); `npm run typecheck` ✓; `npm test` ✓ (20 files, 230 tests); `npm run build` ✓ (the R-015 warning; the main chunk is now 1,713 kB, 478 kB gzip, R-C06). Headless Chrome 157 over the DevTools protocol against `npm run dev`, with fresh profiles and Chrome's fake camera: 44/44 checks on desktop and phone emulation, no console errors (§7).
+- **Toolchain:** four machines (SPEC §9.0.6). This laptop (the spec machine, integrator) has Node 22.23.5 and npm 10.9.9 in `~/.local/bin`, the MX Brio and the Android phone. Pol's laptop may have no Node (R-013); Max's Mac and Ashlie's Windows PC install Node 22.18 or newer. Every machine installs with `npm ci` (D-050). Ashlie's PC has no SSH key for `origin`, so it pulls and pushes over HTTPS (C.md §9), and runs the gates from PowerShell (R-C01).
 - **Next step:**
-  1. Start wave 1 on the three machines: setup steps and the prompt for each agent are in [`docs/parts/README.md`](docs/parts/README.md).
-  2. The integrator does **Part A3** on this laptop (it needs the MX Brio) and the Part A manual checks (R-016), then merges the wave-1 branches as they arrive (SPEC §9.0.5).
-  3. Wave 2 (D, E, F1) starts per stream once the parts it needs are merged.
+  1. The user commits this fold and pushes `gesture_learning` (with the two merge commits).
+  2. S1 starts **Part D** from the new `gesture_learning`. The prompt is in [`docs/parts/README.md`](docs/parts/README.md). D does its `FeedScreen.tsx` and `CardParts.tsx` edits last, because A2 owns those files until it merges (R-027).
+  3. The integrator merges B, A2 and H as they arrive, then runs the checks that wait for B: A3's in-card switcher with the Brio, and C's "every format finds content" (A3.md §8, C.md §8).
+  4. By hand on this laptop: the look at the Brio preview (A3.md §10), and the XP/streak chip on the real log in the user's usual Chrome profile (C.md §8).
 
 | Part | Title | Wave | Stream · machine | Branch | Status | State file |
 |---|---|---|---|---|---|---|
 | A | Feed foundation | — | — | `gesture_learning` | done with known gaps (R-016) | §3 below |
 | 0 | Parallel scaffolding | 0 | integrator | `gesture_learning` | done | §7 (2026-11-22) |
-| A2 | Feed feedback follow-ups | 1 | S3 · Max (macOS) | `part-a2` | not started | [`docs/parts/A2.md`](docs/parts/A2.md) |
-| A3 | MX Brio defaults | 1 | integrator · Pablo | `part-a3` | not started | [`docs/parts/A3.md`](docs/parts/A3.md) |
-| B | Learning task formats | 1 | S2 · Pol (Ubuntu) | `part-b` | not started | [`docs/parts/B.md`](docs/parts/B.md) |
-| C | Learner model v2 | 1 | S1 · Ashlie (Windows) | `part-c` | not started | [`docs/parts/C.md`](docs/parts/C.md) |
+| A2 | Feed feedback follow-ups | 1 | S3 · Max (macOS) | `part-a2` | in progress | [`docs/parts/A2.md`](docs/parts/A2.md) |
+| A3 | MX Brio defaults | 1 | integrator · Pablo | `part-a3` | done, merged in `725a508` (the look at the preview is open, R-016) | [`docs/parts/A3.md`](docs/parts/A3.md) |
+| B | Learning task formats | 1 | S2 · Pol (Ubuntu) | `part-b` | in progress | [`docs/parts/B.md`](docs/parts/B.md) |
+| C | Learner model v2 | 1 | S1 · Ashlie (Windows) | `part-c` | done, merged in `0e2fc81` | [`docs/parts/C.md`](docs/parts/C.md) |
 | H | Hand and avatar quality | 1 (after A2) | S3 · Max (macOS) | `part-h` | not started | [`docs/parts/H.md`](docs/parts/H.md) |
-| D | Recommender | 2 | S1 · Ashlie (Windows) | `part-d` | not started (needs C) | [`docs/parts/D.md`](docs/parts/D.md) |
+| D | Recommender | 2 | S1 · Ashlie (Windows) | `part-d` | not started (C is merged, so it can start) | [`docs/parts/D.md`](docs/parts/D.md) |
 | E | Minigames | 2 | S2 · Pol (Ubuntu) | `part-e` | not started (needs B) | [`docs/parts/E.md`](docs/parts/E.md) |
-| F1 | Settings sheet and PWA | 2 | S3 · Max (macOS) | `part-f1` | not started (needs C, A2) | [`docs/parts/F1.md`](docs/parts/F1.md) |
+| F1 | Settings sheet and PWA | 2 | S3 · Max (macOS) | `part-f1` | not started (needs A2; C is merged) | [`docs/parts/F1.md`](docs/parts/F1.md) |
 | F2 | Final polish and cleanup | 3 | integrator + free streams | `part-f2` | not started (needs all) | [`docs/parts/F2.md`](docs/parts/F2.md) |
 | G | Optional extensions | later | — | — | not planned | §3 below |
 
@@ -262,6 +266,25 @@ Format: `D-NNN · date · decision` — *why* — status. Newest at the bottom. 
 - **D-049 · 2026-11-22 · Machines:** S1 on Ashlie's Windows 11 PC (pure TypeScript, so nothing OS-specific), S2 on Pol's Ubuntu laptop (camera work in the same browser as the integrator's), S3 on Max's Mac (visual work, Safari checks, Python for motion), the integrator on Pablo's Ubuntu laptop (the MX Brio and the Android phone). — *Why:* each part's hardware and OS needs (SPEC §9.0.6). — active
 - **D-050 · 2026-11-22 · Every machine installs with `npm ci`, never `npm install`.** Node 22.18 or newer, so that `npm start` can strip types; npm 10 or 11. — *Why:* `npm ci` leaves the lockfile alone whatever the npm version (Q-007), and lockfile changes would conflict between branches. It refines D-036. — active
 
+**Decisions of merged parallel parts.** These are index lines (D-044). The decisions themselves are in each part file, and they are as binding as the ones above.
+
+- **Part A3 · merged 2026-11-22 in `725a508` · D-A301–D-A305**, [`docs/parts/A3.md`](docs/parts/A3.md) §5:
+  - the reset is for the MX Brio only (`isMxBrio`; any Brio is still preferred);
+  - PTZ access is asked for only when the camera is known to be an MX Brio, and a refused PTZ request never costs the camera;
+  - `brioReset(label, caps, settings?)` returns only the controls that are out of place;
+  - the reset runs before the stream is handed out, and waits at most 1.5 s;
+  - every camera open goes through `openCamera()`.
+- **Part C · merged 2026-11-22 in `0e2fc81` · D-C01–D-C15**, [`docs/parts/C.md`](docs/parts/C.md) §5:
+  - the query contract stays as Part 0 froze it; D and F1 get `learnerStateOf()`, the selectors and `queriesFor()` (D-C01);
+  - learner constants live in `learner/params.ts`, and the recommender's will live in `recommender/config.ts` (D-C02);
+  - "met" means evidence in either skill (D-C03);
+  - skills come from the format id: `lesson` trains both, `question` productive, the rest receptive (D-C04);
+  - claims don't count in flight, a deviation from the letter of §7.7 (D-C05);
+  - the frontier is round-robin over the open units (D-C08);
+  - test-out counts claims per unit (2) and per track (3) (D-C09);
+  - the queries' "now" is the time of the last event (D-C12);
+  - self-graded answers never verify (D-C13).
+
 ---
 
 ## 5. Open questions for the user
@@ -279,6 +302,11 @@ Each question has the default that agents use until the user answers. When answe
 
 - **Q-009** "Twice as fast" for a correct answer: Part A2 halves the wait before the card leaves (1.2 s → 0.6 s) and keeps the 280 ms fly-out animation that every exit shares. Did you also mean the fly-out itself? — *Default: only the wait (D-045). Both are constants in `feed/config.ts`.*
 - **Q-010** Should Pablo's laptop also run a fourth stream (for example F1, or a share of E's games) instead of only integrating? — *Default: no. The integrator does A3, the merges, the device checks and its share of F2 (SPEC §9.0).*
+
+From merged parallel parts (details in their part files):
+
+- **Q-A301** (Part A3) The Python prototype also leaves the MX Brio's exposure and focus in manual mode, so the preview can look dark, noisy or soft. Should the app put them back to automatic too? — *Default: no. Only zoom, pan and tilt are reset, as `view_cam.sh` does (A3.md §6).*
+- **Q-C01** (Part C) A test-out queues "one verification probe: a quiz-choice over 3 claimed items" (§7.7), but a quiz-choice card has one target item. Three cards, or one card about 3 items? — *Default: Part C flags 3 claimed items in `probes()`, and Part D shows them as one quiz-choice card each (C.md §6).*
 
 ---
 
@@ -300,19 +328,19 @@ Each question has the default that agents use until the user answers. When answe
 - **R-014** The browser console shows warnings from libraries, not errors, and they also appear without the new code:
   - a `THREE.Clock` deprecation notice from @react-three/fiber on every 3D canvas mount;
   - MediaPipe WASM logs ("OpenGL error checking is disabled", "NORM_RECT without IMAGE_DIMENSIONS") while the hand landmarker runs.
-- **R-015** The build is one 1.66 MB JS chunk (462 kB gzip), because three.js, MediaPipe and all content load eagerly. Lazy chunks are planned in Part F.
+- **R-015** The build is one 1.66 MB JS chunk (462 kB gzip), because three.js, MediaPipe and all content load eagerly. Lazy chunks are planned in Part F. — *After Part C: 1,713 kB (478 kB gzip), because ts-fsrs is now bundled (R-C06). F1 does the lazy loading.*
 - **R-016** Headless tests could not verify these, so the user must check them by hand:
   - installed or standalone mode (display-mode emulation had no effect);
   - the real touch feel and 60 fps;
   - the camera indicator light of a real camera (the tests checked that tracks reach `ended`);
-  - the MX Brio branch;
+  - the MX Brio branch (*Part A3 checked it by machine on 2026-11-22 against the real Brio; the user's look at the preview is still open, A3.md §10*);
   - whether the sounds are audible and pleasant (the tests checked when each one is synthesised).
   - Also, the harness check where a real hand clip completes the camera probe is timing-sensitive in headless Chromium: once it timed out after 45 s and passed on the rerun.
 - **R-017** Viewports under about 480 px tall (phones in landscape) clip card content. The app is portrait-first (the manifest says `orientation: portrait`).
 - **R-018** Interim stubs that later parts replace:
   - `src/feed/simplePicker.ts` walks the curriculum blindly (Part D);
-  - the XP/streak fold in `src/feed/derived.ts` (Part C);
-  - `ce` is fixed at 0 in the feed (Part C);
+  - the XP/streak fold in `src/feed/derived.ts` (Part C); — *resolved by Part C: XP and streak come from the learner state*
+  - `ce` is fixed at 0 in the feed (Part C); — *resolved by Part C: the picker passes the learner's `ce`*
   - quiz-choice distractors use neither similarity nor confusions (Part B).
 - **R-019** Two tabs of the real feed keep separate in-memory logs, though both append to IndexedDB. Until a reload, the picker may repeat items across tabs.
 - **R-020** Some content is authored only in Spanish. Each part that shows it in the UI must add the English first, translated faithfully (rule 5):
@@ -325,15 +353,52 @@ Each question has the default that agents use until the user answers. When answe
 
 - **R-022** Parallel parts build against a stub and frozen contracts. When Part C's real learner queries replace the stub, Part B's generators may find other content, or none, for some formats. Mitigation: generators only use the query lists (D-042) and are tested with `fakeQueries()`; each part lists its integration checks, which the integrator runs after the merge.
 - **R-023** Machine differences: macOS and Windows file systems ignore case, so a wrong-case import passes there and fails the Linux build; Windows editors may write CRLF; Pol's laptop may lack Node (R-013). Mitigation: `.gitattributes` (LF), SPEC §9.0.4 rule 7, `npm ci` everywhere, and the integrator's gates on Linux after every merge.
-- **R-024** MX Brio reset (Part A3): Chrome asks a second permission ("use and move your camera") for pan-tilt-zoom; Firefox and Safari expose no PTZ, so the reset can't happen there; the Brio's field-of-view setting (65°/78°/90°) isn't reachable from a web page at all. Manual reset: `./view_cam.sh`, or `python3 camctl.py <device> zoom_absolute=100 pan_absolute=0 tilt_absolute=0`.
+- **R-024** MX Brio reset (Part A3): Chrome asks a second permission ("use and move your camera") for pan-tilt-zoom; Firefox and Safari expose no PTZ, so the reset can't happen there; the Brio's field-of-view setting (65°/78°/90°) isn't reachable from a web page at all. Manual reset: `./view_cam.sh`, or `python3 camctl.py <device> zoom_absolute=100 pan_absolute=0 tilt_absolute=0`. — *Implemented in Part A3 (merged 2026-11-22). The details are R-A301–R-A304.*
 - **R-025** Part H is open-ended and judged by eye. Mitigation: a fixed review set and a measured smoothness target (SPEC Part H); timebox it and let the user approve the before/after set.
 - **R-026** Conflicts can still happen on the few lines that two parts of the same wave may touch: `app/App.tsx`, the `<FeedTop …/>` line in `FeedScreen.tsx` (D and F1), additive changes to `core/types.ts`. Each part lists its cross-part edits; the integrator resolves them.
+- **R-027** Part D can start before Part A2 is merged, but D's wave-2 files `feed/FeedScreen.tsx` (queue, invalidation) and `feed/CardParts.tsx` (ℹ in `CardHeader`) belong to A2 until then (SPEC §9.0.3), so the two branches may conflict there. Mitigation: D builds the recommender, the simulations and the inspector first, and makes those two edits last and small. If A2 is merged by then, the human merges `gesture_learning` into `part-d` first (never a rebase, §9.0.2).
+
+From merged parallel parts (details in their part files):
+
+- **Part A3** ([A3.md](docs/parts/A3.md) §7):
+  - **R-A301** the first MX Brio card in a new Chrome profile adds the PTZ prompt; once blocked, Chrome doesn't ask again (unblock it in the site settings);
+  - **R-A302** no machine tested the real PTZ prompt;
+  - **R-A303** Firefox and Safari expose no PTZ: the Brio stays as the device has it (manual reset in R-024);
+  - **R-A304** while labels are hidden (first visit), the first camera card opens the Brio twice, about one second more.
+- **Part C** ([C.md](docs/parts/C.md) §7):
+  - **R-C01** `npm test` fails under Git Bash on Windows (the environment, not the code): run the gates from PowerShell;
+  - **R-C02** the model is untuned: without a camera, productive skills rise slowly, which can slow new lessons (D's simulations should watch pacing);
+  - **R-C03** `formatSkills()` decides by format id: a new format that trains differently must be added there;
+  - **R-C04** a refold from scratch costs about 6 ms per 2,000 events: hot paths use the memoised `learnerStateOf()`;
+  - **R-C05** the memo assumes an append-only log of the same event objects (true for `LogStore`);
+  - **R-C06** the main chunk grew to 1,713 kB (R-015);
+  - **R-C07** `learner/testLog.ts` is test support in `src/`: F2's dead-module cleanup must keep it.
 
 ---
 
 ## 7. Session log
 
 Newest first. One entry per session: date · part · what was done · verification · next step.
+
+- **2026-11-22 · Integration: Parts A3 and C merged** (integrator, at the user's request)
+  - *Merged:* `part-a3` (`ccdbf5a`) as `725a508`, then `part-c` (`79257bc`) as `0e2fc81`, both with `--no-ff` into `gesture_learning`. A dry run with `git merge-tree` came out clean first: the two branches share no file. Every merged file is byte-identical to its branch's.
+  - *Read first:* both part files.
+    - Contract changes, as each file lists them: none from A3. From C: two comments in `core/types.ts`, `QueryOptions.now`, `queriesFor()`, the learner API for D and F1, `DEV_PANELS` holding the learner inspector, and `ForcedConfig.autoCe`.
+    - Cross-part edits, as listed: A3's one line in §3 of this file; C's 8 lines in `dev/DevScreen.tsx`.
+    - No new dependency, and the lockfile is untouched.
+  - *Verification on Linux:* `npm ci`, typecheck, test and build green. The 20 files and 230 tests are Part 0's 84, plus 24 from A3 and 122 from C. Headless Chrome 157 over the DevTools protocol against `npm run dev`, with fresh profiles and Chrome's fake camera: 44/44 checks:
+    - desktop 1280×800: the tutorial with a preview behind; every exit by key, by action-bar button and by mouse drag; a spring-back; Next locked before completion; a correct answer auto-advances and a wrong one waits; `card.shown`, `card.exit`, `evidence` and `card.result` in the log; the XP/streak chip equals the old fold (the sum of `card.result` XP, streak 1);
+    - dev mode: the learner inspector over the real log; the auto challenge; forced quiz-choice, writing only to `signa-dev`; the camera probe, with one request, no pan, tilt or zoom and no `applyConstraints` for a non-Brio camera, and "no camera now" ending every track and logging `camera.off`;
+    - phone emulation 412×915 with touch: exits by touch swipe; a spring-back on an early swipe up; no horizontal scroll; the front-camera request (`facingMode: "user"`, no PTZ);
+    - no console errors, only R-014's warnings and headless WebGL notices.
+  - *Not re-run:* A3's real-camera checks (71 in Chrome, 7 in Firefox, A3.md §9), because the merge left `lib/` identical to the branch.
+  - *Recorded:*
+    - index lines for D-A301–D-A305 and D-C01–D-C15 (§4); Q-A301 and Q-C01 (§5);
+    - R-027 and the parts' risks, with updates to R-015, R-016, R-018 and R-024 (§6);
+    - the part files marked merged, and the Part D prompt in `docs/parts/README.md`;
+    - the repository map in `AGENTS.md`.
+  - *Git:* asked how to land the merges, the user chose two merge commits made by the agent (AGENTS.md rule 1 otherwise holds). Nothing was pushed. This fold is uncommitted: the user still needs to commit it and push `gesture_learning`.
+  - *Next:* push; Part D on S1; merge B, A2 and H as they arrive.
 
 - **2026-11-22 · Part 0 — parallel plan and scaffolding** (integrator, at the user's request)
   - *Plan (docs):* SPEC §9.0, the parallel plan: three streams plus an integrator, waves, branches, file ownership, rules for parallel parts, the integrator protocol and the four machines. New parts A2 (feed feedback follow-ups), A3 (MX Brio defaults) and H (hand and avatar quality); Part F split into F1 and F2; parts B, C, D and E adjusted for parallel work. The user's requests after testing Part A are in SPEC §3.3–§3.5 (every result auto-advances, no Next button, correct answers twice as fast) and §5.6 (the Brio reset). §8.2 and §8.3 describe the new layout and contracts. `AGENTS.md` covers parallel work. One state file per part in `docs/parts/` (the B–F checklists moved there), plus `docs/parts/README.md` with the setup steps and the agent prompts.

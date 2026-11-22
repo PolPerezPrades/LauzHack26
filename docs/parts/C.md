@@ -1,6 +1,6 @@
 # Part C — Learner model v2
 
-- **Status:** finished; committed on `part-c` (`ff199e2`) and pushed to GitHub (2026-11-22); waiting for the integrator's merge
+- **Status:** merged in `0e2fc81` (2026-11-22)
 - **Stream:** S1 "learner brain" · Ashlie's PC (Windows 11) · wave 1 · branch `part-c`
 - **Needs merged first:** Part 0 · **Better after:** —
 - **Spec:** [SPEC §9, Part C](../SPEC.md#part-c--learner-model-v2), plus §7 (all of it), §8.3, §8.4; the parallel rules in [§9.0](../SPEC.md#90-parallel-plan)
@@ -130,13 +130,18 @@ Format: `R-CNN` description.
 
 - [ ] With B merged: dev mode plays every format with chosen content, and the feed finds content for each format. At a cold start only lessons find content until items are met. That is expected, because questions and quizzes ask for met items (§7.8.5).
 - [ ] With B merged: B's format ids fit the skill convention of D-C04 (`lesson` trains both skills, `question` productive, `quiz-*` receptive), and lessons log their exposure with `kind: "exposure"`.
-- [ ] The XP and streak chip shows the same numbers as before on an existing log. A unit test compares the two folds on a varied log; look at the spec machine's real log too.
+- [ ] The XP and streak chip shows the same numbers as before on an existing log. A unit test compares the two folds on a varied log; look at the spec machine's real log too. — *2026-11-22, after the merge: on new logs, on desktop and phone emulation, the chip equals the old fold (the sum of `card.result` XP, streak 1). The real log in the user's Chrome profile is still to look at by hand.*
 - [ ] When E edits `DevScreen.tsx` in wave 2: keep `ParamsPicker`'s `sandbox` prop, `useForcedCe()` and `<ChallengeControl>`.
-- [ ] Nothing to do with A2, A3 or H: Part C touched none of their files.
+- [x] Nothing to do with A2, A3 or H: Part C touched none of their files. — *Confirmed at the merge with A3: no shared file.*
 
 ## 9. Session log
 
 Newest first: date · what was done · verification · next step.
+
+- **2026-11-22 · Merged into `gesture_learning` as `0e2fc81`** (integrator), after `part-a3` (`725a508`). No conflicts, and every Part C file is identical to the branch.
+  - Gates green on Linux (Node 22.23.5, npm 10.9.9): `npm ci` (lockfile unchanged), typecheck, test (20 files, 230 tests with A3), build.
+  - Post-merge smoke check in headless Chrome 157, 44/44: the feed with every exit; the chip equal to the old fold; the learner inspector over the real log; the auto challenge (ce 0.00 on an empty sandbox); forced play writing only to `signa-dev`; no console errors.
+  - *Next:* Part D (S1) starts from the new `gesture_learning`.
 
 - **2026-11-22 · Part C — Learner model v2** (S1, Ashlie's PC, branch `part-c`)
   - *Setup:* Node 26.13.1, npm 11.20.0; `npm ci` (lockfile unchanged); `npm run setup:media` (98/98 clips, MediaPipe model; a few optional Wikimedia letter illustrations were rate-limited). Baseline from PowerShell: typecheck ✓, 84 tests ✓ (Git Bash fails, R-C01).
