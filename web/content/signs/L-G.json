@@ -24,7 +24,8 @@
     "en": "Index finger and thumb parallel, pointing to the side."
   },
   "render": {
-    "type": "hand"
+    "type": "hand",
+    "view": [0.15, 0.12, 1]
   },
   "video": {
     "src": "/media/letters-video/G.mp4",

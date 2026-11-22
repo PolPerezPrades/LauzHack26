@@ -24,7 +24,8 @@
     "en": "The hand forms a C, seen from the side."
   },
   "render": {
-    "type": "hand"
+    "type": "hand",
+    "view": [0.1, 0.12, 1]
   },
   "video": null,
   "references": [

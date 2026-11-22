@@ -1,387 +1,464 @@
 {
  "num-1": {
-  "leftHand": 0.0,
+  "leftHand": 0,
   "rightHand": 0.75,
-  "pose": 1.0
- },
- "num-2": {
-  "leftHand": 0.0,
-  "rightHand": 0.864,
-  "pose": 1.0
- },
- "num-3": {
-  "leftHand": 0.0,
-  "rightHand": 0.826,
-  "pose": 1.0
- },
- "num-4": {
-  "leftHand": 0.0,
-  "rightHand": 0.773,
-  "pose": 1.0
- },
- "num-5": {
-  "leftHand": 0.0,
-  "rightHand": 0.864,
-  "pose": 1.0
- },
- "num-6": {
-  "leftHand": 0.0,
-  "rightHand": 0.75,
-  "pose": 1.0
- },
- "num-7": {
-  "leftHand": 0.0,
-  "rightHand": 0.792,
-  "pose": 1.0
- },
- "num-8": {
-  "leftHand": 0.0,
-  "rightHand": 0.875,
-  "pose": 1.0
- },
- "num-9": {
-  "leftHand": 0.0,
-  "rightHand": 0.85,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.021
  },
  "num-10": {
-  "leftHand": 0.0,
+  "leftHand": 0,
   "rightHand": 0.789,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.062
  },
- "w-hello": {
-  "leftHand": 0.0,
-  "rightHand": 0.815,
-  "pose": 1.0
+ "num-2": {
+  "leftHand": 0,
+  "rightHand": 0.864,
+  "pose": 1,
+  "anchorShift": 0.043
  },
- "w-bye": {
-  "leftHand": 0.0,
-  "rightHand": 0.727,
-  "pose": 1.0
+ "num-3": {
+  "leftHand": 0,
+  "rightHand": 0.826,
+  "pose": 1,
+  "anchorShift": 0.036
  },
- "w-thank-you": {
-  "leftHand": 0.0,
-  "rightHand": 0.941,
-  "pose": 1.0
+ "num-4": {
+  "leftHand": 0,
+  "rightHand": 0.773,
+  "pose": 1,
+  "anchorShift": 0.038
  },
- "w-please": {
-  "leftHand": 0.0,
-  "rightHand": 0.71,
-  "pose": 1.0
+ "num-5": {
+  "leftHand": 0,
+  "rightHand": 0.905,
+  "pose": 1,
+  "anchorShift": 0.05
  },
- "w-sorry": {
-  "leftHand": 0.054,
-  "rightHand": 0.649,
-  "pose": 1.0
+ "num-6": {
+  "leftHand": 0,
+  "rightHand": 0.75,
+  "pose": 1,
+  "anchorShift": 0.066
  },
- "w-yes": {
-  "leftHand": 0.0,
-  "rightHand": 0.571,
-  "pose": 1.0
+ "num-7": {
+  "leftHand": 0,
+  "rightHand": 0.792,
+  "pose": 1,
+  "anchorShift": 0.05
  },
- "w-no": {
-  "leftHand": 0.0,
-  "rightHand": 0.76,
-  "pose": 1.0
+ "num-8": {
+  "leftHand": 0,
+  "rightHand": 0.833,
+  "pose": 1,
+  "anchorShift": 0.043
  },
- "w-good": {
-  "leftHand": 0.636,
-  "rightHand": 0.818,
-  "pose": 1.0
+ "num-9": {
+  "leftHand": 0,
+  "rightHand": 0.85,
+  "pose": 1,
+  "anchorShift": 0.065
  },
- "w-name": {
-  "leftHand": 0.75,
-  "rightHand": 0.857,
-  "pose": 1.0
- },
- "w-nice": {
-  "leftHand": 1.0,
-  "rightHand": 0.958,
-  "pose": 1.0
- },
- "w-friend": {
-  "leftHand": 0.767,
-  "rightHand": 0.9,
-  "pose": 1.0
- },
- "w-help": {
-  "leftHand": 0.692,
-  "rightHand": 0.808,
-  "pose": 1.0
- },
- "w-mother": {
-  "leftHand": 0.0,
-  "rightHand": 0.68,
-  "pose": 1.0
- },
- "w-father": {
-  "leftHand": 0.0,
-  "rightHand": 0.882,
-  "pose": 1.0
- },
- "w-sister": {
-  "leftHand": 0.593,
-  "rightHand": 0.778,
-  "pose": 1.0
- },
- "w-brother": {
-  "leftHand": 0.556,
-  "rightHand": 0.889,
-  "pose": 1.0
- },
- "w-family": {
-  "leftHand": 0.714,
-  "rightHand": 0.821,
-  "pose": 1.0
+ "w-apple": {
+  "leftHand": 0,
+  "rightHand": 0.906,
+  "pose": 1,
+  "anchorShift": 0.051
  },
  "w-baby": {
   "leftHand": 0.921,
   "rightHand": 0.921,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.053
  },
- "w-grandmother": {
-  "leftHand": 0.0,
-  "rightHand": 0.846,
-  "pose": 1.0
- },
- "w-grandfather": {
-  "leftHand": 0.0,
-  "rightHand": 0.806,
-  "pose": 1.0
- },
- "w-son": {
-  "leftHand": 0.846,
-  "rightHand": 0.962,
-  "pose": 1.0
- },
- "w-daughter": {
-  "leftHand": 0.871,
-  "rightHand": 0.935,
-  "pose": 1.0
- },
- "w-red": {
-  "leftHand": 0.0,
-  "rightHand": 0.85,
-  "pose": 1.0
- },
- "w-blue": {
-  "leftHand": 0.0,
-  "rightHand": 0.76,
-  "pose": 1.0
- },
- "w-green": {
-  "leftHand": 0.0,
-  "rightHand": 0.815,
-  "pose": 1.0
- },
- "w-yellow": {
-  "leftHand": 0.0,
-  "rightHand": 0.864,
-  "pose": 1.0
+ "w-banana": {
+  "leftHand": 0.968,
+  "rightHand": 0.871,
+  "pose": 1,
+  "anchorShift": 0.029
  },
  "w-black": {
-  "leftHand": 0.0,
+  "leftHand": 0,
   "rightHand": 0.844,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.082
  },
- "w-white": {
-  "leftHand": 0.0,
-  "rightHand": 0.864,
-  "pose": 1.0
- },
- "w-orange": {
-  "leftHand": 0.0,
-  "rightHand": 0.852,
-  "pose": 1.0
- },
- "w-purple": {
-  "leftHand": 0.0,
-  "rightHand": 0.846,
-  "pose": 1.0
- },
- "w-brown": {
-  "leftHand": 0.0,
-  "rightHand": 0.733,
-  "pose": 1.0
- },
- "w-pink": {
-  "leftHand": 0.0,
-  "rightHand": 0.864,
-  "pose": 1.0
- },
- "w-eat": {
-  "leftHand": 0.0,
-  "rightHand": 0.727,
-  "pose": 1.0
- },
- "w-drink": {
-  "leftHand": 0.0,
-  "rightHand": 0.826,
-  "pose": 1.0
- },
- "w-water": {
-  "leftHand": 0.0,
-  "rightHand": 0.696,
-  "pose": 1.0
- },
- "w-apple": {
-  "leftHand": 0.0,
-  "rightHand": 0.906,
-  "pose": 1.0
- },
- "w-milk": {
-  "leftHand": 0.0,
-  "rightHand": 0.815,
-  "pose": 1.0
+ "w-blue": {
+  "leftHand": 0,
+  "rightHand": 0.76,
+  "pose": 1,
+  "anchorShift": 0.044
  },
  "w-bread": {
   "leftHand": 0.808,
   "rightHand": 0.808,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.023
  },
- "w-pizza": {
-  "leftHand": 0.0,
-  "rightHand": 0.875,
-  "pose": 1.0
+ "w-brother": {
+  "leftHand": 0.556,
+  "rightHand": 0.889,
+  "pose": 1,
+  "anchorShift": 0.036
  },
- "w-hungry": {
-  "leftHand": 0.0,
-  "rightHand": 0.941,
-  "pose": 1.0
+ "w-brown": {
+  "leftHand": 0,
+  "rightHand": 0.733,
+  "pose": 1,
+  "anchorShift": 0.027
  },
- "w-coffee": {
-  "leftHand": 0.947,
-  "rightHand": 0.947,
-  "pose": 1.0
- },
- "w-banana": {
-  "leftHand": 0.968,
-  "rightHand": 0.903,
-  "pose": 1.0
+ "w-bye": {
+  "leftHand": 0,
+  "rightHand": 0.727,
+  "pose": 1,
+  "anchorShift": 0.051
  },
  "w-cheese": {
   "leftHand": 0.875,
   "rightHand": 0.917,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.038
+ },
+ "w-coffee": {
+  "leftHand": 0.947,
+  "rightHand": 0.947,
+  "pose": 1,
+  "anchorShift": 0.032
  },
  "w-cookie": {
   "leftHand": 0.708,
   "rightHand": 0.875,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.026
  },
- "w-me": {
-  "leftHand": 0.0,
-  "rightHand": 0.667,
-  "pose": 1.0
- },
- "w-you": {
-  "leftHand": 0.0,
-  "rightHand": 0.55,
-  "pose": 1.0
- },
- "w-my": {
-  "leftHand": 0.75,
-  "rightHand": 0.0,
-  "pose": 1.0
- },
- "w-your": {
-  "leftHand": 0.0,
-  "rightHand": 0.846,
-  "pose": 1.0
- },
- "w-like": {
-  "leftHand": 0.0,
-  "rightHand": 0.917,
-  "pose": 1.0
- },
- "w-want": {
-  "leftHand": 0.727,
-  "rightHand": 0.864,
-  "pose": 1.0
- },
- "w-love": {
-  "leftHand": 0.867,
-  "rightHand": 0.9,
-  "pose": 1.0
- },
- "w-go": {
-  "leftHand": 0.7,
-  "rightHand": 0.75,
-  "pose": 1.0
- },
- "w-work": {
-  "leftHand": 0.654,
-  "rightHand": 0.846,
-  "pose": 1.0
- },
- "w-school": {
-  "leftHand": 0.762,
-  "rightHand": 0.81,
-  "pose": 1.0
- },
- "w-today": {
-  "leftHand": 0.943,
-  "rightHand": 0.886,
-  "pose": 1.0
- },
- "w-tomorrow": {
-  "leftHand": 0.0,
-  "rightHand": 0.88,
-  "pose": 1.0
- },
- "w-what": {
-  "leftHand": 0.81,
-  "rightHand": 0.857,
-  "pose": 1.0
- },
- "w-where": {
-  "leftHand": 0.0,
-  "rightHand": 0.739,
-  "pose": 1.0
- },
- "w-why": {
-  "leftHand": 0.0,
-  "rightHand": 0.654,
-  "pose": 1.0
+ "w-daughter": {
+  "leftHand": 0.871,
+  "rightHand": 0.935,
+  "pose": 1,
+  "anchorShift": 0.063
  },
  "w-deaf": {
-  "leftHand": 0.0,
+  "leftHand": 0,
   "rightHand": 0.727,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.028
  },
- "w-learn": {
+ "w-drink": {
+  "leftHand": 0,
+  "rightHand": 0.826,
+  "pose": 1,
+  "anchorShift": 0.025
+ },
+ "w-eat": {
+  "leftHand": 0,
+  "rightHand": 0.727,
+  "pose": 1,
+  "anchorShift": 0.046
+ },
+ "w-family": {
   "leftHand": 0.714,
-  "rightHand": 0.75,
-  "pose": 1.0
+  "rightHand": 0.821,
+  "pose": 1,
+  "anchorShift": 0.02
  },
- "w-sign": {
-  "leftHand": 0.655,
-  "rightHand": 0.897,
-  "pose": 1.0
- },
- "w-understand": {
-  "leftHand": 0.0,
-  "rightHand": 0.632,
-  "pose": 1.0
- },
- "w-not": {
-  "leftHand": 0.0,
-  "rightHand": 0.864,
-  "pose": 1.0
+ "w-father": {
+  "leftHand": 0,
+  "rightHand": 0.882,
+  "pose": 1,
+  "anchorShift": 0.067
  },
  "w-finish": {
   "leftHand": 0.571,
   "rightHand": 0.857,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.02
+ },
+ "w-friend": {
+  "leftHand": 0.767,
+  "rightHand": 0.9,
+  "pose": 1,
+  "anchorShift": 0.027
+ },
+ "w-go": {
+  "leftHand": 0.7,
+  "rightHand": 0.75,
+  "pose": 1,
+  "anchorShift": 0.024
+ },
+ "w-good": {
+  "leftHand": 0.636,
+  "rightHand": 0.818,
+  "pose": 1,
+  "anchorShift": 0.028
+ },
+ "w-grandfather": {
+  "leftHand": 0,
+  "rightHand": 0.806,
+  "pose": 1,
+  "anchorShift": 0.078
+ },
+ "w-grandmother": {
+  "leftHand": 0,
+  "rightHand": 0.846,
+  "pose": 1,
+  "anchorShift": 0.033
+ },
+ "w-green": {
+  "leftHand": 0,
+  "rightHand": 0.815,
+  "pose": 1,
+  "anchorShift": 0.043
  },
  "w-happy": {
-  "leftHand": 0.0,
+  "leftHand": 0,
   "rightHand": 0.818,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.027
+ },
+ "w-hello": {
+  "leftHand": 0,
+  "rightHand": 0.815,
+  "pose": 1,
+  "anchorShift": 0.053
+ },
+ "w-help": {
+  "leftHand": 0.692,
+  "rightHand": 0.808,
+  "pose": 1,
+  "anchorShift": 0.044
+ },
+ "w-hungry": {
+  "leftHand": 0,
+  "rightHand": 0.941,
+  "pose": 1,
+  "anchorShift": 0.025
+ },
+ "w-learn": {
+  "leftHand": 0.714,
+  "rightHand": 0.75,
+  "pose": 1,
+  "anchorShift": 0.048
+ },
+ "w-like": {
+  "leftHand": 0,
+  "rightHand": 0.875,
+  "pose": 1,
+  "anchorShift": 0.019
+ },
+ "w-love": {
+  "leftHand": 0.867,
+  "rightHand": 0.9,
+  "pose": 1,
+  "anchorShift": 0.033
+ },
+ "w-me": {
+  "leftHand": 0,
+  "rightHand": 0.667,
+  "pose": 1,
+  "anchorShift": 0.015
+ },
+ "w-milk": {
+  "leftHand": 0,
+  "rightHand": 0.815,
+  "pose": 1,
+  "anchorShift": 0.06
+ },
+ "w-mother": {
+  "leftHand": 0,
+  "rightHand": 0.68,
+  "pose": 1,
+  "anchorShift": 0.038
+ },
+ "w-my": {
+  "leftHand": 0.75,
+  "rightHand": 0,
+  "pose": 1,
+  "anchorShift": 0.051
+ },
+ "w-name": {
+  "leftHand": 0.75,
+  "rightHand": 0.75,
+  "pose": 1,
+  "anchorShift": 0.039
+ },
+ "w-nice": {
+  "leftHand": 0.958,
+  "rightHand": 0.917,
+  "pose": 1,
+  "anchorShift": 0.027
+ },
+ "w-no": {
+  "leftHand": 0,
+  "rightHand": 0.76,
+  "pose": 1,
+  "anchorShift": 0.034
+ },
+ "w-not": {
+  "leftHand": 0,
+  "rightHand": 0.864,
+  "pose": 1,
+  "anchorShift": 0.031
+ },
+ "w-orange": {
+  "leftHand": 0,
+  "rightHand": 0.852,
+  "pose": 1,
+  "anchorShift": 0.045
+ },
+ "w-pink": {
+  "leftHand": 0,
+  "rightHand": 0.864,
+  "pose": 1,
+  "anchorShift": 0.033
+ },
+ "w-pizza": {
+  "leftHand": 0,
+  "rightHand": 0.906,
+  "pose": 1,
+  "anchorShift": 0.037
+ },
+ "w-please": {
+  "leftHand": 0,
+  "rightHand": 0.71,
+  "pose": 1,
+  "anchorShift": 0.025
+ },
+ "w-purple": {
+  "leftHand": 0,
+  "rightHand": 0.846,
+  "pose": 1,
+  "anchorShift": 0.067
+ },
+ "w-red": {
+  "leftHand": 0,
+  "rightHand": 0.85,
+  "pose": 1,
+  "anchorShift": 0.029
+ },
+ "w-school": {
+  "leftHand": 0.762,
+  "rightHand": 0.81,
+  "pose": 1,
+  "anchorShift": 0.026
+ },
+ "w-sign": {
+  "leftHand": 0.655,
+  "rightHand": 0.897,
+  "pose": 1,
+  "anchorShift": 0.036
+ },
+ "w-sister": {
+  "leftHand": 0.593,
+  "rightHand": 0.778,
+  "pose": 1,
+  "anchorShift": 0.026
+ },
+ "w-son": {
+  "leftHand": 0.846,
+  "rightHand": 0.962,
+  "pose": 1,
+  "anchorShift": 0.062
+ },
+ "w-sorry": {
+  "leftHand": 0.054,
+  "rightHand": 0.649,
+  "pose": 1,
+  "anchorShift": 0.02
+ },
+ "w-thank-you": {
+  "leftHand": 0,
+  "rightHand": 0.941,
+  "pose": 1,
+  "anchorShift": 0.047
  },
  "w-tired": {
-  "leftHand": 0.963,
+  "leftHand": 0.926,
   "rightHand": 0.963,
-  "pose": 1.0
+  "pose": 1,
+  "anchorShift": 0.029
+ },
+ "w-today": {
+  "leftHand": 0.914,
+  "rightHand": 0.886,
+  "pose": 1,
+  "anchorShift": 0.022
+ },
+ "w-tomorrow": {
+  "leftHand": 0,
+  "rightHand": 0.88,
+  "pose": 1,
+  "anchorShift": 0.042
+ },
+ "w-understand": {
+  "leftHand": 0,
+  "rightHand": 0.632,
+  "pose": 1,
+  "anchorShift": 0.051
+ },
+ "w-want": {
+  "leftHand": 0.727,
+  "rightHand": 0.864,
+  "pose": 1,
+  "anchorShift": 0.025
+ },
+ "w-water": {
+  "leftHand": 0,
+  "rightHand": 0.696,
+  "pose": 1,
+  "anchorShift": 0.025
+ },
+ "w-what": {
+  "leftHand": 0.81,
+  "rightHand": 0.857,
+  "pose": 1,
+  "anchorShift": 0.033
+ },
+ "w-where": {
+  "leftHand": 0,
+  "rightHand": 0.739,
+  "pose": 1,
+  "anchorShift": 0.027
+ },
+ "w-white": {
+  "leftHand": 0,
+  "rightHand": 0.864,
+  "pose": 1,
+  "anchorShift": 0.041
+ },
+ "w-why": {
+  "leftHand": 0,
+  "rightHand": 0.654,
+  "pose": 1,
+  "anchorShift": 0.059
+ },
+ "w-work": {
+  "leftHand": 0.654,
+  "rightHand": 0.846,
+  "pose": 1,
+  "anchorShift": 0.04
+ },
+ "w-yellow": {
+  "leftHand": 0,
+  "rightHand": 0.864,
+  "pose": 1,
+  "anchorShift": 0.035
+ },
+ "w-yes": {
+  "leftHand": 0,
+  "rightHand": 0.571,
+  "pose": 1,
+  "anchorShift": 0.043
+ },
+ "w-you": {
+  "leftHand": 0,
+  "rightHand": 0.55,
+  "pose": 1,
+  "anchorShift": 0.03
+ },
+ "w-your": {
+  "leftHand": 0,
+  "rightHand": 0.846,
+  "pose": 1,
+  "anchorShift": 0.029
  }
 }

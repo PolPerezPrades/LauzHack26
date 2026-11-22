@@ -12,12 +12,13 @@ const DEFAULT_VIEW: V3 = [0.22, 0.12, 1];
  * closest distance at which none falls outside the frustum (for the current aspect ratio).
  * Optional orbit: rotate to read the handshape from other angles; never zoom/pan away.
  */
-export function CameraRig({ points, resetKey, interactive, view = DEFAULT_VIEW, margin = 1.08, pad = 0.16 }: {
+export function CameraRig({ points, resetKey, interactive, view: viewProp, margin = 1.08, pad = 0.16 }: {
   points: V3[]; resetKey: number; interactive: boolean; view?: V3; margin?: number;
   /** extra room around every point (finger thickness + outline), in scene units */
   pad?: number;
 }) {
   const { camera, size } = useThree();
+  const view = viewProp ?? DEFAULT_VIEW;
   const controls = useRef<OrbitControlsImpl>(null);
 
   const fit = useMemo(() => {
@@ -50,7 +51,7 @@ export function CameraRig({ points, resetKey, interactive, view = DEFAULT_VIEW, 
       controls.current.target.copy(fit.center);
       controls.current.update();
     }
-  }, [fit, resetKey, size.width, size.height, camera, view, margin, pad]);
+  }, [fit, resetKey, size.width, size.height, camera, view[0], view[1], view[2], margin, pad]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!interactive) return null;
   return (

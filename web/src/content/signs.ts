@@ -22,7 +22,8 @@ export interface SignSpec {
   phonology: Phonology | null;
   /** how to form the sign; English is optional (Spanish is the authored original) */
   description: { es: string; en?: string } | null;
-  render: { type: "hand" } | { type: "avatar"; motion: string } | { type: "video" };
+  /** `view` (hand only, Part H): direction from the hand to the camera that reads best, viewer space */
+  render: { type: "hand"; view?: [number, number, number] } | { type: "avatar"; motion: string } | { type: "video" };
   video: { src: string; crop?: [number, number, number, number] | null; source: { dataset: string; site: string; url: string } } | null;
   references: { label: string; url: string; image?: string }[];
   review: { status: string; by?: string; note?: string };

@@ -59,8 +59,31 @@ const SEG: Record<FingerName, [number, number, number]> = {
 const THUMB_CMC: V3 = [0.17, 0.27, 0.12];
 const THUMB_SEG: [number, number, number] = [0.34, 0.33, 0.29];
 
-/** Forward kinematics in the hand's own frame (rest orientation). */
-export function handJointsLocal(p: HandPose): V3[] {
+/**
+ * Anatomical joint ranges (degrees). Poses are clamped to them, so a procedural letter can never
+ * bend a finger backwards or fold it through the palm. Finger MCPs and the thumb IP may
+ * hyperextend a little, as real ones do; PIP joints not at all. fit-letters.ts searches inside the
+ * same ranges.
+ */
+export const JOINT_LIMITS = {
+  thumb: { yaw: [-60, 95], pitch: [-10, 85], roll: [-100, 0], mcp: [-10, 75], ip: [-15, 85] },
+  finger: { mcp: [-10, 95], pip: [0, 115], dip: [-5, 85], spread: [-25, 25] },
+} as const;
+const clamp = (v: number, [lo, hi]: readonly [number, number]) => Math.min(hi, Math.max(lo, v));
+
+/** The pose with every angle inside JOINT_LIMITS. */
+export function clampPose(p: HandPose): HandPose {
+  const T = JOINT_LIMITS.thumb, F = JOINT_LIMITS.finger;
+  const f = (x: FingerPose): FingerPose => ({ mcp: clamp(x.mcp, F.mcp), pip: clamp(x.pip, F.pip), dip: clamp(x.dip, F.dip), spread: clamp(x.spread, F.spread) });
+  return {
+    thumb: { yaw: clamp(p.thumb.yaw, T.yaw), pitch: clamp(p.thumb.pitch, T.pitch), roll: clamp(p.thumb.roll, T.roll), mcp: clamp(p.thumb.mcp, T.mcp), ip: clamp(p.thumb.ip, T.ip) },
+    index: f(p.index), middle: f(p.middle), ring: f(p.ring), pinky: f(p.pinky),
+  };
+}
+
+/** Forward kinematics in the hand's own frame (rest orientation). Angles are clamped to JOINT_LIMITS. */
+export function handJointsLocal(pose: HandPose): V3[] {
+  const p = clampPose(pose);
   const j: V3[] = new Array(21);
   j[0] = [0, 0, 0];
   // thumb: base orientation (yaw in palm plane towards +x, pitch out of the palm, roll sets the

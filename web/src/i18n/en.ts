@@ -137,6 +137,8 @@ export const en = {
     creditSequence: "Sequence of dictionary signs",
     creditHand: "3D hand · pose checked against real video and ASL descriptions",
     creditAvatar: "Avatar replaying the real motion from the video",
+    perf: (fps: number, worstMs: number, calls: number, triangles: number) =>
+      `${fps.toFixed(0)} fps · worst frame ${worstMs.toFixed(0)} ms · ${calls} draw calls · ${(triangles / 1000).toFixed(1)}k triangles`,
   },
 
   lab: {
@@ -155,6 +157,14 @@ export const en = {
     noRealRef: "No real reference",
     reference: "Reference",
     illustration: "illustration",
+    avatarPreview: "Avatar (preview: this sign ships as video)",
+    perf: "⏱ Performance",
+    views: "Views",
+    viewOwn: "the sign's own",
+    viewFront: "front",
+    viewSide: "side",
+    viewThreeQuarter: "¾",
+    viewAbove: "above",
   },
 
   dev: {

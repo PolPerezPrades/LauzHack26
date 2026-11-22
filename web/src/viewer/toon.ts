@@ -59,3 +59,23 @@ export function setGeometry(mesh: THREE.Mesh, g: THREE.BufferGeometry) {
   const child = mesh.children[0] as THREE.Mesh | undefined;
   if (child?.isMesh) child.geometry = g;
 }
+
+const taperCache = new Map<string, THREE.LatheGeometry>();
+/**
+ * Tapered capsule along +y, centred at the origin: the hull of a sphere of radius r0 at the bottom
+ * and r1 at the top, `length` apart (quantised to 2 % so it can be cached).
+ */
+export function taperedCapsuleGeometry(r0: number, r1: number, length: number) {
+  const L = Math.max(0.005, Math.round(length * 50) / 50);
+  const key = `${r0}:${r1}:${L}`;
+  let g = taperCache.get(key);
+  if (!g) {
+    const phi = Math.asin(Math.max(-0.95, Math.min(0.95, (r0 - r1) / L)));
+    const pts: THREE.Vector2[] = [];
+    const turn = Math.PI / 2 - phi;
+    for (let i = 0; i <= 6; i++) { const th = Math.PI - (i * (Math.PI - turn)) / 6; pts.push(new THREE.Vector2(Math.max(1e-4, r0 * Math.sin(th)), -L / 2 + r0 * Math.cos(th))); }
+    for (let i = 0; i <= 6; i++) { const th = turn - (i * turn) / 6; pts.push(new THREE.Vector2(Math.max(1e-4, r1 * Math.sin(th)), L / 2 + r1 * Math.cos(th))); }
+    taperCache.set(key, (g = new THREE.LatheGeometry(pts, 16)));
+  }
+  return g;
+}

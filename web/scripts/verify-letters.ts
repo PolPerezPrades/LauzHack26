@@ -4,12 +4,15 @@
  *      written from ASL handshape descriptions) — the same check the learner's hand must pass.
  *   2. reference: joint flexion and thumb-tip position compared with the REAL signer's hand
  *      (MediaPipe landmarks from WLASL clips, content/reference/letter-poses.json).
- * Prints a table; exit code 1 if any letter fails its rules.
+ *   3. anatomy (Part H): no finger joint bent backwards, no finger through the palm
+ *      (src/viewer/handChecks.ts), for every letter, J and Z along their whole movement.
+ * Prints a table; exit code 1 if any letter fails its rules or its anatomy.
  */
 import { readFileSync } from "node:fs";
 import { HANDSHAPES } from "../src/viewer/handshapeLibrary.ts";
 import { dir, handJointsLocal, orientationMatrix, toMediaPipe, transform, vec, type V3 } from "../src/viewer/kinematics.ts";
 import { computeFeatures, evaluateLetter } from "../src/lib/handshapes.ts";
+import { poseIssues } from "../src/viewer/handChecks.ts";
 
 const ref = JSON.parse(readFileSync(new URL("../content/reference/letter-poses.json", import.meta.url), "utf8"));
 const signsDir = new URL("../content/signs/", import.meta.url);
@@ -71,8 +74,12 @@ for (const L of "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
     const worst = diffs.map((d, i) => [d, i] as const).sort((a, b) => b[0] - a[0])[0];
     cmp = `flexión media Δ=${(diffs.reduce((a, b) => a + b) / 5).toFixed(0)}° (peor ${NAMES[worst[1]]} ${worst[0].toFixed(0)}°) · punta pulgar Δ=${thumbErr.toFixed(2)}`;
   }
-  rows.push(`${L}  reglas:${motion ? " (movimiento)" : ev.ok ? " OK " : " FALLA"}${ev.ok || motion ? "" : " → " + ev.hints.join("; ")}\n   ${cmp}`);
+  // the hand pose is the same through J's and Z's movement (only the orientation changes)
+  const anatomy = poseIssues(local);
+  if (anatomy.length) failures++;
+  const anat = anatomy.length ? ` · anatomía FALLA → ${anatomy.map((a) => `${a.finger}: ${a.issue}`).join("; ")}` : " · anatomía OK";
+  rows.push(`${L}  reglas:${motion ? " (movimiento)" : ev.ok ? " OK " : " FALLA"}${ev.ok || motion ? "" : " → " + ev.hints.join("; ")}${anat}\n   ${cmp}`);
 }
 console.log(rows.join("\n"));
-console.log(failures ? `\n${failures} letras no pasan las reglas` : "\nTodas las letras estáticas pasan las reglas");
+console.log(failures ? `\n${failures} letras no pasan las reglas o la anatomía` : "\nTodas las letras estáticas pasan las reglas, y ninguna letra se dobla hacia atrás ni atraviesa la palma");
 process.exit(failures ? 1 : 0);
