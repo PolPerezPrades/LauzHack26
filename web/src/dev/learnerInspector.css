@@ -1,0 +1,26 @@
+/* Dev learner-state inspector and the auto challenge row (Part C). Plain, like the rest of dev mode. */
+.dev-challenge { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0; }
+.dev-challenge label { display: inline-flex; align-items: center; gap: 8px; }
+
+.learner-inspector h4 { margin: 16px 0 6px; }
+.li-summary { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 12px 0 4px; }
+.li-summary div { display: flex; flex-direction: column; }
+.li-summary dt { color: #5f6b75; font-size: 0.75rem; }
+.li-summary dd { margin: 0; font-weight: 800; }
+.li-lists { font-size: 0.85rem; line-height: 1.6; margin: 8px 0; }
+.li-unit { cursor: default; font-weight: 600; }
+.li-unit-open { border-color: #58a700; }
+.li-unit-testedOut { border-color: #1c7ed6; }
+.li-unit-closed { color: #5f6b75; }
+
+.li-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+.li-table th, .li-table td { border-top: 1px solid var(--line); padding: 3px 6px; text-align: left; white-space: nowrap; }
+.li-table th { font-weight: 800; }
+.li-table code { background: none; padding: 0; }
+.li-skill { text-align: center; border-left: 2px solid var(--line); }
+.li-muted td { color: #a61b1b; }
+.li-status { font-weight: 700; }
+.li-new { color: #5f6b75; font-weight: 400; }
+.li-learning { color: #9a5b00; }
+.li-known { color: #237a00; }
+.li-due { color: #1c5fb0; }

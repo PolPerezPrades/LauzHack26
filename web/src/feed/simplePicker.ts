@@ -2,12 +2,15 @@
  * Interim card source (Part A, replaced by the recommender in Part D). First launch: the gesture
  * tutorial. Then it alternates the eligible non-dev formats and skips formats that need a camera
  * when the camera isn't usable. Content comes from the learner queries (learner/queries.ts), except
- * Part A's `nextItems`, which still walks the curriculum in order.
+ * Part A's `nextItems`, which still walks the curriculum in order. Each format gets the learner's
+ * effective challenge ce for it (Part C).
  */
 import { curriculumOrder } from "../content/curriculum";
 import { newId } from "../core/ids";
-import type { CandidateDraft, CardPlan, CardRef, CardSource, LearnerQueries, Reason, TaskSpec } from "../core/types";
-import { createLearnerQueries, walk } from "../learner/queries";
+import type { CandidateDraft, CardPlan, CardRef, CardSource, GenContext, LearnerQueries, Reason, TaskSpec } from "../core/types";
+import { queriesFor, walk } from "../learner/queries";
+import { effectiveChallenge } from "../learner/selectors";
+import { learnerStateOf } from "../learner/state";
 import { FORMATS, TUTORIAL_ID, needsCamera } from "../tasks/registry";
 
 /** The learner queries, with Part A's curriculum walk as `nextItems` (starting at position `start`). */
@@ -56,13 +59,14 @@ export function createSimplePicker(opts: PickerOptions = {}): CardSource {
   return {
     kind: "picker",
     next(ctx, avoid) {
-      const gen = { rng: ctx.rng, ce: 0, cameraUsable: ctx.cameraUsable };
+      const state = learnerStateOf(ctx.events);
+      const gen = (f: TaskSpec): GenContext => ({ rng: ctx.rng, ce: effectiveChallenge(state, f.id), cameraUsable: ctx.cameraUsable });
       const seen = settledCards(ctx.history);
 
-      const base = createLearnerQueries(ctx.events, { avoid: avoid?.items });
+      const base = queriesFor(state, { avoid: avoid?.items });
       const tutorial = formats.find((f) => f.id === TUTORIAL_ID);
       if (tutorial && !seen.some((c) => c.format === TUTORIAL_ID)) {
-        const draft = tutorial.generate(pickerQueries(base, [], 0), gen)[0];
+        const draft = tutorial.generate(pickerQueries(base, [], 0), gen(tutorial))[0];
         if (draft) return toPlan(draft, makeId());
       }
 
@@ -76,7 +80,8 @@ export function createSimplePicker(opts: PickerOptions = {}): CardSource {
       const walked = seen.filter((c) => c.items.length > 0).length;
       const q = pickerQueries(base, order(), walked, avoid?.items);
       for (let k = 0; k < eligible.length; k++) {
-        const draft = eligible[(start + k) % eligible.length].generate(q, gen)[0];
+        const format = eligible[(start + k) % eligible.length];
+        const draft = format.generate(q, gen(format))[0];
         if (draft) return toPlan(draft, makeId(), { code: "picker_walk", index: walked });
       }
       return null;

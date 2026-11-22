@@ -1,7 +1,8 @@
 /**
  * Learner queries for tests of format generators: every list is empty, every item is new, unless a
- * test overrides it. It depends only on the contract (core/types.ts), so it keeps working when
- * Part C replaces the stub in queries.ts.
+ * test overrides it. It depends only on the contract (core/types.ts), so it doesn't change with
+ * the learner model behind createLearnerQueries() (Part C kept the contract as Part 0 froze it).
+ * A new query method gets its default here too (SPEC §9.0.4).
  */
 import type { LearnerQueries } from "../core/types";
 

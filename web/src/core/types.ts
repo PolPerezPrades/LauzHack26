@@ -114,7 +114,10 @@ export type ItemStatus = "new" | "learning" | "known" | "due";
 export interface LearnerQueries {
   /** Part A's list: the simple picker's curriculum walk. New generators use the lists below. */
   nextItems(kinds: readonly ItemKind[], n: number): string[];
-  /** new items to introduce next: the frontier of the open units, in curriculum order (lessons) */
+  /**
+   * new items to introduce next (lessons): the frontier of the open units, in curriculum order inside
+   * each unit and round-robin across units, so the first entries give one item per open unit (§7.8.1)
+   */
   frontier(kinds: readonly ItemKind[], n: number): string[];
   /** met items worth practising for a skill, most urgent first: relearn, due, learning, known */
   practice(skill: Skill, kinds: readonly ItemKind[], n: number): string[];
@@ -135,7 +138,7 @@ export interface LearnerQueries {
 
 export interface GenContext {
   rng: Rng;
-  /** effective challenge for this format, ce ∈ [−1, 1] (SPEC §7.6); 0 until the learner model exists */
+  /** effective challenge for this format, ce ∈ [−1, 1] (SPEC §7.6), from the learner state (learner/selectors.ts) */
   ce: number;
   cameraUsable: boolean;
 }

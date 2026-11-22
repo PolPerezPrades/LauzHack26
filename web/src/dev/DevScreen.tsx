@@ -17,6 +17,7 @@ import { formatTitle } from "../feed/CardParts";
 import { useLang, useT } from "../i18n";
 import { LangSwitch } from "../i18n/LangSwitch";
 import { FORMATS, getFormat } from "../tasks/registry";
+import { ChallengeControl, useForcedCe } from "./ChallengeControl";
 import { loadDevConfig, saveDevConfig } from "./devConfig";
 import { EventLog } from "./EventLog";
 import type { ForcedConfig } from "./forcedSource";
@@ -64,7 +65,7 @@ export function DevScreen() {
       </section>
 
       <ContentPicker spec={spec} cfg={cfg} update={update} />
-      <ParamsPicker spec={spec} cfg={cfg} update={update} />
+      <ParamsPicker spec={spec} cfg={cfg} update={update} sandbox={sandbox} />
 
       <section className="card dev-section">
         <h3>4 · {t.dev.camera}</h3>
@@ -148,11 +149,12 @@ function ContentPicker({ spec, cfg, update }: { spec?: TaskSpec; cfg: ForcedConf
   );
 }
 
-function ParamsPicker({ spec, cfg, update }: { spec?: TaskSpec; cfg: ForcedConfig; update: Update }) {
+function ParamsPicker({ spec, cfg, update, sandbox }: { spec?: TaskSpec; cfg: ForcedConfig; update: Update; sandbox: LogStore | null }) {
   const t = useT();
+  const ce = useForcedCe(cfg, sandbox);
   if (!spec) return null;
   const overrides = cfg.overrides ?? {};
-  const resulting: Record<string, unknown> = { ...spec.params(cfg.ce, { rng: createRng(0), ce: cfg.ce, cameraUsable: true }), ...overrides };
+  const resulting: Record<string, unknown> = { ...spec.params(ce, { rng: createRng(0), ce, cameraUsable: true }), ...overrides };
   const setOverride = (key: string, value: number | null) => {
     const next = { ...overrides };
     if (value === null) delete next[key];
@@ -162,11 +164,7 @@ function ParamsPicker({ spec, cfg, update }: { spec?: TaskSpec; cfg: ForcedConfi
   return (
     <section className="card dev-section">
       <h3>3 · {t.dev.params}</h3>
-      <label className="dev-row">
-        {t.dev.challenge}
-        <input type="range" min={-1} max={1} step={0.1} value={cfg.ce} onChange={(e) => update({ ce: Number(e.target.value) })} />
-        <code>{cfg.ce.toFixed(1)}</code>
-      </label>
+      <ChallengeControl cfg={cfg} ce={ce} update={update} />
       {(spec.devParams ?? []).map((d) => {
         const auto = !(d.key in overrides);
         const value = Number(resulting[d.key] ?? d.min);

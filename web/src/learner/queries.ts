@@ -1,130 +1,113 @@
 /**
- * Learner queries (SPEC §8.3): what formats may ask about the learner when they propose cards.
+ * Learner queries (SPEC §8.3): what formats may ask about the learner when they propose cards,
+ * answered from the learner state (state.ts, SPEC §7). Card sources build them with
+ * `createLearnerQueries(ctx.events, opts)`; dev forced mode wraps them with `withContent()`; the
+ * recommender, which already holds the state, uses `queriesFor(state, opts)`.
  *
- * PART 0 STUB. A rough fold over the v2 log, so the learning formats (Part B) and the minigames
- * (Part E) can be written while the learner model (Part C) is built in parallel. Part C replaces
- * the internals with the real learner state (SPEC §7) and keeps `createLearnerQueries(events, opts)`
- * and `withContent()`: card sources call nothing else, so the swap stays inside `learner/`.
- *
- * Stub rules (deliberately simple, NOT SPEC §7):
- *   new      = no evidence for the skill and never claimed;
- *   claimed  = a card about the item left "too easy" (both skills);
- *   known    = claimed, or ≥ 2 correct retrievals with the last one correct; never "due";
- *   pKnown   = 0 new · 0.9 known · 0.8 × (correct + 1) / (attempts + 2) learning;
- *   frontier = items new for both skills, in curriculum order.
+ * Every list returns at most n items of the requested kinds, never one of `opts.avoid`:
+ *   frontier         new items to introduce: signs a phrase asked for first, then the first new items
+ *                    of each open unit, round-robin in curriculum order (one per open unit first)
+ *   practice         met items for a skill: relearn (latest first), due (lowest retrievability first),
+ *                    learning (weakest first; claims and items new for this skill included), known
+ *   relearn          items failed or swiped "too hard" and not answered right since, latest first
+ *   probes           claims waiting for their verification probe, oldest first
+ *   pool             met items with pKnown ≥ minPKnown for the skill, weakest first
+ *   eligiblePhrases  all signs met and ≥ 70 % known (receptive); least known phrase first
+ *   confusions       items this one was confused with, most frequent first
+ * Ties keep the curriculum order. "Met" means watched, answered or claimed in either skill.
  */
-import { PHRASES, curriculumOrder, itemKindOf } from "../content/curriculum";
-import type { ItemKind, ItemStatus, LearnerQueries, Skill } from "../core/types";
+import { curriculumOrder } from "../content/curriculum";
+import type { ItemKind, LearnerQueries, Skill } from "../core/types";
 import type { LearningEvent } from "../data/events";
-
-const SKILLS: readonly Skill[] = ["receptive", "productive"];
-
-interface Tally {
-  attempts: number;
-  correct: number;
-  exposures: number;
-  /** correctness of the last retrieval */
-  last?: boolean;
-  /** position in the log of the last retrieval (recency) */
-  lastAt: number;
-  claimed: boolean;
-}
+import { frontierItems, inScope, phraseEligible, type Scope } from "./curriculum";
+import { SKILLS, isMet, skillOf, type LearnerState } from "./model";
+import { retrievability } from "./schedule";
+import { pKnownOf, statusOf } from "./selectors";
+import { learnerStateOf } from "./state";
 
 export interface QueryOptions {
   /** items no list may return (e.g. the items of the card queued right now) */
   avoid?: readonly string[];
-  /** the curriculum order to walk (tests pass their own) */
+  /** restricts the lists to these items, in this order (tests pass their own); default: the curriculum */
   order?: readonly string[];
+  /** "now" for due reviews (epoch ms); default: the time of the log's last event (D-C12) */
+  now?: number;
 }
 
-const ofKinds = (ids: readonly string[], kinds: readonly ItemKind[]) => ids.filter((id) => {
-  const kind = itemKindOf(id);
-  return kind !== undefined && kinds.includes(kind);
-});
-
+/** Queries over the learner state of a log (memoised fold, so cheap to call on every card). */
 export function createLearnerQueries(events: readonly LearningEvent[], opts: QueryOptions = {}): LearnerQueries {
+  return queriesFor(learnerStateOf(events), opts);
+}
+
+export function queriesFor(state: LearnerState, opts: QueryOptions = {}): LearnerQueries {
+  const now = opts.now ?? state.lastTs;
   const avoid = new Set(opts.avoid ?? []);
-  const order = (opts.order ?? curriculumOrder()).filter((id) => !avoid.has(id));
-  const tallies = new Map<string, Tally>();
-  const confused = new Map<string, Map<string, number>>();
-  const cardItems = new Map<string, readonly string[]>();
-
-  const tally = (id: string, skill: Skill): Tally => {
-    const key = `${skill}|${id}`;
-    let t = tallies.get(key);
-    if (!t) tallies.set(key, (t = { attempts: 0, correct: 0, exposures: 0, lastAt: -1, claimed: false }));
-    return t;
+  const order = opts.order ?? curriculumOrder();
+  const position = new Map(order.map((id, i) => [id, i]));
+  const scope = (kinds: readonly ItemKind[]): Scope => ({ kinds, avoid, ...(opts.order ? { rank: position } : {}) });
+  const universe = (kinds: readonly ItemKind[]) => {
+    const s = scope(kinds);
+    return order.filter((id) => inScope(id, s));
   };
-  const peek = (id: string, skill: Skill) => tallies.get(`${skill}|${id}`);
+  const pos = (id: string) => position.get(id) ?? Number.MAX_SAFE_INTEGER;
+  const met = (id: string) => isMet(state.items.get(id));
+  const pKnown = (id: string, skill: Skill) => pKnownOf(state, id, skill);
+  /** sorts by the keys, then curriculum order */
+  const ranked = (ids: string[], key: (id: string) => readonly number[], n: number) =>
+    ids
+      .map((id) => ({ id, k: key(id) }))
+      .sort((a, b) => {
+        for (let i = 0; i < a.k.length; i++) if (a.k[i] !== b.k[i]) return a.k[i] - b.k[i];
+        return pos(a.id) - pos(b.id);
+      })
+      .slice(0, n)
+      .map((x) => x.id);
 
-  events.forEach((e, at) => {
-    if (e.type === "card.shown") cardItems.set(e.cardId, e.items);
-    else if (e.type === "evidence") {
-      const t = tally(e.itemId, e.skill);
-      if (e.kind === "exposure") t.exposures++;
-      else {
-        t.attempts++;
-        if (e.correct) t.correct++;
-        t.last = !!e.correct;
-        t.lastAt = at;
+  const frontier = (kinds: readonly ItemKind[], n: number) => frontierItems(state, scope(kinds), n);
+
+  const practice = (skill: Skill, kinds: readonly ItemKind[], n: number) =>
+    ranked(universe(kinds).filter(met), (id) => {
+      const rec = skillOf(state, id, skill);
+      if (rec?.relearnSince !== undefined) return [0, -rec.relearnSince, 0];
+      switch (statusOf(rec, now)) {
+        case "due":
+          return [1, retrievability(rec?.card, now), 0];
+        case "known":
+          return [3, retrievability(rec?.card, now), 0];
+        default:
+          // learning, a claim, or new for this skill: weakest first, then the longest unseen
+          return [2, pKnown(id, skill), rec?.lastTs ?? 0];
       }
-      if (e.confusedWith) {
-        const m = confused.get(e.itemId) ?? new Map<string, number>();
-        m.set(e.confusedWith, (m.get(e.confusedWith) ?? 0) + 1);
-        confused.set(e.itemId, m);
-      }
-    } else if (e.type === "card.exit" && e.exit === "too_easy") {
-      for (const id of cardItems.get(e.cardId) ?? []) for (const s of SKILLS) tally(id, s).claimed = true;
-    }
-  });
+    }, n);
 
-  const status = (id: string, skill: Skill): ItemStatus => {
-    const t = peek(id, skill);
-    if (!t || (t.attempts === 0 && t.exposures === 0 && !t.claimed)) return "new";
-    if (t.claimed || (t.correct >= 2 && t.last === true)) return "known";
-    return "learning";
-  };
-  const pKnown = (id: string, skill: Skill): number => {
-    const s = status(id, skill);
-    if (s === "new") return 0;
-    if (s === "known" || s === "due") return 0.9;
-    const t = peek(id, skill)!;
-    return (0.8 * (t.correct + 1)) / (t.attempts + 2);
-  };
-  const isNew = (id: string) => SKILLS.every((s) => status(id, s) === "new");
-  const lastWrong = (id: string, skill: Skill) => peek(id, skill)?.last === false;
-  const recency = (id: string, skill: Skill) => peek(id, skill)?.lastAt ?? -1;
-
-  const frontier = (kinds: readonly ItemKind[], n: number) => ofKinds(order, kinds).filter(isNew).slice(0, n);
-  const practice = (skill: Skill, kinds: readonly ItemKind[], n: number) => {
-    const rank = (id: string) => (lastWrong(id, skill) ? 0 : status(id, skill) === "learning" ? 1 : 2);
-    return ofKinds(order, kinds)
-      .filter((id) => status(id, skill) !== "new")
-      .sort((a, b) => rank(a) - rank(b) || pKnown(a, skill) - pKnown(b, skill) || recency(a, skill) - recency(b, skill))
-      .slice(0, n);
-  };
+  const relearnMark = (id: string) => Math.max(-1, ...SKILLS.map((s) => skillOf(state, id, s)?.relearnSince ?? -1));
 
   return {
     nextItems: (kinds, n) => [...new Set([...frontier(kinds, n), ...practice("receptive", kinds, n)])].slice(0, n),
     frontier,
     practice,
-    relearn: (kinds, n) => {
-      const latest = (id: string) => Math.max(...SKILLS.map((s) => (lastWrong(id, s) ? recency(id, s) : -1)));
-      return ofKinds(order, kinds).filter((id) => latest(id) >= 0).sort((a, b) => latest(b) - latest(a)).slice(0, n);
+    relearn: (kinds, n) => ranked(universe(kinds).filter((id) => relearnMark(id) >= 0), (id) => [-relearnMark(id)], n),
+    probes: (kinds, n) => ranked(
+      universe(kinds).filter((id) => state.items.get(id)?.probeSince !== undefined),
+      (id) => [state.items.get(id)!.probeSince!],
+      n,
+    ),
+    pool: (skill, kinds, n, minPKnown = 0) =>
+      ranked(universe(kinds).filter((id) => met(id) && pKnown(id, skill) >= minPKnown), (id) => [pKnown(id, skill)], n),
+    eligiblePhrases: (n) => ranked(universe(["phrase"]).filter((id) => phraseEligible(state, id)), (id) => [pKnown(id, "receptive")], n),
+    confusions: (id) => {
+      const counts = new Map<string, number>();
+      for (const s of SKILLS) {
+        for (const [other, k] of Object.entries(skillOf(state, id, s)?.confusions ?? {})) counts.set(other, (counts.get(other) ?? 0) + k);
+      }
+      return [...counts].sort((a, b) => b[1] - a[1]).map(([other]) => other);
     },
-    probes: (kinds, n) => ofKinds(order, kinds).filter((id) => SKILLS.some((s) => peek(id, s)?.claimed && peek(id, s)?.attempts === 0)).slice(0, n),
-    pool: (skill, kinds, n, minPKnown = 0) => ofKinds(order, kinds)
-      .filter((id) => status(id, skill) !== "new" && pKnown(id, skill) >= minPKnown)
-      .sort((a, b) => pKnown(a, skill) - pKnown(b, skill))
-      .slice(0, n),
-    eligiblePhrases: (n) => ofKinds(order, ["phrase"])
-      .filter((id) => PHRASES.get(id)?.signs.every((sign) => status(sign, "receptive") !== "new"))
-      .slice(0, n),
-    confusions: (id) => [...(confused.get(id) ?? new Map<string, number>())].sort((a, b) => b[1] - a[1]).map(([other]) => other),
-    status,
+    status: (id, skill) => statusOf(skillOf(state, id, skill), now),
     pKnown,
   };
 }
+
+const ofKinds = (ids: readonly string[], kinds: readonly ItemKind[]) => ids.filter((id) => inScope(id, { kinds, avoid: new Set() }));
 
 /** Items of the kinds in `content`, starting at position `start` and wrapping around (distinct while n ≤ pool). */
 export function walk(content: readonly string[], start: number, kinds: readonly ItemKind[], n: number): string[] {
@@ -135,7 +118,7 @@ export function walk(content: readonly string[], start: number, kinds: readonly 
 /**
  * Dev forced mode: every list answers with the content the developer picked (walked from `start`),
  * while statuses, estimates and confusions stay those of the log. Delegates explicitly, so it works
- * whatever object or class Part C returns from createLearnerQueries().
+ * whatever object createLearnerQueries() returns.
  */
 export function withContent(base: LearnerQueries, content: readonly string[], start: number): LearnerQueries {
   const items = (kinds: readonly ItemKind[], n: number) => walk(content, start, kinds, n);
