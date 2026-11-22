@@ -120,6 +120,7 @@ Tick items only when they are implemented **and** verified. The acceptance crite
 - [ ] Gates green; manual acceptance checks from the spec done
   - [x] typecheck, test and build; the automated acceptance checks in Chromium (2026-11-21)
   - [ ] manual checks on a real phone (front camera, touch feel, sounds) and on the desktop webcam (camera indicator light, MX Brio)
+    - [x] 2026-11-22: Pablo tested Part A on the Android phone, and it works.
 
 ### Parts built in parallel (A2, A3, B, C, D, E, F1, F2, H)
 
