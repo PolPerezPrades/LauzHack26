@@ -705,7 +705,7 @@ Rules for every part:
 
 ### 9.0 Parallel plan
 
-Part A is done. The remaining parts are built by **three parallel streams**, one per machine, while an **integrator** merges finished parts and does the checks that need special hardware. Part 0 (done with this plan) froze the contracts the parts share and split the files that several parts would otherwise edit, so parallel parts rarely touch the same lines.
+Part A is done. **Since 2026-11-22 at 10:10 the plan is the demo sprint (§9.0.7)**, which replaces the assignment below for the parts it lists. The remaining parts are built by **three parallel streams**, one per machine, while an **integrator** merges finished parts and does the checks that need special hardware. Part 0 (done with this plan) froze the contracts the parts share and split the files that several parts would otherwise edit, so parallel parts rarely touch the same lines.
 
 #### 9.0.1 Parts, dependencies and assignment
 
@@ -808,10 +808,25 @@ On Pablo's laptop, for each finished part, in the order they arrive:
 |---|---|---|---|
 | Pablo's laptop (the spec machine) | Ubuntu 26.04 | integrator; A3; device checks | Node 22.23.5 and npm 10.9.9 in `~/.local/bin`. Logitech MX Brio and the integrated webcam. Android moto g86 over USB (`adb reverse`, R-011). Chrome 157, Firefox 158. |
 | Pol's laptop | Ubuntu 26.04 | S2: B → E | May have no Node: install Node 22.23.5 in user space from the official tarball (no sudo). Camera tasks need a webcam, or Chrome's fake camera fed with a hand clip, as in Part A's tests. |
-| Max's Mac | macOS | S3: A2 → H → F1 | Safari (WebKit) checks for the viewer and the PWA. Python through `uv` to re-extract motion (Part H). Case-insensitive file system (rule 7). |
+| Max's Mac | macOS | **not used since 2026-11-22 (D-051)**; was S3: A2 → H → F1 | Safari (WebKit) checks for the viewer and the PWA. Python through `uv` to re-extract motion (Part H). Case-insensitive file system (rule 7). |
 | Ashlie's PC | Windows 11 | S1: C → D | Pure TypeScript work, nothing OS-specific. Use a fresh clone made after Part 0 (LF endings). Git Bash and PowerShell both work; `npm run setup:media` uses Windows' own `curl.exe` for the optional illustrations. |
 
 No part needs a particular OS, except: A3 needs the MX Brio; real-phone checks need the Android phone (or an iPhone over HTTPS); Safari checks need the Mac. Python (`uv`) is only needed to re-extract motion in Part H, and works on all three systems (`mediapipe` publishes wheels for Linux, macOS and Windows).
+
+#### 9.0.7 Demo sprint (2026-11-22)
+
+The LauzHack demo is on 2026-11-22 at about 11:30. Max's Mac is no longer used. From 10:10, three streams build one short part each, in increments, and the integrator merges them as they arrive (D-051):
+
+| Part | Title | Stream · machine | Branch | First cut (by 10:45) |
+|---|---|---|---|---|
+| B2 | Hands-free practice | S2 · Pol (Ubuntu) | `part-b2` | no viewer chrome on feed cards; lessons advance alone; camera tries pass on a held handshape or end "Too late!" after ~8 s; no mirror or self-grade in the feed |
+| D1 | Simple recommender (first cut of D) | S1 · Ashlie (Windows) | `part-d` | fresh profile per browser session; teach before testing; pacing; variety; a game about every 5 cards; reasons on every pick |
+| E1 | Two quick games (first cut of E) | S3 · Pablo's laptop, second agent session in the worktree `~/LauzHack26-e` | `part-e` | `GameFrame` lite and `game-rain`; then `game-match` |
+
+- **Timeline:** first working push by 10:45, last push by 11:00, freeze of `gesture_learning` at 11:10, then only demo fixes. Every push builds and passes the gates; the integrator merges each push with `--no-ff` (§9.0.5) and smoke-checks the feed.
+- **Ownership** for the sprint is in each part file (§1 of B2.md, §0 of D.md and E.md). In short: B2 owns the learning formats, `tasks/ui/` (not `GameFrame*`), `checkMode.ts`, `handshapes.ts` and the viewer; D1 owns `recommender/`, `app/`, `data/`, `learner/` and the picker; E1 owns the game files and `sound/effects.ts`. The feed stays read-only except a minimal D1 edit if unavoidable.
+- **Behaviour changes for the learner feed:** D-052 (hands-free practice: the app checks, decides and moves on; items with no detector rule are not asked productively), D-053 (no viewer chrome on feed cards), D-054 (a fresh learner log per browser session). They override §4.2's mirror and self checks and §7's persistent profile in the learner feed until a later part revisits them; `#dev` keeps the old paths.
+- **Deferred:** F1 (settings sheet, PWA, lazy libraries), the rest of D (§7.8–§7.12 scoring, simulations, ℹ, inspector) and of E (the other games, number rules, story, dialogue), and F2. After the demo, the same branches continue with their "Later increments", one increment at a time.
 
 ### Part A — Feed foundation
 

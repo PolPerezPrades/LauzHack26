@@ -1,6 +1,6 @@
 # Parts built in parallel
 
-One state file per part that is built in parallel (SPEC §9.0): [A2](A2.md) · [A3](A3.md) · [B](B.md) · [C](C.md) · [H](H.md) · [D](D.md) · [E](E.md) · [F1](F1.md) · [F2](F2.md).
+One state file per part that is built in parallel (SPEC §9.0): [A2](A2.md) · [A3](A3.md) · [B](B.md) · [C](C.md) · [H](H.md) · [B2](B2.md) · [D](D.md) · [E](E.md) · [F1](F1.md) · [F2](F2.md). The current wave is the demo sprint, below.
 
 The agent doing a part keeps its file current: status, checklist, decisions, questions, risks, log and the handoff. The integrator reads the file when it merges the part's branch and folds it into `PROJECT_STATE.md`. Agents in a parallel part don't edit `PROJECT_STATE.md`, `docs/SPEC.md`, `AGENTS.md` or the READMEs.
 
@@ -35,6 +35,74 @@ git push -u origin part-c
 ```
 
 A wave-2 part starts from `gesture_learning` once the integrator says the parts it needs are merged. If you are ready earlier, you MAY branch from your own finished branch instead (`git checkout part-c && git checkout -b part-d`); never rebase a branch you have pushed.
+
+## Demo sprint prompts (2026-11-22, 10:10–11:10)
+
+The demo is at about 11:30. Max's Mac is out (D-051). Three streams run at once, each from the new `gesture_learning` (with Part H merged): **B2** on Pol's laptop, **D1** on Ashlie's PC, **E1** on Pablo's laptop in a second agent session. Timeline: first working push by **10:45**, last push by **11:00**, integrator freeze at **11:10**, then only demo fixes. Push small and often: every push must build and pass the gates. After the demo, the same branches continue with their "Later increments".
+
+Pol's laptop (B2):
+
+```bash
+git checkout gesture_learning && git pull && git checkout -b part-b2
+```
+
+Ashlie's PC (D1), over HTTPS. If `part-d` already has work, keep it and take the new base: `git checkout part-d && git fetch origin && git merge origin/gesture_learning`. Otherwise:
+
+```bash
+git checkout gesture_learning && git pull && git checkout -b part-d
+```
+
+Pablo's laptop (E1), in its own worktree so the integrator's checkout stays free:
+
+```bash
+cd ~/LauzHack26 && git worktree add -b part-e ../LauzHack26-e gesture_learning
+cd ../LauzHack26-e/web && npm ci && cp -a ../../LauzHack26/web/public/media ../../LauzHack26/web/public/mediapipe public/
+# start the second agent session in ~/LauzHack26-e; its dev server: npm run dev -- --port 5174
+```
+
+Every machine, at each increment: `git add -A && git commit -m "Part <id>: <increment>" && git push -u origin <branch>`, then tell the integrator.
+
+### S2 · Pol's laptop · Part B2 "Hands-free practice", branch `part-b2`
+
+```text
+Do Part B2 (Hands-free practice) of Signa, and only that part. You are stream S2 on an Ubuntu laptop, branch part-b2, started from gesture_learning with Parts B and H merged (you built both). The demo is at 11:30: push a first working increment by 10:45 and the last by 11:00. Speed over completeness.
+
+1. Read AGENTS.md, PROJECT_STATE.md §2 and decisions D-051–D-056 (§4), docs/SPEC.md §9.0.7, and docs/parts/B2.md (your state file and checklist). Skim B.md §10 for your own handoff.
+2. Goal: the feed never asks the learner to record a clip or grade themselves. Hide the viewer's chips and credit line on feed cards (SignViewer controls={false} credit={false}, looping; #lab keeps them). Lessons move from watch to try by themselves. A camera try passes as soon as the hand holds the letter, or ends after tooLateMs (~8 s) as wrong with "Too late!" and the answer; A2's banner moves it on. Items with no detector rule (words, J, Z, numbers) get watch-only lessons and are never asked productively; their generators decline. Mirror and self-check stay for #dev only.
+3. Edit only B2's files (B2.md §1). The feed, recommender, app, data and games belong to other agents working now (D1: Ashlie; E1: Pablo's laptop). New strings in web/src/i18n/parts/learning.ts (English and Spanish).
+4. Check it in the browser with this laptop's webcam: a letter passes hands-free; a wrong hand shows "Too late!"; the camera-off path has no camera prompts.
+5. Keep docs/parts/B2.md current (checklist, decisions D-B201…, risks, log, handoff). Don't edit PROJECT_STATE.md, the spec, AGENTS.md or the READMEs. Don't commit or push; I will.
+
+At each increment: typecheck, test and build green, then tell me what changed, how you checked it, and what to test by hand.
+```
+
+### S1 · Ashlie's PC · Part D1 "Simple recommender", branch `part-d`
+
+```text
+Do Part D1 (Simple recommender) of Signa, and only that. You are stream S1 on a Windows 11 PC, branch part-d, on top of gesture_learning with Parts B, C (yours), A2, A3 and H merged. The demo is at 11:30: push a first working increment by 10:45 and the last by 11:00. Speed over completeness: rules, not the full scoring model.
+
+1. Read AGENTS.md, PROJECT_STATE.md §2 and decisions D-051–D-056 (§4), docs/SPEC.md §9.0.7 and §7.9 (reasons), and docs/parts/D.md §0 (the D1 checklist; the rest of the file is for later). Your C.md handoff lists the learner API.
+2. Build a rule-based card source in web/src/recommender/ and use it for the learner feed (app/): a fresh learner log per browser session (sessionStorage marker, D-054); teach before testing (a non-lesson card uses only items met in a lesson); at most one new item every 3 cards and none while recent accuracy is low; no same format twice in a row, no same item within 4 cards, failed items back after 2–3 cards; about 1 card in 5 a game from GAME_FORMATS when one is eligible (Part E1 fills that list right now); a fallback so the feed never stalls when generators decline (Part B2 makes them refuse words for productive cards). Every pick carries Reason[]. Constants in recommender/config.ts. Unit tests with learner/testLog.ts, including a learner who always fails.
+3. Edit only D's files (D.md §1 and §0, plus src/data/** for the fresh profile). Tasks, viewer and games belong to the other agents working now (B2: Pol; E1: Pablo's laptop). Touch feed/FeedScreen.tsx only if unavoidable, minimally, keeping A2's countdown wiring. New strings in web/src/i18n/parts/recommender.ts. Run the gates from PowerShell (R-C01).
+4. Check 20 cards by hand in the browser: no repeats, nothing asked before it was taught, a fresh profile in a new browser window.
+5. Keep docs/parts/D.md current (checklist, decisions D-D01…, risks, log, handoff). Don't edit PROJECT_STATE.md, the spec, AGENTS.md or the READMEs. Don't commit or push; I will.
+
+At each increment: typecheck, test and build green, then tell me what changed, how you checked it, and what to test by hand.
+```
+
+### S3 · Pablo's laptop (worktree `~/LauzHack26-e`) · Part E1 "Two quick games", branch `part-e`
+
+```text
+Do Part E1 (Two quick games) of Signa, and only that. You are stream S3 on an Ubuntu laptop, in the git worktree ~/LauzHack26-e on branch part-e, from gesture_learning with Parts B, C, A2, A3 and H merged. The integrator works in ~/LauzHack26 at the same time; don't touch that folder. Use the dev server on port 5174. The demo is at 11:30: push a first working increment by 10:45 and the last by 11:00. Speed over completeness.
+
+1. Read AGENTS.md, PROJECT_STATE.md §2 and decisions D-051–D-056 (§4), docs/SPEC.md §9.0.7 and §4.7, docs/parts/B.md §10 (what you can reuse), and docs/parts/E.md §0 (the E1 checklist; the rest is for later). The old web/src/activities/SignRain.tsx and Matching.tsx are the references for the ports.
+2. Build a minimal GameFrame (3-2-1 start on its own, HUD, end screen ~2 s, then the card's result, which A2's banner moves on) and game-rain (receptive, ~30 s, 3 misses), registered in GAME_FORMATS and playable from #dev. Items only from LearnerQueries (pool, confusions), with a fallback to the first curriculum unit when the learner knows fewer than 4 items. Evidence per item and a game.score. Then, if time allows, game-match (video or one shared viewer, not one 3D canvas per tile).
+3. Edit only E1's files (E.md §0). Lessons, viewer, recommender, feed and data belong to the other agents working now (B2: Pol; D1: Ashlie; Part D1 picks games from GAME_FORMATS by itself). New strings in web/src/i18n/parts/games.ts (English and Spanish).
+4. Play each game by hand at phone width, with the camera off too.
+5. Keep docs/parts/E.md current (checklist, decisions D-E01…, risks, log, handoff). Don't edit PROJECT_STATE.md, the spec, AGENTS.md or the READMEs. Don't commit or push; I will.
+
+At each increment: typecheck, test and build green, then tell me what changed, how you checked it, and what to test by hand.
+```
 
 ## Wave 1 prompts
 

@@ -1,10 +1,30 @@
 # Part E — Minigames
 
-- **Status:** not started
-- **Stream:** S2 "tasks" · Pol's laptop (Ubuntu 26.04) · wave 2 · branch `part-e`
+- **Status:** not started · demo cut E1 first (§0)
+- **Stream:** S3 · **Pablo's laptop (Ubuntu 26.04), second agent session in the worktree `~/LauzHack26-e`** (was S2 · Pol, D-051) · demo sprint · branch `part-e`
 - **Needs merged first:** B · **Better after:** C (real queries for the pools)
 - **Spec:** [SPEC §9, Part E](../SPEC.md#part-e--minigames), plus §4.7, §3.7 (game sounds), §8.3; the parallel rules in [§9.0](../SPEC.md#90-parallel-plan)
 - **Built at the same time as:** D (recommender, Ashlie), F1 (settings sheet and PWA, Max)
+
+## 0. Demo cut: E1 "two quick games" (2026-11-22, D-056)
+
+E moves to **Pablo's laptop** (stream S3, a second agent session in its own worktree, D-051), because Pol takes B2. The demo is on 2026-11-22 at about 11:30 (SPEC §9.0.7). Push a first working increment by **10:45** and the last by **11:00**; the integrator freezes `gesture_learning` at 11:10. The full checklist below becomes later increments E2+.
+
+Owned for E1: `src/tasks/gameFormats.ts`, `gameViews.tsx`, `src/tasks/game-*/`, `src/tasks/ui/GameFrame*`, `src/sound/effects.ts`, `src/i18n/parts/games.ts`. **Not** in E1: `lib/handshapes.ts` and `camera/checkMode.ts` (the number rules move to B2's later increments), `dev/DevScreen.tsx`, the content files (story and dialogue are later).
+
+**First increment (by 10:45)**
+
+- [ ] `GameFrame`: a 3-2-1 start that runs on its own, a HUD (score, time left), an end screen with the score for about 2 s, then the card's result, which A2's banner moves on. No start button. Game sounds in `sound/effects.ts` (reuse the existing synth).
+- [ ] `game-rain` (from the old `activities/SignRain.tsx`): signs fall, the learner taps the matching word; receptive, no camera; about 30 s, at most 3 misses.
+- [ ] Registered in `GAME_FORMATS`, playable from `#dev` (forced format), reports evidence for every item and a `game.score`, ends within its time limit, works with the camera off.
+- [ ] Items only from `LearnerQueries` (`pool()` of known items, `confusions()` for wrong options), with a small fallback set (the first curriculum unit) when the learner knows fewer than 4 items, so a fresh profile can still play. Generator tests with `fakeQueries()`.
+- [ ] Gates green; played by hand in the browser at phone width.
+
+**Second increment (by 11:00, if the first is in)**
+
+- [ ] `game-match` (from `activities/Matching.tsx`): pair 4 signs with 4 words against the clock. Use video or one shared viewer, not one 3D canvas per tile (WebGL context budget, §8).
+
+**Later increments (after the demo):** a camera game (spell sprint, using B2's hands-free check), memory, the rest of §2.
 
 This is the part's state file (SPEC §9.0.4). Keep it current while you work. The integrator reads it when merging the branch and folds it into `PROJECT_STATE.md`; don't edit that file, the spec, `AGENTS.md` or the READMEs.
 

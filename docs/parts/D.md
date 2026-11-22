@@ -1,10 +1,29 @@
 # Part D — Recommender
 
-- **Status:** not started
+- **Status:** not started · demo cut D1 first (§0)
 - **Stream:** S1 "learner brain" · Ashlie's PC (Windows 11) · wave 2 · branch `part-d`
 - **Needs merged first:** C · **Better after:** B (the cold-start metric needs lessons)
 - **Spec:** [SPEC §9, Part D](../SPEC.md#part-d--recommender), plus §7.8–§7.12, §3.4 (queue), §8.3; the parallel rules in [§9.0](../SPEC.md#90-parallel-plan)
 - **Built at the same time as:** E (minigames, Pol), F1 (settings sheet and PWA, Max)
+
+## 0. Demo cut: D1 "simple recommender" (2026-11-22, D-055)
+
+The demo is on 2026-11-22 at about 11:30 (SPEC §9.0.7). Push a first working increment by **10:45** and the last by **11:00**; the integrator freezes `gesture_learning` at 11:10. The full Part D below (§7.8–§7.12: scores, softmax, simulations, ℹ, inspector) becomes later increments D2+. If `part-d` already holds Part D work, keep it, but ship D1 first.
+
+Owned for D1, on top of §1: `web/src/data/**` (the fresh profile; F1 is deferred). Not yours: `src/tasks/**` (B2 and E1), `src/viewer/**` (B2).
+
+**First increment (by 10:45)**
+
+- [ ] **Fresh profile per browser session:** when the browser (tab session) opens the learner feed, it starts from an empty learner log; reloading the page keeps the session's progress. A `sessionStorage` marker decides it: no marker → clear the learner log (the `signa` events store; leave `signa-dev` alone), then set the marker. The first card is the gesture tutorial again (D-054).
+- [ ] **Teach before testing:** a non-lesson card only uses items the learner has met in a lesson (status not `new`); a new item always comes first as a lesson. Quiz distractors may be any item.
+- [ ] **Pace:** at most one new item every 3 cards; no new item while recent accuracy (last 5 answers) is under 60 %; a "too hard" swipe slows new items, "too easy" speeds them up.
+- [ ] **Variety:** never the same format twice in a row, nor the same item within the last 4 cards; a failed item comes back after 2–3 other cards, not right away (fixes R-028 and R-B01).
+- [ ] **Games:** when `GAME_FORMATS` (`tasks/gameFormats.ts`, filled by E1) has an eligible game, about 1 card in 5 is a game. Works with an empty list.
+- [ ] **Never stall:** when every candidate declines (e.g. B2's generators refuse words for productive cards), fall back to a lesson of the next item, then a quiz-choice.
+- [ ] Every pick carries machine-readable reasons (`Reason[]`, SPEC §7.9) for the later ℹ button; constants in `recommender/config.ts`; the rules unit-tested on `learner/testLog.ts` logs, including a learner who always fails.
+- [ ] The learner feed uses it (`app/`); the old picker may stay for `#dev`. Gates green; 20 cards checked by hand in the browser.
+
+**Later increments (after the demo):** the full checklist in §2.
 
 This is the part's state file (SPEC §9.0.4). Keep it current while you work. The integrator reads it when merging the branch and folds it into `PROJECT_STATE.md`; don't edit that file, the spec, `AGENTS.md` or the READMEs.
 

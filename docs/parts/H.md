@@ -1,6 +1,6 @@
 # Part H — Hand and avatar quality
 
-- **Status:** in progress: implementation done and gates green; waiting for the user's look at the before/after review set (the last MUST, §2)
+- **Status:** merged in `917f48d` (2026-11-22). Still open: the user's look at the review set, the Android 60 fps check, Safari, and a fluent signer's review of the changed letters.
 - **Stream:** S3 "look and feel" · run on **Pol's laptop (Ubuntu 26.04)** instead of Max's Mac (D-H01) · wave 1 · branch `part-h`
 - **Needs merged first:** Part 0 · **Better after:** —
 - **Spec:** [SPEC §9, Part H](../SPEC.md#part-h--hand-and-avatar-quality), plus §2.1, §8.5, §8.6, and `docs/fase2.md` (how the viewer is built); the parallel rules in [§9.0](../SPEC.md#90-parallel-plan)

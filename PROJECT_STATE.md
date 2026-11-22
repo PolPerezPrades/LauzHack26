@@ -60,13 +60,8 @@ Only the integrator (Pablo's laptop, SPEC §9.0.5) edits this file, `docs/SPEC.m
 
 - **Last updated:** 2026-11-22
 - **Deadline:** the hackathon ends on **2026-11-22 at 11:30** (local time). Favour a demoable app over full checklists: cut optional items, keep every merge green, and stop merging about 30 minutes before the end.
-- **Phase:** parallel delivery, wave 1 (SPEC §9.0, D-041). **Merged into `gesture_learning`: Parts A3, C, B and A2.** Wave 1 has only Part H left (S3, Max), and it can start now. Wave 2 can start:
-  - Part D (S1, Ashlie): no `part-d` branch on `origin` yet. It must take `gesture_learning` before its feed edits (R-027).
-  - Part E (S2, Pol): B is merged.
-  - Part F1 (S3): C and A2 are merged; it follows H on Max's Mac.
-
-  Part A is done (real-device checks still open, R-016).
-- **Branch:** `gesture_learning`. Part A is `5d99806`, Part 0 `98d2fb7`. Merges: `725a508` (`part-a3`), `0e2fc81` (`part-c`), `bd6a485` (`part-b`) and `a33182e` (`part-a2`). The agent made the merge commits at the user's request on 2026-11-22 and pushed nothing. Each part is built on its own branch (`part-<id>`, SPEC §9.0.1) and merged here by the integrator.
+- **Phase:** **demo sprint** (SPEC §9.0.7, D-051), from 10:10 to the freeze at 11:10. **Merged into `gesture_learning`: Parts A3, C, B, A2 and H.** Max's Mac is out. Three streams at once: **B2** hands-free practice (Pol, `part-b2`), **D1** simple recommender (Ashlie, `part-d`), **E1** two quick games (Pablo's laptop, second agent session in the worktree `~/LauzHack26-e`, `part-e`). F1 is deferred. Part A is done (real-device checks still open, R-016).
+- **Branch:** `gesture_learning`. Part A is `5d99806`, Part 0 `98d2fb7`. Merges: `725a508` (`part-a3`), `0e2fc81` (`part-c`), `bd6a485` (`part-b`), `a33182e` (`part-a2`) and `917f48d` (`part-h`, after the deadline notes `2d54100`). The agent made the merge commits at the user's request on 2026-11-22 and pushed nothing. Each part is built on its own branch (`part-<id>`, SPEC §9.0.1) and merged here by the integrator.
 - **What works now:** as after Part 0, plus:
   - **A3:** an MX Brio opens at its default framing in Chrome (zoom at the minimum, pan and tilt 0) through the PTZ constraints, which are asked for only for the Brio. The first time in a profile this adds a second Chrome prompt (R-A301). Other cameras get no PTZ request. Firefox and Safari skip the reset without an error (R-A303).
   - **C:** the learner model v2 (SPEC §7.3–§7.7) is a pure, memoised fold of the log in `src/learner/`, and `createLearnerQueries()` answers every list from it, with Part 0's signatures. The XP/streak chip reads the learner state, with the same numbers. The simple picker passes each format the learner's `ce`. Dev mode has a learner-state inspector (sandbox or real log) and an "auto" challenge.
@@ -81,18 +76,10 @@ Only the integrator (Pablo's laptop, SPEC §9.0.5) edits this file, `docs/SPEC.m
 - **Quality gates (2026-11-22, after merging B and A2, on this laptop):** `npm ci` ✓ (lockfile unchanged); `npm run typecheck` ✓; `npm test` ✓ (33 files, 318 tests); `npm run build` ✓ (the R-015 warning; the main chunk is 1,753 kB, 490 kB gzip); `node web/scripts/verify-letters.ts` ✓. Headless Chrome 157 over the DevTools protocol against `npm run dev`, with fresh profiles and Chrome's fake camera: 92 checks on desktop, dev forced mode, the real feed, phone emulation and three phone sizes, all passing, with no console errors (§7). The 20 small-screen checks passed in their own runs; in the runs where the harness left `#dev` too fast, every load stayed on "Loading…" (R-029). A scratch Vitest run of B's generators on C's real queries: 5/5.
 - **Toolchain:** four machines (SPEC §9.0.6). This laptop (the spec machine, integrator) has Node 22.23.5 and npm 10.9.9 in `~/.local/bin`, the MX Brio and the Android phone. Pol's laptop now has Node 22.23.5 in user space (B.md §9), and so does Max's Mac (A2.md §9). Ashlie's Windows PC has Node 22.18 or newer. Every machine installs with `npm ci` (D-050). Ashlie's PC has no SSH key for `origin`, so it pulls and pushes over HTTPS (C.md §9), and runs the gates from PowerShell (R-C01).
 - **Next step:**
-  1. The user commits this fold and pushes `gesture_learning` (with the two new merge commits).
-  2. Tell the streams (prompts and notes in [`docs/parts/README.md`](docs/parts/README.md)):
-     - S1 (Ashlie, Part D): merge `gesture_learning` into `part-d` before the `FeedScreen.tsx` and `CardParts.tsx` edits (R-027). R-B01 and R-B02 are D's, and A2's countdown wiring must survive (A2.md §8).
-     - S2 (Pol): start **Part E** from the new `gesture_learning`.
-     - S3 (Max): start **Part H** from the new `gesture_learning`, then F1.
-  3. By hand on this laptop, with the MX Brio plugged in (it wasn't during this merge):
-     - A3's Brio check after B (A3.md §8) and the look at the preview (A3.md §10);
-     - B's camera lesson with a real hand (B.md §8).
-  4. By hand on the Android phone (`adb reverse`, R-011):
-     - the mirror with the front camera (B.md §8);
-     - the feel of the 0.6 s and 2.5–5 s waits, and a finger resting on the banner (A2.md §8).
-  5. Still open from the last fold: the XP/streak chip on the real log in the user's usual Chrome profile (C.md §8).
+  1. The user commits these docs and pushes `gesture_learning` (with `2d54100` and `917f48d`), so the three streams start from it.
+  2. Start the streams with the setup and prompts in [`docs/parts/README.md`](docs/parts/README.md) ("Demo sprint prompts"): B2 on Pol's laptop, D1 on Ashlie's PC, E1 on Pablo's laptop in `~/LauzHack26-e`.
+  3. Integrator: merge each push as it arrives (`--no-ff`, gates, feed smoke check). Suggested order if several land together: B2, D1, E1. Freeze at 11:10, then rehearse the demo on the laptop (and the phone over `adb reverse` if time allows).
+  4. After the demo: fold H (H.md) and the sprint parts into this file properly, then continue with the "Later increments" of B2, D and E, then F1 and F2.
 
 | Part | Title | Wave | Stream · machine | Branch | Status | State file |
 |---|---|---|---|---|---|---|
@@ -102,10 +89,11 @@ Only the integrator (Pablo's laptop, SPEC §9.0.5) edits this file, `docs/SPEC.m
 | A3 | MX Brio defaults | 1 | integrator · Pablo | `part-a3` | done, merged in `725a508` (the look at the preview is open, R-016) | [`docs/parts/A3.md`](docs/parts/A3.md) |
 | B | Learning task formats | 1 | S2 · Pol (Ubuntu) | `part-b` | done, merged in `bd6a485` (real-hand checks open, R-B04) | [`docs/parts/B.md`](docs/parts/B.md) |
 | C | Learner model v2 | 1 | S1 · Ashlie (Windows) | `part-c` | done, merged in `0e2fc81` | [`docs/parts/C.md`](docs/parts/C.md) |
-| H | Hand and avatar quality | 1 (after A2) | S3 · Max (macOS) | `part-h` | not started (A2 is merged, so it can start) | [`docs/parts/H.md`](docs/parts/H.md) |
-| D | Recommender | 2 | S1 · Ashlie (Windows) | `part-d` | not started here (C is merged, so it can start; no `part-d` on `origin` yet) | [`docs/parts/D.md`](docs/parts/D.md) |
-| E | Minigames | 2 | S2 · Pol (Ubuntu) | `part-e` | not started (B is merged, so it can start) | [`docs/parts/E.md`](docs/parts/E.md) |
-| F1 | Settings sheet and PWA | 2 | S3 · Max (macOS) | `part-f1` | not started (C and A2 are merged; after H on S3) | [`docs/parts/F1.md`](docs/parts/F1.md) |
+| H | Hand and avatar quality | 1 (after A2) | S3, run on Pol's laptop (D-H01) | `part-h` | done, merged in `917f48d` (review set, Android 60 fps, Safari and a signer's review open) | [`docs/parts/H.md`](docs/parts/H.md) |
+| B2 | Hands-free practice | demo sprint | S2 · Pol (Ubuntu) | `part-b2` | not started | [`docs/parts/B2.md`](docs/parts/B2.md) |
+| D | Recommender (demo cut D1 first) | demo sprint | S1 · Ashlie (Windows) | `part-d` | not started here (D1 in the sprint, D.md §0) | [`docs/parts/D.md`](docs/parts/D.md) |
+| E | Minigames (demo cut E1 first) | demo sprint | S3 · Pablo's laptop, worktree `~/LauzHack26-e` | `part-e` | not started (E1 in the sprint, E.md §0) | [`docs/parts/E.md`](docs/parts/E.md) |
+| F1 | Settings sheet and PWA | after the demo | free machine | `part-f1` | deferred (D-051) | [`docs/parts/F1.md`](docs/parts/F1.md) |
 | F2 | Final polish and cleanup | 3 | integrator + free streams | `part-f2` | not started (needs all) | [`docs/parts/F2.md`](docs/parts/F2.md) |
 | G | Optional extensions | later | — | — | not planned | §3 below |
 
@@ -286,6 +274,12 @@ Format: `D-NNN · date · decision` — *why* — status. Newest at the bottom. 
 - **D-048 · 2026-11-22 · Part F is split into F1 (settings sheet, PWA, lazy libraries; wave 2) and F2 (performance with the games, accessibility, deleting the old app, READMEs, device checks; wave 3).** Every deletion of old modules (`activities/`, `activityCatalog`, `orchestrator`, `profile`) moves to F2. — *Why:* the old modules import each other, so a parallel part deleting one would break another part's build. F1 doesn't need the games, so it can run in wave 2. — active
 - **D-049 · 2026-11-22 · Machines:** S1 on Ashlie's Windows 11 PC (pure TypeScript, so nothing OS-specific), S2 on Pol's Ubuntu laptop (camera work in the same browser as the integrator's), S3 on Max's Mac (visual work, Safari checks, Python for motion), the integrator on Pablo's Ubuntu laptop (the MX Brio and the Android phone). — *Why:* each part's hardware and OS needs (SPEC §9.0.6). — active
 - **D-050 · 2026-11-22 · Every machine installs with `npm ci`, never `npm install`.** Node 22.18 or newer, so that `npm start` can strip types; npm 10 or 11. — *Why:* `npm ci` leaves the lockfile alone whatever the npm version (Q-007), and lockfile changes would conflict between branches. It refines D-036. — active
+- **D-051 · 2026-11-22 · Demo sprint (SPEC §9.0.7).** Max's Mac is out. Pol builds B2, Ashlie builds D1 (the first cut of D), and a second agent session on Pablo's laptop builds E1 (the first cut of E) in the worktree `~/LauzHack26-e`, which answers Q-010. First working push by 10:45, last by 11:00, freeze at 11:10. F1 is deferred; D and E continue after the demo as increments. — *Why:* about 1 h 20 min to the demo; the user ranked hands-free practice, a simple recommender and the games as the most important, and the Mac might be a problem. Supersedes D-049's machine list. — active
+- **D-052 · 2026-11-22 · Hands-free practice in the learner feed.** The learner never records a clip or grades themselves. Items with a detector rule (the 24 static letters) are checked continuously: a held handshape passes; no match within `tooLateMs` (about 8 s) ends the card as wrong with "Too late!" and the answer, and A2's banner moves on. Items with no detector rule (words, phrases, J, Z, numbers until their rules exist) get watch-only lessons and receptive tasks only. Camera off: receptive tasks and watch-only lessons. Mirror and self checks stay in the code for `#dev`. — *Why:* the user wants a scrolling feel (the system checks, decides and moves on); the camera can only check static handshapes. Overrides SPEC §4.2's mirror and self checks in the learner feed. — active
+- **D-053 · 2026-11-22 · No viewer chrome on feed cards:** no Replay, Slow or reset chips, no mode label, no credit line; the sign loops. `#lab` keeps them. Done with `SignViewer`'s existing `controls` and `credit` props, so no contract change. — *Why:* the user's request; the small text was clutter. — active
+- **D-054 · 2026-11-22 · A fresh learner profile per browser session.** When the browser opens the learner feed with no `sessionStorage` marker, the learner log (`signa`, not `signa-dev`) is cleared and the feed starts at the tutorial; reloads keep the session's progress. — *Why:* the user's request for the demo. It overrides §7's persistent profile for now; a later part can turn it into a setting. — active
+- **D-055 · 2026-11-22 · Part D's demo cut, D1:** a rule-based card source (teach before testing, pacing, variety, games about 1 in 5, a no-stall fallback, reasons on every pick) instead of §7.8–§7.12's scoring and simulations, which become D2+. — *Why:* the tasks felt repetitive or asked for unknown signs (R-028, R-B01), and the full recommender doesn't fit the time. — active
+- **D-056 · 2026-11-22 · Part E's demo cut, E1:** `GameFrame` lite plus `game-rain`, then `game-match`, receptive and camera-free, items from the learner queries with a first-unit fallback. The number rules move to B2's later increments. — *Why:* the games are the user's top pending feature; receptive games need no new recognition. — active
 
 **Decisions of merged parallel parts.** These are index lines (D-044). The decisions themselves are in each part file, and they are as binding as the ones above.
 
@@ -355,7 +349,7 @@ Each question has the default that agents use until the user answers. When answe
 - **Q-007** Which npm do you use? AGENTS.md says npm 10, but `package-lock.json` has fields written by npm 11 or later, and npm 10 removes them on every install. — *Default: npm 11.21.2 (D-036). If you use npm 10, expect a lockfile diff of removed `libc` lines.* *On the spec machine (npm 10.9.9), `npm ci` installs from the lockfile without rewriting it (checked 2026-11-21).*
 
 - **Q-009** "Twice as fast" for a correct answer: Part A2 halves the wait before the card leaves (1.2 s → 0.6 s) and keeps the 280 ms fly-out animation that every exit shares. Did you also mean the fly-out itself? — *Default: only the wait (D-045). Both are constants in `feed/config.ts`.*
-- **Q-010** Should Pablo's laptop also run a fourth stream (for example F1, or a share of E's games) instead of only integrating? — *Default: no. The integrator does A3, the merges, the device checks and its share of F2 (SPEC §9.0).*
+- **Q-010** Should Pablo's laptop also run a fourth stream (for example F1, or a share of E's games) instead of only integrating? — *Default: no. The integrator does A3, the merges, the device checks and its share of F2 (SPEC §9.0).* **Answered 2026-11-22: yes, for the demo sprint: E1 runs in a second agent session on this laptop (D-051).**
 
 From merged parallel parts (details in their part files):
 
@@ -456,6 +450,13 @@ From merged parallel parts (details in their part files):
 ## 7. Session log
 
 Newest first. One entry per session: date · part · what was done · verification · next step.
+
+- **2026-11-22 · Integration: Part H merged; demo sprint planned** (integrator, at the user's request)
+  - *Commits (made by the agent, nothing pushed):* `2d54100` (the user's deadline notes in `AGENTS.md` and this file), then `part-h` (`7770351`) as `917f48d` with `--no-ff`. The dry run was clean; H's one cross-part edit is an optional hand `view` field in `src/content/signs.ts`; `SignViewer` props are only additive; no dependency or lockfile change.
+  - *Verification:* typecheck ✓, `npm test` ✓ (36 files, 342 tests), build ✓ (R-015 warning, 1,766 kB main chunk). Headless Chrome 157: the feed and `#lab` load with no console errors (a `THREE.Clock` deprecation warning from three.js itself).
+  - *Not done:* the full fold of H.md into §3–§6 (after the demo).
+  - *Plan:* the user ranked their wishes after testing: hide the viewer's small text, hands-free camera checks with "Too late!", a simple recommender with a fresh profile per session, the games. Recorded as the demo sprint: D-051–D-056, SPEC §9.0.7, the new `docs/parts/B2.md`, the D1 and E1 cuts in D.md and E.md §0, F1 deferred, and the prompts in `docs/parts/README.md`.
+  - *Next step:* the user commits these docs and pushes `gesture_learning`; the three streams start.
 
 - **2026-11-22 · Integration: Parts B and A2 merged** (integrator, at the user's request)
   - *Merged:* `part-b` (`2d35c3b`) as `bd6a485`, then `part-a2` (`6336c6d`) as `a33182e`, both with `--no-ff` into `gesture_learning`, in the order they were pushed. Dry runs with `git merge-tree` were clean. B and A2 share no file. Each touched one file that had changed on `gesture_learning`: B `feed/simplePicker.test.ts` (C's), A2 `core/types.ts` (comments on both sides).
