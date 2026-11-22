@@ -23,7 +23,8 @@
     "es": "Todos los dedos curvados tocan el pulgar: forma una O."
   },
   "render": {
-    "type": "hand"
+    "type": "hand",
+    "view": [0.12, 0.12, 1]
   },
   "video": {
     "src": "/media/letters-video/O.mp4",

@@ -23,7 +23,8 @@
     "es": "La mano forma una C, vista de lado."
   },
   "render": {
-    "type": "hand"
+    "type": "hand",
+    "view": [0.1, 0.12, 1]
   },
   "video": null,
   "references": [

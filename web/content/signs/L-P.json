@@ -23,7 +23,8 @@
     "es": "Como la K, pero apuntando hacia abajo."
   },
   "render": {
-    "type": "hand"
+    "type": "hand",
+    "view": [0.7, 0.12, 0.7]
   },
   "video": {
     "src": "/media/letters-video/P.mp4",

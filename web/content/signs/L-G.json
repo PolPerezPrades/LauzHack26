@@ -23,7 +23,8 @@
     "es": "Índice y pulgar paralelos, apuntando hacia un lado."
   },
   "render": {
-    "type": "hand"
+    "type": "hand",
+    "view": [0.15, 0.12, 1]
   },
   "video": {
     "src": "/media/letters-video/G.mp4",

@@ -10,17 +10,17 @@
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { HANDSHAPES_AUTHORED } from "../src/viewer/handshapeLibrary.ts";
-import { dir, handJointsLocal, orientationMatrix, toMediaPipe, transform, vec, type HandPose, type V3 } from "../src/viewer/kinematics.ts";
+import { dir, handJointsLocal, JOINT_LIMITS, orientationMatrix, toMediaPipe, transform, vec, type HandPose, type V3 } from "../src/viewer/kinematics.ts";
 import { computeFeatures, evaluateLetter } from "../src/lib/handshapes.ts";
 
 const root = new URL("../", import.meta.url);
 const ref = JSON.parse(readFileSync(new URL("content/reference/letter-poses.json", root), "utf8"));
 
+// the search stays inside the anatomical ranges the renderer clamps to (kinematics.ts)
 const PARAMS: [keyof HandPose, string, number, number][] = [
-  ["thumb", "yaw", -60, 95], ["thumb", "pitch", -10, 85], ["thumb", "roll", -100, 0], ["thumb", "mcp", -10, 75], ["thumb", "ip", -15, 85],
-  ...(["index", "middle", "ring", "pinky"] as const).flatMap((f) => [
-    [f, "mcp", -10, 95], [f, "pip", 0, 115], [f, "dip", 0, 85], [f, "spread", -25, 25],
-  ] as [keyof HandPose, string, number, number][]),
+  ...Object.entries(JOINT_LIMITS.thumb).map(([k, [lo, hi]]) => ["thumb", k, lo, hi] as [keyof HandPose, string, number, number]),
+  ...(["index", "middle", "ring", "pinky"] as const).flatMap((f) =>
+    Object.entries(JOINT_LIMITS.finger).map(([k, [lo, hi]]) => [f, k, lo, hi] as [keyof HandPose, string, number, number])),
 ];
 const get = (p: HandPose, [g, k]: (typeof PARAMS)[number]) => (p[g] as unknown as Record<string, number>)[k];
 const set = (p: HandPose, [g, k]: (typeof PARAMS)[number], v: number) => ((p[g] as unknown as Record<string, number>)[k] = v);

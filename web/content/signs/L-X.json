@@ -23,7 +23,8 @@
     "es": "Índice doblado en gancho."
   },
   "render": {
-    "type": "hand"
+    "type": "hand",
+    "view": [0.7, 0.12, 0.7]
   },
   "video": null,
   "references": [

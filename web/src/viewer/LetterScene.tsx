@@ -8,7 +8,7 @@ import { Line } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import type { SignSpec } from "../content/signs";
 import { HandMesh, type Highlight } from "./HandMesh";
-import { HANDSHAPES, movementKeyframes, type Keyframe } from "./handshapeLibrary";
+import { HANDSHAPES, movementPath, type MovementPath } from "./handshapeLibrary";
 import { dir, handJointsLocal, lerpDir, lerpPose, orientationMatrix, transform, vec, type HandPose, type V3 } from "./kinematics";
 
 export const LETTER_MOVE_SECONDS = 1.5;
@@ -16,29 +16,19 @@ const BLEND_SECONDS = 0.18;
 
 interface Frame { pose: HandPose; fingers: V3; palm: V3; offset: V3 }
 
-export function letterFrames(spec: SignSpec): { base: Frame; keys: Keyframe[] | null; tip: number } {
+export function letterFrames(spec: SignSpec): { base: Frame; keys: MovementPath | null; tip: number } {
   const ph = spec.phonology!;
   const pose = HANDSHAPES[ph.handshape] ?? HANDSHAPES.relaxed;
   const base: Frame = { pose, fingers: dir(ph.orientation.fingers), palm: dir(ph.orientation.palm), offset: [0, 0, 0] };
-  const keys = ph.movement ? movementKeyframes(ph.movement.shape) : null;
+  const keys = ph.movement ? movementPath(ph.movement.shape) : null;
   const tip = ph.movement?.articulator === "pinky" ? 20 : 8;
   return { base, keys, tip };
 }
 
-/** Pose at normalized time t (0..1) of the letter's movement. */
-export function frameAt(base: Frame, keys: Keyframe[] | null, t: number): Frame {
+/** Pose at normalized time t (0..1) of the letter's movement (a smooth path, Part H). */
+export function frameAt(base: Frame, keys: MovementPath | null, t: number): Frame {
   if (!keys) return base;
-  let i = 0;
-  while (i < keys.length - 2 && t > keys[i + 1].t) i++;
-  const a = keys[i], b = keys[i + 1];
-  const u = Math.min(1, Math.max(0, (t - a.t) / (b.t - a.t || 1)));
-  const s = u * u * (3 - 2 * u); // ease in-out
-  return {
-    pose: base.pose,
-    fingers: lerpDir(a.fingers, b.fingers, s),
-    palm: lerpDir(a.palm, b.palm, s),
-    offset: [a.offset[0] + (b.offset[0] - a.offset[0]) * s, a.offset[1] + (b.offset[1] - a.offset[1]) * s, a.offset[2] + (b.offset[2] - a.offset[2]) * s],
-  };
+  return { pose: base.pose, ...keys.at(t) };
 }
 
 export function jointsOf(f: Frame): V3[] {
@@ -52,9 +42,9 @@ export function letterExtent(spec: SignSpec): V3[] {
   for (let k = 0; k <= (keys ? 12 : 0); k++) {
     const j = jointsOf(frameAt(base, keys, k / 12));
     pts.push(...j);
-    // include the first part of the forearm so the wrist is never cut
+    // include a little of the forearm so the wrist is never cut
     const along = vec.norm(vec.sub(j[0], j[9]));
-    pts.push(vec.add(j[0], vec.scale(along, 1.0)));
+    pts.push(vec.add(j[0], vec.scale(along, 0.45)));
   }
   return pts;
 }
@@ -77,7 +67,7 @@ export function LetterScene({ spec, speed, playId, highlight, onEnded, holdSecon
 
   const path = useMemo(() => {
     if (!keys) return null;
-    return Array.from({ length: 48 }, (_, k) => jointsOf(frameAt(base, keys, k / 47))[tip]);
+    return Array.from({ length: 72 }, (_, k) => jointsOf(frameAt(base, keys, k / 71))[tip]);
   }, [base, keys, tip]);
 
   useFrame((_, dt) => {

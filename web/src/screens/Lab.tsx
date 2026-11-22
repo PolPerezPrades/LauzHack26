@@ -1,8 +1,11 @@
 /**
  * Sign lab (#lab): side-by-side verification of every sign rendering.
- *   letters: 3D hand | the REAL signer's hand (MediaPipe landmarks drawn with the same mesh) | real clip
- *   words:   avatar (motion from the clip) | real clip
+ *   letters: 3D hand (with view presets) | the REAL signer's hand (MediaPipe landmarks drawn with
+ *            the same mesh) | real clip
+ *   words:   avatar (motion from the clip) | real clip; a sign that ships as video shows an
+ *            avatar preview instead, to judge whether it could switch
  * Meant for reviewing the content with a fluent signer before marking it "verified".
+ * ⏱ shows each viewer's frame rate and draw calls (also in the feed, via the same switch).
  */
 import { Canvas } from "@react-three/fiber";
 import { useMemo, useRef, useState } from "react";
@@ -14,9 +17,15 @@ import { OutlineSync } from "../viewer/OutlineSync";
 import { CameraRig } from "../viewer/CameraRig";
 import { HandMesh } from "../viewer/HandMesh";
 import type { V3 } from "../viewer/kinematics";
+import { perfEnabled, setPerfEnabled } from "../viewer/PerfProbe";
 import { SignViewer } from "../viewer/SignViewer";
 
 const REF = refPoses as Record<string, { world: number[]; video: string }>;
+/** view presets for letters: direction from the hand to the camera (null = the sign's own) */
+const VIEWS: { key: "viewOwn" | "viewFront" | "viewSide" | "viewThreeQuarter" | "viewAbove"; v: V3 | undefined }[] = [
+  { key: "viewOwn", v: undefined }, { key: "viewFront", v: [0, 0.05, 1] }, { key: "viewSide", v: [1, 0.1, 0.15] },
+  { key: "viewThreeQuarter", v: [0.7, 0.12, 0.7] }, { key: "viewAbove", v: [0.2, 0.75, 0.6] },
+];
 
 function RealHand({ letter }: { letter: string }) {
   const t = useT();
@@ -47,14 +56,18 @@ export function Lab({ onExit }: { onExit: () => void }) {
   const letters = [...SIGN_SPECS.values()].filter((s) => s.type === "letter").sort((a, b) => a.gloss.localeCompare(b.gloss));
   const words = [...SIGN_SPECS.values()].filter((s) => s.type !== "letter").sort((a, b) => a.id.localeCompare(b.id));
   const [sel, setSel] = useState(letters[0]?.id ?? "");
+  const [viewIdx, setViewIdx] = useState(0);
+  const [perf, setPerf] = useState(perfEnabled);
   const spec = SIGN_SPECS.get(sel)!;
   const isLetter = spec.type === "letter";
+  const preview = !isLetter && spec.render.type === "video";
 
   return (
     <div className="screen lab">
       <div className="row-between">
         <h2>🔬 {t.lab.title}</h2>
         <div className="head-actions">
+          <button className={`chip ${perf ? "chip-on" : ""}`} onClick={() => { setPerfEnabled(!perf); setPerf(!perf); }}>{t.lab.perf}</button>
           <LangSwitch />
           <button className="btn btn-ghost" onClick={onExit}>{t.lab.back}</button>
         </div>
@@ -78,8 +91,21 @@ export function Lab({ onExit }: { onExit: () => void }) {
       </div>
       <div className="lab-grid">
         <div>
-          <h3>{isLetter ? t.lab.hand3d : spec.render.type === "avatar" ? t.lab.avatar : t.lab.video}</h3>
-          <SignViewer key={sel} ids={[sel]} size="md" />
+          <h3>{isLetter ? t.lab.hand3d : spec.render.type === "avatar" ? t.lab.avatar : t.lab.avatarPreview}</h3>
+          <SignViewer
+            key={`${sel}:${viewIdx}:${perf}`}
+            ids={[sel]}
+            size="md"
+            perf={perf}
+            view={isLetter ? VIEWS[viewIdx].v : undefined}
+            renderOverride={preview ? { type: "avatar", motion: `/motion/${sel}.json` } : undefined}
+          />
+          {isLetter && (
+            <div className="lab-views">
+              <span className="muted small">{t.lab.views}</span>
+              {VIEWS.map((v, i) => <button key={v.key} className={`chip ${viewIdx === i ? "chip-on" : ""}`} onClick={() => setViewIdx(i)}>{t.lab[v.key]}</button>)}
+            </div>
+          )}
         </div>
         {isLetter && (
           <div>

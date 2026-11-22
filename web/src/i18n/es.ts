@@ -129,6 +129,8 @@ export const es: Messages = {
     creditSequence: "Secuencia de signos de diccionario",
     creditHand: "Mano 3D · pose contrastada con vídeo real y descripciones ASL",
     creditAvatar: "Avatar con el movimiento real del vídeo",
+    perf: (fps: number, worstMs: number, calls: number, triangles: number) =>
+      `${fps.toFixed(0)} fps · peor fotograma ${worstMs.toFixed(0)} ms · ${calls} llamadas de dibujo · ${(triangles / 1000).toFixed(1)}k triángulos`,
   },
 
   lab: {
@@ -147,6 +149,14 @@ export const es: Messages = {
     noRealRef: "Sin referencia real",
     reference: "Referencia",
     illustration: "ilustración",
+    avatarPreview: "Avatar (vista previa: este signo se muestra en vídeo)",
+    perf: "⏱ Rendimiento",
+    views: "Vistas",
+    viewOwn: "la del signo",
+    viewFront: "frente",
+    viewSide: "lado",
+    viewThreeQuarter: "¾",
+    viewAbove: "arriba",
   },
 
   dev: {
