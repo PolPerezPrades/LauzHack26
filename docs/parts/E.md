@@ -12,6 +12,8 @@ E moves to **Pablo's laptop** (stream S3, a second agent session in its own work
 
 Owned for E1: `src/tasks/gameFormats.ts`, `gameViews.tsx`, `src/tasks/game-*/`, `src/tasks/ui/GameFrame*`, `src/sound/effects.ts`, `src/i18n/parts/games.ts`. **Not** in E1: `lib/handshapes.ts` and `camera/checkMode.ts` (the number rules move to B2's later increments), `dev/DevScreen.tsx`, the content files (story and dialogue are later).
 
+**Update 10:40 (integrator):** `game-rain` is already built on `gesture_learning` (`web/src/tasks/game-rain/`: letter signs fall, tap the letter, a 10 s clock that hits extend and wrong taps cut, faster with survival), and so is `game-grid` (`web/src/tasks/game-grid/`: a 3×3 board of letter signs, find one letter at a time, same clock); and `game-wordsearch` (two modes: a word in letters on a 3×3 board of signs, or a fingerspelled word on a 5×5 board of letters); all registered in `GAME_FORMATS`, and the picker allows at most one game in 4 cards. Merge `gesture_learning` into `part-e` first, don't rebuild it: start with `game-match`, and reuse `game-rain`'s pattern.
+
 **First increment (by 10:45)**
 
 - [ ] `GameFrame`: a 3-2-1 start that runs on its own, a HUD (score, time left), an end screen with the score for about 2 s, then the card's result, which A2's banner moves on. No start button. Game sounds in `sound/effects.ts` (reuse the existing synth).

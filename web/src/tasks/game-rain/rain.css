@@ -1,0 +1,93 @@
+/* game-rain: falling letter signs over a row of letter buttons (transform/opacity animations only). */
+.game-rain .rain-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-block: 0.25rem;
+}
+.game-rain .rain-clock-low { color: var(--bad, #e5484d); }
+.game-rain .rain-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.game-rain .rain-bar > div {
+  height: 100%;
+  background: var(--accent, #7c5cff);
+  transform-origin: left center;
+  transition: transform 0.1s linear;
+}
+.game-rain .rain-sky {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 15rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--accent, #7c5cff) 8%, transparent);
+  transition: background-color 0.2s;
+}
+.game-rain .rain-ok { background: color-mix(in srgb, var(--good, #30a46c) 22%, transparent); }
+.game-rain .rain-bad { background: color-mix(in srgb, var(--bad, #e5484d) 22%, transparent); }
+/* a drop is a full-height lane, so translateY(%) is a share of the sky's height; the sign sits at its top */
+.game-rain .rain-drop {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 30%;
+  max-width: 9rem;
+  pointer-events: none;
+  animation-name: rain-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.game-rain .rain-drop .sv { margin: 0; }
+.game-rain .rain-drop .sv-stage { box-shadow: 0 4px 14px rgb(0 0 0 / 0.15); }
+.game-rain .rain-paused .rain-drop { animation-play-state: paused; }
+@keyframes rain-fall {
+  from { transform: translateY(-25%); }
+  to { transform: translateY(74%); }
+}
+.game-rain .rain-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--bad, #e5484d);
+  opacity: 0.6;
+}
+.game-rain .rain-end {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  font-weight: 700;
+}
+.game-rain .rain-end-score { font-size: 3.5rem; line-height: 1; }
+.game-rain .rain-keys {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(3.2rem, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.game-rain .rain-key {
+  font-size: 1.6rem;
+  font-weight: 800;
+  padding-block: 0.7rem;
+  border-radius: 0.8rem;
+  border: 2px solid color-mix(in srgb, currentColor 18%, transparent);
+  background: var(--card, #fff);
+  color: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.game-rain .rain-key:active { transform: scale(0.94); }
+.game-rain .rain-key:disabled { opacity: 0.5; cursor: default; }
+@media (prefers-reduced-motion: reduce) {
+  .game-rain .rain-bar > div, .game-rain .rain-sky { transition: none; }
+}

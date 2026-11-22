@@ -1,0 +1,43 @@
+/* game-wordsearch: the clue (a word in letters, or a fingerspelled word) over a board of signs or letters. */
+.game-wordsearch .ws-clue { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 0.9rem; margin-bottom: 0.5rem; }
+.game-wordsearch .ws-word { display: flex; gap: 0.2rem; font-size: 1.35rem; font-weight: 800; }
+.game-wordsearch .ws-word-done { opacity: 0.55; text-decoration: line-through; }
+.game-wordsearch .ws-word span {
+  min-width: 1.5em;
+  text-align: center;
+  border-radius: 0.4em;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  transition: background-color 0.2s, color 0.2s;
+}
+.game-wordsearch .ws-word .ws-got { background: var(--good, #30a46c); color: #fff; }
+.game-wordsearch .ws-signed { width: 46%; max-width: 11rem; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+.game-wordsearch .ws-signed .sv { margin: 0; }
+.game-wordsearch .ws-reveal { font-size: 1.4rem; color: var(--good, #30a46c); }
+.game-wordsearch .ws-board { flex: 1 1 auto; display: grid; gap: 0.3rem; align-content: center; }
+.game-wordsearch .ws-cell { aspect-ratio: 1; }
+.game-wordsearch .ws-cell .sv-stage { border-radius: 0.5rem; }
+.game-wordsearch .ws-cell {
+  padding: 0;
+  border: 3px solid transparent;
+  border-radius: 0.7rem;
+  background: var(--card, #fff);
+  color: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  touch-action: manipulation;
+  transition: transform 0.12s, background-color 0.15s;
+}
+.game-wordsearch.ws-letters .ws-cell {
+  aspect-ratio: 1;
+  font-size: 1.5rem;
+  font-weight: 800;
+  border-color: color-mix(in srgb, currentColor 14%, transparent);
+}
+.game-wordsearch .ws-cell .sv { margin: 0; pointer-events: none; }
+.game-wordsearch .ws-cell:active { transform: scale(0.94); }
+.game-wordsearch .ws-found { border-color: var(--good, #30a46c); background: color-mix(in srgb, var(--good, #30a46c) 25%, var(--card, #fff)); }
+.game-wordsearch .ws-bad { border-color: var(--bad, #e5484d); }
+.game-wordsearch .ws-end { flex: 1 1 auto; display: grid; place-content: center; text-align: center; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) {
+  .game-wordsearch .ws-cell, .game-wordsearch .ws-word span { transition: none; }
+}

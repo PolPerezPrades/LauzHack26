@@ -1,0 +1,42 @@
+/* game-grid: a 3×3 board of letter signs; the HUD and end score reuse game-rain's styles. */
+.game-grid .grid-target {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 0.3em;
+  border-radius: 0.4em;
+  text-align: center;
+  font-size: 1.4em;
+  background: var(--accent, #7c5cff);
+  color: #fff;
+}
+.game-grid .grid-board {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+  align-content: center;
+}
+.game-grid .grid-tile {
+  padding: 0;
+  border: 3px solid transparent;
+  border-radius: 0.8rem;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  touch-action: manipulation;
+  transition: transform 0.12s;
+}
+.game-grid .grid-tile .sv { margin: 0; pointer-events: none; }
+.game-grid .grid-tile:active { transform: scale(0.95); }
+.game-grid .grid-ok { border-color: var(--good, #30a46c); }
+.game-grid .grid-bad { border-color: var(--bad, #e5484d); }
+.game-grid .grid-end {
+  flex: 1 1 auto;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-grid .grid-tile { transition: none; }
+}

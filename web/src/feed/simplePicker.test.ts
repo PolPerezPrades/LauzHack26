@@ -126,4 +126,26 @@ describe("simple picker", () => {
     const plan = picker.next(ctx([exited("system-tutorial")], false), { items: [curriculumOrder()[0]] })!;
     expect(plan.items).toEqual([curriculumOrder()[1]]);
   });
+
+  it("steps back after \"too hard\": a review lesson of an item met before, never the hard one", () => {
+    const log = createLog();
+    for (const id of ["L-A", "L-B", "L-C"]) log.lesson(id, { correct: true, exit: "next" });
+    log.swipe(["L-D"], "too_hard", "lesson");
+    const history: CardRef[] = [exited("system-tutorial"), ...["L-A", "L-B", "L-C"].map((id) => exited("lesson", [id])),
+      { cardId: ids(), format: "lesson", items: ["L-D"], exit: "too_hard" }];
+    const plan = createSimplePicker({ newId: ids }).next({ ...ctx(history), events: log.events })!;
+    expect(plan.reasons).toContainEqual({ code: "review_after_too_hard" });
+    expect(plan.format).toBe("lesson");
+    // L-B, L-C and L-D were on the last three cards
+    expect(plan.items).toEqual(["L-A"]);
+  });
+
+  it("keeps the items of the last cards out, so one item can't loop", () => {
+    const log = createLog();
+    log.answer("L-A", false);
+    const history: CardRef[] = [exited("system-tutorial"), exited("lesson", ["L-A"]), exited("quiz-choice", ["L-A"])];
+    // learning formats only: the letter games top up with the first unit's letters on purpose
+    const plan = createSimplePicker({ newId: ids, formats: FORMATS.filter((f) => f.family !== "game") }).next({ ...ctx(history), events: log.events })!;
+    expect(plan.items).not.toContain("L-A");
+  });
 });
