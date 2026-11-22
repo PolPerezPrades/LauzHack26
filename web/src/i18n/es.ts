@@ -23,7 +23,7 @@ export const es: Messages = {
 
   feed: {
     exits: {
-      next: "Continuar",
+      next: "Siguiente tarjeta",
       too_easy: "Muy fácil",
       too_hard: "Muy difícil",
       dislike_format: "No me gusta este formato",
@@ -33,14 +33,14 @@ export const es: Messages = {
     actions: {
       too_easy: { label: "Muy fácil", aria: "Muy fácil (flecha izquierda)" },
       dislike_format: { label: "No me gusta", aria: "No me gusta este formato (flecha abajo)" },
-      next: { label: "Continuar", aria: "Continuar (flecha arriba, Intro o espacio)", locked: "Termina la tarea para continuar" },
       too_hard: { label: "Muy difícil", aria: "Muy difícil (flecha derecha)" },
     },
     praise: ["¡Correcto!", "¡Genial!", "¡Muy bien!", "¡Eso es!", "¡Perfecto!"],
     incorrect: "Casi…",
+    chose: (option: string) => `Has elegido: ${option}`,
     answer: (a: string) => `Respuesta: ${a}`,
     xp: (n: number) => `+${n} XP`,
-    afterWrong: "Desliza o pulsa Continuar cuando lo hayas visto",
+    holdToRead: "Mantén pulsada la tarjeta para seguir leyendo",
     statsLabel: (streak: number, xp: number) => `Racha de ${streak} ${streak === 1 ? "día" : "días"} y ${xp} XP`,
     mute: "Silenciar sonidos",
     unmute: "Activar sonidos",
@@ -80,13 +80,13 @@ export const es: Messages = {
     title: "Así funciona Signa",
     intro: "Cada tarjeta es una tarea corta. Detrás espera la siguiente.",
     rows: [
-      { exit: "next", icon: "↑", text: "Arriba: tarea hecha, a por la siguiente." },
+      { exit: "next", icon: "↑", text: "Cuando terminas una tarea, la tarjeta sube sola." },
       { exit: "too_easy", icon: "←", text: "Izquierda: demasiado fácil para mí." },
       { exit: "too_hard", icon: "→", text: "Derecha: demasiado difícil." },
       { exit: "dislike_format", icon: "↓", text: "Abajo: no me gusta este tipo de tarea." },
     ],
     buttons: "También puedes usar los botones de abajo o las flechas del teclado.",
-    tryIt: "Pruébalo: quita esta tarjeta como quieras.",
+    tryIt: "Pruébalo: desliza esta tarjeta o pulsa un botón.",
   },
 
   quiz: {

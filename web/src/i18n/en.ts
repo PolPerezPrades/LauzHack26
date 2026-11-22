@@ -26,25 +26,27 @@ export const en = {
   },
 
   feed: {
+    /** announced when a card leaves; the left, right and down ones are also the drag stamps */
     exits: {
-      next: "Next",
+      next: "Next card",
       too_easy: "Too easy",
       too_hard: "Too hard",
       dislike_format: "Not for me",
       camera_off: "No camera",
     } satisfies Record<ExitKind, string>,
     actionsLabel: "Card actions",
+    /** one button per swipe; Next has none, because it happens on its own (Part A2) */
     actions: {
       too_easy: { label: "Too easy", aria: "Too easy (left arrow)" },
       dislike_format: { label: "Not for me", aria: "I don't like this kind of task (down arrow)" },
-      next: { label: "Next", aria: "Next (up arrow, Enter or Space)", locked: "Finish the task to continue" },
       too_hard: { label: "Too hard", aria: "Too hard (right arrow)" },
     },
     praise: ["Correct!", "Great!", "Well done!", "That's it!", "Perfect!"],
     incorrect: "Not quite…",
+    chose: (option: string) => `You chose: ${option}`,
     answer: (a: string) => `Answer: ${a}`,
     xp: (n: number) => `+${n} XP`,
-    afterWrong: "Swipe or tap Next when you're ready",
+    holdToRead: "Hold the card to keep reading",
     statsLabel: (streak: number, xp: number) => `${streak}-day streak and ${xp} XP`,
     mute: "Mute sounds",
     unmute: "Turn sounds on",
@@ -83,14 +85,15 @@ export const en = {
   tutorial: {
     title: "How Signa works",
     intro: "Each card is a short task. The next one waits behind it.",
+    /** the automatic Next first (Part A2), then the three swipes */
     rows: [
-      { exit: "next", icon: "↑", text: "Up: task done, on to the next one." },
+      { exit: "next", icon: "↑", text: "When you finish a task, the card flies up on its own." },
       { exit: "too_easy", icon: "←", text: "Left: too easy for me." },
       { exit: "too_hard", icon: "→", text: "Right: too hard." },
       { exit: "dislike_format", icon: "↓", text: "Down: I don't like this kind of task." },
     ] as { exit: ExitKind; icon: string; text: string }[],
     buttons: "You can also use the buttons below or the arrow keys.",
-    tryIt: "Try it: send this card away however you like.",
+    tryIt: "Try it: swipe this card away or press a button.",
   },
 
   quiz: {

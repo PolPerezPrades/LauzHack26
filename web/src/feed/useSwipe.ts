@@ -2,7 +2,8 @@
  * Pointer gestures for the card stack (D-009: Pointer Events, no library). A pointer that moves
  * less than the tap slop is a tap and reaches the task's buttons untouched; a longer drag is a
  * swipe, unless it starts inside `[data-noswipe]` (inputs, sliders, scroll areas). Works the same
- * for touch, mouse and pen.
+ * for touch, mouse and pen. Every press is reported, so the feed can hold the auto-advance while a
+ * finger rests on the card (SPEC §3.4); a press always ends, even when released outside the stack.
  */
 import { useEffect, useRef, type RefObject } from "react";
 import { FEED } from "./config";
@@ -19,6 +20,11 @@ export interface SwipeRelease {
 export interface SwipeCallbacks {
   /** whether a drag may start on this target now */
   canStart(target: Element): boolean;
+  /** a press began where a drag may start: it can still become a tap, a hold or a drag */
+  onPress?(): void;
+  /** that press ended without becoming a drag: a tap, a hold, or the browser took the pointer */
+  onPressEnd?(): void;
+  /** the press became a drag */
   onStart(): void;
   /** displacement since pointerdown, at most once per animation frame */
   onMove(dx: number, dy: number): void;
@@ -42,6 +48,7 @@ export function useSwipe(ref: RefObject<HTMLElement | null>, callbacks: SwipeCal
       const target = e.target as Element;
       if (target.closest("[data-noswipe]") || !cb.current.canStart(target)) return;
       p = { id: e.pointerId, x0: e.clientX, y0: e.clientY, dragging: false, samples: [{ x: e.clientX, y: e.clientY, t: e.timeStamp }], raf: 0, x: e.clientX, y: e.clientY };
+      cb.current.onPress?.();
     };
 
     const move = (e: PointerEvent) => {
@@ -74,7 +81,10 @@ export function useSwipe(ref: RefObject<HTMLElement | null>, callbacks: SwipeCal
       const cur = p;
       p = null;
       cancelAnimationFrame(cur.raf);
-      if (!cur.dragging) return; // a tap: the click goes through
+      if (!cur.dragging) {
+        cb.current.onPressEnd?.(); // a tap or a hold: the click goes through
+        return;
+      }
       // the click that follows a drag must not press the button the drag started on
       suppressClick = true;
       setTimeout(() => (suppressClick = false), 0);
@@ -90,6 +100,7 @@ export function useSwipe(ref: RefObject<HTMLElement | null>, callbacks: SwipeCal
       p = null;
       cancelAnimationFrame(cur.raf);
       if (cur.dragging) cb.current.onCancel();
+      else cb.current.onPressEnd?.();
     };
 
     // Touch pointers are implicitly captured by the element under the finger; taking the capture
@@ -107,15 +118,18 @@ export function useSwipe(ref: RefObject<HTMLElement | null>, callbacks: SwipeCal
 
     el.addEventListener("pointerdown", down);
     el.addEventListener("pointermove", move);
-    el.addEventListener("pointerup", up);
-    el.addEventListener("pointercancel", cancel);
+    // A press that never became a drag has no capture: its release may land outside the stack (or
+    // on the next card, if the one it began on has left). Listening on the window ends it anyway,
+    // in the capture phase so that no handler inside a card can stop the event first.
+    window.addEventListener("pointerup", up, true);
+    window.addEventListener("pointercancel", cancel, true);
     el.addEventListener("lostpointercapture", lost);
     el.addEventListener("click", click, true);
     return () => {
       el.removeEventListener("pointerdown", down);
       el.removeEventListener("pointermove", move);
-      el.removeEventListener("pointerup", up);
-      el.removeEventListener("pointercancel", cancel);
+      window.removeEventListener("pointerup", up, true);
+      window.removeEventListener("pointercancel", cancel, true);
       el.removeEventListener("lostpointercapture", lost);
       el.removeEventListener("click", click, true);
       if (p) cancelAnimationFrame(p.raf);

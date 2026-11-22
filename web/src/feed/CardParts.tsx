@@ -1,8 +1,11 @@
 /** Pieces of a card: header, lightweight preview, feedback panel, and a guard against task crashes. */
-import { Component, type ReactNode } from "react";
+import { Component, useState, type ReactNode } from "react";
+import { itemLabel } from "../content/curriculum";
 import { seedFrom } from "../core/rng";
 import type { CardPlan, TaskResult, TaskSpec } from "../core/types";
-import { useT, type Messages } from "../i18n";
+import { useLang, useT, type Messages } from "../i18n";
+import type { CountdownView } from "./autoAdvance";
+import { wrongChoice } from "./feedback";
 
 export const formatTitle = (spec: TaskSpec | undefined, fallback: string, t: Messages) => (spec && t.formats[spec.i18nKey]?.title) || fallback;
 
@@ -41,21 +44,34 @@ export function CardPreview({ plan, spec }: { plan: CardPlan; spec?: TaskSpec })
   );
 }
 
-/** Result shown inside the card: correct or not, the correct answer after a mistake, XP. */
-export function FeedbackPanel({ cardId, result, autoAdvanceMs }: { cardId: string; result: TaskResult; autoAdvanceMs: number | null }) {
+/**
+ * Result banner inside the card (SPEC §3.4): correct or not; after a mistake, what the learner chose
+ * instead and the correct answer; the note; XP; and the countdown bar until the card leaves on its
+ * own. The bar stops while the countdown is held, and starts full again when the countdown restarts.
+ */
+export function FeedbackPanel({ cardId, result, countdown }: { cardId: string; result: TaskResult; countdown: CountdownView | null }) {
   const t = useT();
+  const lang = useLang();
+  // like the task's own answer and note, it keeps the language it was first shown in (D-040)
+  const [chose] = useState(() => {
+    const id = wrongChoice(result);
+    return id === undefined ? undefined : itemLabel(id, lang);
+  });
   const f = result.feedback;
   if (!f) return null;
   const praise = t.feed.praise[seedFrom(cardId) % t.feed.praise.length];
   return (
     <div className={`feedback ${f.correct ? "feedback-ok" : "feedback-bad"}`}>
       <div className="feedback-title">{f.correct ? praise : t.feed.incorrect}</div>
+      {!f.correct && chose && <div className="feedback-chose">{t.feed.chose(chose)}</div>}
       {f.correct
         ? result.xp > 0 && <div className="feedback-sub">{t.feed.xp(result.xp)}</div>
         : f.answer && <div className="feedback-sub">{t.feed.answer(f.answer)}</div>}
       {f.note && <div className="feedback-note">{f.note}</div>}
-      {!f.correct && <div className="feedback-hint">{t.feed.afterWrong}</div>}
-      {autoAdvanceMs !== null && <div className="feedback-timer" style={{ animationDuration: `${autoAdvanceMs}ms` }} />}
+      {!f.correct && <div className="feedback-hint">{t.feed.holdToRead}</div>}
+      {countdown && (
+        <div key={countdown.run} className={`feedback-timer${countdown.held ? " is-held" : ""}`} style={{ animationDuration: `${countdown.ms}ms` }} />
+      )}
     </div>
   );
 }

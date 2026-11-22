@@ -15,8 +15,17 @@ export const FEED = {
   velocityWindowMs: 100,
   /** below this drag progress a spring-back is silent */
   springSoundProgress: 0.3,
-  autoAdvanceCorrectMs: 1200,
+  /**
+   * Every result leaves on its own with the Next exit (SPEC §3.4, Part A2). These are the waits
+   * before that exit starts; the exit animation itself is exitMs, shared by every exit.
+   */
+  autoAdvanceCorrectMs: 600,
+  /** reading time for a correction: clamp(baseMs + perCharMs × characters of the answer and the note, minMs, maxMs) */
+  autoAdvanceWrong: { baseMs: 2000, perCharMs: 30, minMs: 2500, maxMs: 5000 },
+  /** game end screens (score and best) */
   autoAdvanceGameMs: 2500,
+  /** a result without feedback shows no banner and leaves as fast as a correct answer */
+  autoAdvanceNoFeedbackMs: 600,
   behindScale: 0.95,
   behindOffsetPx: 10,
 } as const;
