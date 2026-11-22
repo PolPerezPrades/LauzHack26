@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "La mano forma una C, vista de lado."
+    "es": "La mano forma una C, vista de lado.",
+    "en": "The hand forms a C, seen from the side."
   },
   "render": {
     "type": "hand"

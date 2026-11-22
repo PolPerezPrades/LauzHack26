@@ -21,17 +21,28 @@ const cameraFormat: TaskSpec = {
   generate: (q) => q.nextItems(["letter"], 1).map((id) => ({ format: "test-camera", items: [id], params: {} })),
   preview: () => "",
 };
-const quiz = FORMATS.find((f) => f.id === "quiz-choice")!;
+/**
+ * A format that walks the curriculum with `nextItems`, as quiz-choice did in Part A. Since Part B
+ * the real formats take their items from the learner lists (D-042), so the picker's own walk is
+ * tested with this double. It keeps the ce it was generated with in its params.
+ */
+const quiz: TaskSpec = {
+  id: "test-walk", family: "quiz", icon: "👀", i18nKey: "test-walk",
+  requires: { camera: "none", itemKinds: ["letter", "number", "word", "phrase"] }, trains: ["receptive"], seconds: 10,
+  params: () => ({}),
+  generate: (q, g) => q.nextItems(["letter", "number", "word", "phrase"], 1).map((id) => ({ format: "test-walk", items: [id], params: { ce: g.ce } })),
+  preview: () => "",
+};
 const tutorial = FORMATS.find((f) => f.id === "system-tutorial")!;
 
 describe("simple picker", () => {
-  it("starts with the tutorial on first launch, then a quiz on the first curriculum item", () => {
+  it("starts with the tutorial on first launch, then a lesson on the first curriculum item", () => {
     const picker = createSimplePicker({ newId: ids });
     const first = picker.next(ctx([]))!;
     expect(first.format).toBe("system-tutorial");
-    // the tutorial is now queued (current): the card behind it is the first quiz
+    // the tutorial is now queued (current): the card behind it teaches the first item (SPEC §7.8.5)
     const second = picker.next(ctx([{ cardId: first.cardId, format: first.format, items: [], planned: true }]))!;
-    expect(second.format).toBe("quiz-choice");
+    expect(second.format).toBe("lesson");
     expect(second.items).toEqual([curriculumOrder()[0]]);
     expect(second.reasons).toContainEqual({ code: "picker_walk", index: 0 });
     expect(picker.kind).toBe("picker");
@@ -40,7 +51,7 @@ describe("simple picker", () => {
   it("never shows the tutorial again once it has been dismissed", () => {
     const picker = createSimplePicker({ newId: ids });
     const plan = picker.next(ctx([exited("system-tutorial")]))!;
-    expect(plan.format).toBe("quiz-choice");
+    expect(plan.format).toBe("lesson");
   });
 
   it("shows the tutorial again if it was abandoned by a reload before any exit", () => {
@@ -49,9 +60,9 @@ describe("simple picker", () => {
   });
 
   it("walks the curriculum in order across launches", () => {
-    const picker = createSimplePicker({ newId: ids });
+    const picker = createSimplePicker({ formats: [tutorial, quiz], newId: ids });
     const order = curriculumOrder();
-    const history = [exited("system-tutorial"), exited("quiz-choice", [order[0]]), exited("quiz-choice", [order[1]]), exited("quiz-choice", [order[2]])];
+    const history = [exited("system-tutorial"), exited("test-walk", [order[0]]), exited("test-walk", [order[1]]), exited("test-walk", [order[2]])];
     expect(picker.next(ctx(history))!.items).toEqual([order[3]]);
   });
 
@@ -73,7 +84,7 @@ describe("simple picker", () => {
     let history: CardRef[] = [exited("system-tutorial")];
     for (let i = 0; i < 12; i++) {
       const plan = picker.next(ctx(history, false))!;
-      expect(plan.format).toBe("quiz-choice");
+      expect(plan.format).toBe("test-walk");
       history = [...history, { cardId: plan.cardId, format: plan.format, items: plan.items, exit: "next" }];
     }
   });
@@ -87,7 +98,7 @@ describe("simple picker", () => {
       formats.push(plan.format);
       history = [...history, { cardId: plan.cardId, format: plan.format, items: plan.items, exit: "next" }];
     }
-    expect(formats).toEqual(["test-camera", "quiz-choice", "test-camera", "quiz-choice", "test-camera", "quiz-choice"]);
+    expect(formats).toEqual(["test-camera", "test-walk", "test-camera", "test-walk", "test-camera", "test-walk"]);
   });
 
   it("never offers dev-only formats and returns null when nothing is eligible", () => {
@@ -97,20 +108,21 @@ describe("simple picker", () => {
   });
 
   it("passes the learner's effective challenge (ce) to the formats", () => {
-    const picker = createSimplePicker({ newId: ids });
+    // the double, not quiz-choice: since Part B the real formats don't walk the curriculum, and
+    // quiz-choice's ce → options mapping is tested in tasks/quiz-choice/spec.test.ts
+    const picker = createSimplePicker({ formats: [tutorial, quiz], newId: ids });
     const history = [exited("system-tutorial")];
-    const options = (events: FeedContext["events"]) =>
-      ((picker.next({ ...ctx(history), events })!.params as { choices: string[] }).choices).length;
-    expect(options([])).toBe(4);
-    // four "too hard" quizzes left unanswered: c −1.00, cf(quiz-choice) −0.60 → ce −1 → 2 options
+    const ce = (events: FeedContext["events"]) => (picker.next({ ...ctx(history), events })!.params as { ce: number }).ce;
+    expect(ce([])).toBe(0);
+    // four "too hard" cards left unanswered: c −1.00, cf(test-walk) −0.60 → ce −1
     const log = createLog();
-    for (const id of ["w-red", "w-blue", "w-green", "w-pink"]) log.swipe([id], "too_hard", "quiz-choice");
-    expect(options(log.events)).toBe(2);
+    for (const id of ["w-red", "w-blue", "w-green", "w-pink"]) log.swipe([id], "too_hard", "test-walk");
+    expect(ce(log.events)).toBe(-1);
   });
 
   it("respects formats and items to avoid", () => {
     const picker = createSimplePicker({ formats: [tutorial, cameraFormat, quiz], newId: ids });
-    expect(picker.next(ctx([exited("system-tutorial")], true), { formats: ["test-camera"] })!.format).toBe("quiz-choice");
+    expect(picker.next(ctx([exited("system-tutorial")], true), { formats: ["test-camera"] })!.format).toBe("test-walk");
     const plan = picker.next(ctx([exited("system-tutorial")], false), { items: [curriculumOrder()[0]] })!;
     expect(plan.items).toEqual([curriculumOrder()[1]]);
   });

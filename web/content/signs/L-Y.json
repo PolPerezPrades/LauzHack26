@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Pulgar y meñique estirados."
+    "es": "Pulgar y meñique estirados.",
+    "en": "Thumb and pinky straight."
   },
   "render": {
     "type": "hand"

@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Índice doblado en gancho."
+    "es": "Índice doblado en gancho.",
+    "en": "Index finger bent like a hook."
   },
   "render": {
     "type": "hand"

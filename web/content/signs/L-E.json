@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Dedos doblados sobre el pulgar, que cruza la palma por debajo."
+    "es": "Dedos doblados sobre el pulgar, que cruza la palma por debajo.",
+    "en": "Fingers bent over the thumb, which crosses the palm underneath."
   },
   "render": {
     "type": "hand"

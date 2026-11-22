@@ -24,7 +24,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Configuración de la I: el meñique dibuja una J girando la muñeca."
+    "es": "Configuración de la I: el meñique dibuja una J girando la muñeca.",
+    "en": "The I handshape: the pinky draws a J as the wrist turns."
   },
   "render": {
     "type": "hand"

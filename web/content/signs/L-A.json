@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Puño con el pulgar apoyado al lado del índice."
+    "es": "Puño con el pulgar apoyado al lado del índice.",
+    "en": "A fist with the thumb resting against the side of the index finger."
   },
   "render": {
     "type": "hand"

@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Índice y pulgar paralelos, apuntando hacia un lado."
+    "es": "Índice y pulgar paralelos, apuntando hacia un lado.",
+    "en": "Index finger and thumb parallel, pointing to the side."
   },
   "render": {
     "type": "hand"

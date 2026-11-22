@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Todos los dedos curvados tocan el pulgar: forma una O."
+    "es": "Todos los dedos curvados tocan el pulgar: forma una O.",
+    "en": "All the fingers curve to touch the thumb: it forms an O."
   },
   "render": {
     "type": "hand"

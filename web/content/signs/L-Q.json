@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Como la G, pero apuntando hacia abajo."
+    "es": "Como la G, pero apuntando hacia abajo.",
+    "en": "Like G, but pointing down."
   },
   "render": {
     "type": "hand"

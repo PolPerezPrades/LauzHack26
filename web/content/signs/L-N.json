@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Pulgar bajo índice y corazón."
+    "es": "Pulgar bajo índice y corazón.",
+    "en": "Thumb under the index and middle fingers."
   },
   "render": {
     "type": "hand"
