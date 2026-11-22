@@ -47,8 +47,7 @@ export function ProductiveTry({ style, mode, session, active, item, reference, l
         target={item}
         coach={lesson}
         reference={lesson}
-        skipLabel={lesson ? t.learning.camera.skip : t.learning.question.showMe}
-        stuckLabel={lesson ? t.learning.camera.skipStuck : undefined}
+        {...(lesson ? {} : { skipLabel: t.learning.question.showMe })}
         onDone={(o) => onDone({ mode: o.check, correct: o.passed, ms: o.ms, ...(o.confusedWith ? { confusedWith: o.confusedWith } : {}), ...(o.issue ? { issue: o.issue } : {}) })}
       />
     );

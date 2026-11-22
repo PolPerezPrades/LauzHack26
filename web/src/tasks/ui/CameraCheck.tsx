@@ -41,7 +41,8 @@ interface Props {
   coach?: boolean;
   /** the reference hand in a corner (lessons) */
   reference?: boolean;
-  skipLabel: string;
+  /** no label, no skip button: in a lesson, swiping down is the skip */
+  skipLabel?: string;
   /** the skip button's label once the learner has been stuck for a while */
   stuckLabel?: string;
   onDone(outcome: CameraOutcome): void;
@@ -173,9 +174,11 @@ export function CameraCheck({ session, active, target, holdFrames = CAMERA_CHECK
         </div>
       )}
       <div className="tf-footer">
-        <button type="button" className={`btn ${stuck ? "btn-secondary" : "btn-ghost"}`} disabled={!active || passed} onClick={skip}>
-          {stuck && stuckLabel ? stuckLabel : skipLabel}
-        </button>
+        {skipLabel && (
+          <button type="button" className={`btn ${stuck ? "btn-secondary" : "btn-ghost"}`} disabled={!active || passed} onClick={skip}>
+            {stuck && stuckLabel ? stuckLabel : skipLabel}
+          </button>
+        )}
         {!detectable && (
           <button type="button" className="btn btn-primary" disabled={!active} onClick={() => finish({ passed: true, check: "mirror" })}>
             {t.learning.camera.signedIt(letterOf(target))}
