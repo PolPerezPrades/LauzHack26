@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Índice, corazón y anular separados; pulgar sobre el meñique."
+    "es": "Índice, corazón y anular separados; pulgar sobre el meñique.",
+    "en": "Index, middle and ring fingers spread; thumb over the pinky."
   },
   "render": {
     "type": "hand"

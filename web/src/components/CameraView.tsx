@@ -15,12 +15,16 @@ export interface TrackInfo {
 
 interface Props {
   /** Called on every processed frame (null = no hand visible). Keep it cheap. */
-  onFrame: (f: Features | null) => void;
+  onFrame?: (f: Features | null) => void;
+  /** run the hand detector (default true); a plain mirror (MirrorCompare) turns it off */
+  detect?: boolean;
   highlight?: "ok" | "near" | "none";
   /** camera gate; defaults to the app's camera session */
   session?: CameraSession;
   /** the camera actually opened (label, facing mode, resolution) */
   onTrack?: (info: TrackInfo) => void;
+  /** the live stream once it plays (a new one after a camera switch), and null when it goes away */
+  onStream?: (stream: MediaStream | null) => void;
   children?: React.ReactNode; // overlay content
 }
 
@@ -51,8 +55,10 @@ function errorText(err: CamError, t: Messages): string {
  * Camera preview (mirrored for front cameras and webcams) with MediaPipe hand tracking and a
  * landmark overlay. It only opens the camera through the camera session, and stops the moment the
  * session becomes unusable (opt-out): tracks are stopped by the session, the loop stops here.
+ * Frames never leave this component except as hand features (and, for the mirror, as the stream
+ * handed to the in-memory recorder).
  */
-export function CameraView({ onFrame, highlight = "none", session = cameraSession, onTrack, children }: Props) {
+export function CameraView({ onFrame, detect = true, highlight = "none", session = cameraSession, onTrack, onStream, children }: Props) {
   const t = useT();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -60,6 +66,8 @@ export function CameraView({ onFrame, highlight = "none", session = cameraSessio
   onFrameRef.current = onFrame;
   const onTrackRef = useRef(onTrack);
   onTrackRef.current = onTrack;
+  const onStreamRef = useRef(onStream);
+  onStreamRef.current = onStream;
   const usable = isUsable(useCameraState());
   const [status, setStatus] = useState<Status>(usable ? "loading" : "off");
   const [error, setError] = useState<CamError | null>(null);
@@ -85,8 +93,8 @@ export function CameraView({ onFrame, highlight = "none", session = cameraSessio
       }
     };
     (async () => {
-      const landmarkerReady = getHandLandmarker();
-      landmarkerReady.catch(() => {}); // handled below; avoid an unhandled rejection meanwhile
+      const landmarkerReady = detect ? getHandLandmarker() : null;
+      landmarkerReady?.catch(() => {}); // handled below; avoid an unhandled rejection meanwhile
       try {
         const stream = await session.acquire();
         acquired = true;
@@ -94,12 +102,18 @@ export function CameraView({ onFrame, highlight = "none", session = cameraSessio
         const video = videoRef.current!;
         video.srcObject = stream;
         await video.play().catch(() => {});
+        if (!alive) return;
         const track = stream.getVideoTracks()[0];
         const settings = track?.getSettings() ?? {};
         setMirrored(settings.facingMode !== "environment");
         onTrackRef.current?.({ label: track?.label ?? "", facingMode: settings.facingMode, width: settings.width ?? video.videoWidth, height: settings.height ?? video.videoHeight });
+        onStreamRef.current?.(stream);
         setCams(await listCameras().catch(() => []));
         setCamId(currentDeviceId());
+        if (!landmarkerReady) {
+          if (alive) setStatus("ready");
+          return;
+        }
         let landmarker;
         try {
           landmarker = await landmarkerReady;
@@ -121,7 +135,7 @@ export function CameraView({ onFrame, highlight = "none", session = cameraSessio
           const lm = res.landmarks[0] as P[] | undefined;
           const wl = res.worldLandmarks[0] as P[] | undefined;
           draw(canvasRef.current, video, lm);
-          onFrameRef.current(lm && wl ? computeFeatures(lm, wl, video.videoWidth / video.videoHeight) : null);
+          onFrameRef.current?.(lm && wl ? computeFeatures(lm, wl, video.videoWidth / video.videoHeight) : null);
         };
         loop();
       } catch (e) {
@@ -134,15 +148,17 @@ export function CameraView({ onFrame, highlight = "none", session = cameraSessio
       alive = false;
       cancelAnimationFrame(raf);
       if (videoRef.current) videoRef.current.srcObject = null;
+      onStreamRef.current?.(null);
       releaseOnce();
     };
-  }, [usable, session]);
+  }, [usable, session, detect]);
 
   const changeCam = async (id: string) => {
     const s = await switchCamera(id);
     if (videoRef.current) videoRef.current.srcObject = s;
     setMirrored(s.getVideoTracks()[0]?.getSettings().facingMode !== "environment");
     setCamId(id);
+    onStreamRef.current?.(s);
   };
 
   return (

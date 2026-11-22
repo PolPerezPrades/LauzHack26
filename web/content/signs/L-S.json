@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Puño con el pulgar cruzado por delante de los dedos."
+    "es": "Puño con el pulgar cruzado por delante de los dedos.",
+    "en": "A fist with the thumb crossed in front of the fingers."
   },
   "render": {
     "type": "hand"

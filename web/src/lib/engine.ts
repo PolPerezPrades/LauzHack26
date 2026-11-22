@@ -42,6 +42,18 @@ export function phraseOptions(id: string, n = 4): string[] {
   return shuffle([id, ...pick([...PHRASES.keys()].filter((o) => o !== id), n - 1)]);
 }
 
+/**
+ * English words to fingerspell in the learning formats (question spell-word; Part E's spelling games
+ * may share it): the old spelling activities' word lists, minus words with a doubled letter in a row
+ * (ZOO, PIZZA…), which ASL signs with a bounce the camera can't check.
+ */
+export const SPELL_WORDS: readonly string[] = [
+  "HI", "NO", "BAD", "BAG", "BED", "BIG", "CAB", "AGE", "ICE", "FIG", "DOG", "CAT", "MOM", "DAD", "SUN", "RED", "BOX",
+  "JOB", "YES", "VAN", "EAT", "TEA", "HOT", "MAP", "DEAF", "FACE", "CAFE", "HIDE", "KIND", "LION", "MILK", "PARK",
+  "QUIZ", "WIND", "TOWN", "STAR", "BLUE", "PINK", "LOVE", "WORK", "FISH", "HELP", "NAME", "BABY", "COLD", "CAKE",
+  "BIRD", "FROG", "QUIT", "KING", "WATER", "FRIEND",
+];
+
 const SPELL_BANK = ["BAD", "BAG", "BED", "BIG", "CAB", "DEAF", "FACE", "HI", "ICE", "AGE", "CAFE", "HIDE", "FIG",
   "DOG", "CAT", "MOM", "DAD", "SUN", "RED", "BOX", "JOB", "KIND", "LION", "MILK", "PARK", "QUIZ", "ZOO", "YES",
   "WIND", "VAN", "TOWN", "STAR", "BLUE", "PINK", "LOVE", "WORK", "PIZZA", "WATER", "HAPPY", "FRIEND", "SCHOOL"];

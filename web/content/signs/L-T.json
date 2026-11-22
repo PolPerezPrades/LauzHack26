@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Pulgar asomando entre índice y corazón."
+    "es": "Pulgar asomando entre índice y corazón.",
+    "en": "Thumb peeking out between the index and middle fingers."
   },
   "render": {
     "type": "hand"

@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Pulgar bajo los tres primeros dedos."
+    "es": "Pulgar bajo los tres primeros dedos.",
+    "en": "Thumb under the first three fingers."
   },
   "render": {
     "type": "hand"

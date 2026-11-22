@@ -24,7 +24,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "El índice dibuja una Z en el aire."
+    "es": "El índice dibuja una Z en el aire.",
+    "en": "The index finger draws a Z in the air."
   },
   "render": {
     "type": "hand"

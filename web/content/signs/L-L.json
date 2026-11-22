@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Índice arriba y pulgar hacia fuera: forma una L."
+    "es": "Índice arriba y pulgar hacia fuera: forma una L.",
+    "en": "Index finger up and thumb out: it forms an L."
   },
   "render": {
     "type": "hand"

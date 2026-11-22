@@ -1,0 +1,11 @@
+/* question (Part B): the word being fingerspelled, letter by letter. */
+.spell-word { flex: 0 0 auto; display: flex; justify-content: center; gap: 6px; font-size: 1.9rem; font-weight: 900; letter-spacing: 0.04em; }
+.spell-word span { min-width: 1.1em; text-align: center; color: #8a949c; border-bottom: 4px solid transparent; }
+.spell-word .sw-cur { color: var(--text); border-bottom-color: var(--blue-dark); }
+.spell-word .sw-ok { color: #2b6a00; }
+.spell-word .sw-missed { color: #a8201a; text-decoration: line-through; }
+.gloss-line { font-weight: 900; letter-spacing: 0.04em; text-align: center; color: #1b6ea8; }
+
+@media (max-height: 700px) {
+  .spell-word { font-size: 1.5rem; }
+}

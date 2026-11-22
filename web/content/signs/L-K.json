@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Índice y corazón en V; el pulgar entre ambos."
+    "es": "Índice y corazón en V; el pulgar entre ambos.",
+    "en": "Index and middle fingers in a V; the thumb between them."
   },
   "render": {
     "type": "hand"

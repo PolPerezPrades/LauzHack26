@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Meñique arriba, resto en puño."
+    "es": "Meñique arriba, resto en puño.",
+    "en": "Pinky up, the rest in a fist."
   },
   "render": {
     "type": "hand"

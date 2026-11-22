@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Índice y pulgar se tocan formando un círculo; los otros tres dedos estirados."
+    "es": "Índice y pulgar se tocan formando un círculo; los otros tres dedos estirados.",
+    "en": "Index finger and thumb touch, forming a circle; the other three fingers straight."
   },
   "render": {
     "type": "hand"

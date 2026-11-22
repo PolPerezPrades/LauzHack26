@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Índice arriba; el resto de dedos toca la punta del pulgar."
+    "es": "Índice arriba; el resto de dedos toca la punta del pulgar.",
+    "en": "Index finger up; the other fingers touch the tip of the thumb."
   },
   "render": {
     "type": "hand"

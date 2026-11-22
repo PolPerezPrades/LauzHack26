@@ -20,7 +20,8 @@
     "nonManual": null
   },
   "description": {
-    "es": "Dedos juntos y estirados; pulgar doblado sobre la palma."
+    "es": "Dedos juntos y estirados; pulgar doblado sobre la palma.",
+    "en": "Fingers together and straight; thumb bent across the palm."
   },
   "render": {
     "type": "hand"
